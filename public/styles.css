@@ -152,7 +152,7 @@ a {
 
 .project {
   border-radius: 20px;
-  background-image: linear-gradient(135deg, #ffcf71 10%, #2376dd 100%);
+  background-color:rgb(37, 37, 37);
   padding: 0.1em 0 0.1em 0;
   margin: 0.5em;
   justify-content: space-between;
@@ -161,7 +161,7 @@ a {
   font-size: 1.5em;
 }
 .project_desc {
-  color: black;
+  color: white;
 }
 .project_tech {
   color: #ea00ff;
