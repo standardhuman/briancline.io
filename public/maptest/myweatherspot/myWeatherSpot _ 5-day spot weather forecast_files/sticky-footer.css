@@ -1,0 +1,46 @@
+/* Sticky footer styles
+-------------------------------------------------- */
+html {
+  position: relative;
+  min-height: 100%;
+}
+body {
+  /* Margin bottom by footer height */
+  margin-bottom: 180px;
+}
+#footer {
+  position: absolute;
+  bottom: 0;
+  width: 100%;
+  /* Set the fixed height of the footer here */
+  height: 110px;
+  background-color: #666;
+  padding-top: 10px;
+}
+
+
+/* Pre-footer added by LB, but needs tweaking to avoid overlap with previous elements */
+
+#pre-footer {
+  position: absolute;
+  bottom: 170px;
+  width: 100%;
+  height: 70px;
+  padding-top: 10px;
+  background-color: none;
+}
+
+
+/* Custom page CSS
+-------------------------------------------------- */
+/* Not required for template or sticky footer method. (and conflicts with container widths in other style sheets -- LB) */
+
+/*.container {
+  width: auto;
+  max-width: 680px;
+  padding: 0 15px;
+}
+.container .text-muted {
+  margin: 20px 0;
+}
+*/

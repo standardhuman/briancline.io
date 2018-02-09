@@ -1,0 +1,164 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta name="viewport" content="initial-scale=1.0, user-scalable=no">
+    <meta charset="utf-8">
+    <title>Unwired Coverage Map</title>
+    <style>
+        /* Set size of map */
+
+        #map {
+            height: 648px;
+            width: 750px;
+        }
+
+        html,
+        body {
+            height: 100%;
+            margin: 0;
+            padding: 0;
+        }
+
+        #pac-input {
+            background-color: #fff;
+            font-family: Roboto;
+            font-size: 12px;
+            font-weight: 200;
+            margin-top: 10px;
+            padding: 0 11px 0 13px;
+            text-overflow: ellipsis;
+            width: 300px;
+            height: 30px;
+            border-radius: 2px;
+            outline: none;
+            border: none;
+            box-shadow: 0 1px 0 0 rgba(0, 0, 0, .05);
+            display: block;
+        }
+
+        #pac-input:focus {
+            border-color: #4d90fe;
+        }
+
+        #target {
+            width: 345px;
+        }
+    </style>
+
+</head>
+
+<body>
+    <div class="coveragemap">
+        <input id="pac-input" class="controls" type="text" placeholder="Search...">
+        <div id="map"></div>
+        <script>
+            // This adds a search box to a map, using the Google Place Autocomplete
+            // feature. People can enter geographical searches. The search box will return a
+            // pick list containing a mix of places and predicted search terms.
+
+            function initAutocomplete() {
+
+                // Set where map should be centered on load
+                const home = {
+                    lat: 37.848448,
+                    lng: -122.228022
+                };
+
+                // Create new map instance 
+                const map = new google.maps.Map(document.getElementById('map'), {
+                    center: {
+                        lat: -33.8688,
+                        lng: 151.2195
+                    },
+                    zoom: 11,
+                    mapTypeId: 'roadmap',
+                    center: home
+                });
+
+                // Set the overlay image opacity
+                const overlayOpts = {
+                    opacity: 0.4
+                }
+                // Set the overlay image bounds
+                const imageBounds = {
+                    north: 38.17155,
+                    south: 37.58663,
+                    east: -121.5803,
+                    west: -122.5685
+                };
+
+                // Load overlay image
+                coverageOverlay = new google.maps.GroundOverlay(
+                    './GoogleMapOverlay.png',
+                    imageBounds,
+                    overlayOpts
+                );
+                coverageOverlay.setMap(map);
+
+                // Create the search box and link it to the UI element.
+                let input = document.getElementById('pac-input');
+                let searchBox = new google.maps.places.SearchBox(input);
+                map.controls[google.maps.ControlPosition.TOP_LEFT].push(input);
+
+                // Bias the SearchBox results towards current map's viewport.
+                map.addListener('bounds_changed', function () {
+                    searchBox.setBounds(map.getBounds());
+                });
+
+                let markers = [];
+                // Listen for the event fired when the user selects a prediction and retrieve
+                // more details for that place.
+                searchBox.addListener('places_changed', function () {
+                    const places = searchBox.getPlaces();
+
+                    if (places.length == 0) {
+                        return;
+                    }
+
+                    // Clear out the old markers.
+                    markers.forEach(function (marker) {
+                        marker.setMap(null);
+                    });
+                    markers = [];
+
+                    // For each place, get the icon, name and location.
+                    let bounds = new google.maps.LatLngBounds();
+                    places.forEach(function (place) {
+                        if (!place.geometry) {
+                            console.log("Returned place contains no geometry");
+                            return;
+                        }
+                        let icon = {
+                            url: place.icon,
+                            size: new google.maps.Size(71, 71),
+                            origin: new google.maps.Point(0, 0),
+                            anchor: new google.maps.Point(17, 34),
+                            scaledSize: new google.maps.Size(25, 25)
+                        };
+
+                        // Create a marker for each place.
+                        markers.push(new google.maps.Marker({
+                            map: map,
+                            icon: icon,
+                            title: place.name,
+                            position: place.geometry.location
+                        }));
+
+                        if (place.geometry.viewport) {
+                            // Only geocodes have viewport.
+                            bounds.union(place.geometry.viewport);
+                        } else {
+                            bounds.extend(place.geometry.location);
+                        }
+                    });
+                    map.fitBounds(bounds);
+                });
+            }
+        </script>
+        <script async defer src="https://maps.googleapis.com/maps/api/js?key=AIzaSyBSh7RF71auw3Nc6m8YVNLVa57wezBZXq8&callback=initAutocomplete&libraries=places">
+        </script>
+    </div>
+</body>
+
+</html>

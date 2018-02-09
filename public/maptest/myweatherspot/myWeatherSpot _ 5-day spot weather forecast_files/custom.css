@@ -1,0 +1,52 @@
+/* Custom styles -- BDA
+-------------------------------------------------- */
+
+.footer-text, .footer-text a {color: #ccc; }
+
+.link-spacer {color: #999; padding: 0 12px; }
+
+.jumbotron {padding: 16px; }
+
+.container .jumbotron { padding-right: 36px; padding-left: 36px;  }
+
+.ws-box {padding: 0 0 10px 0; }
+
+.ws-box p {font-size: 15px; }
+
+h2 {font-weight: bold; color: #555; font-size: 1.4em; line-height: 1.2em; padding: 4px 0;}
+
+.flickr_image {padding: 20px 0 0 0; }
+
+
+.photos img, .flickr_images img {padding: 4px; border: solid 1px #ccc; margin: 0 10px 10px 0; }
+.photos img {margin-bottom: 5px; }
+
+.photos {padding: 0 0 10px 0; }
+.photos p {font-size: 12px; }
+
+.col-md-8 h1 {margin-top: 5px; margin-bottom: 5px; }
+
+.navbar-brand img, .navbar-brand a {border: none; }
+
+a.no-external {background: none; }
+
+@media (min-width: 768px) {
+  
+  #top_text2 .flt {display: none; }
+}
+
+#data #forecast-new-look-container .forecast-new-look.odd {
+  background: #eeeeee;
+}
+#data #forecast-new-look-container .forecast-new-look.even {
+  background: #ffffff;
+}
+
+/*.btn-lg {
+	padding: 8px 16px;
+font-size: 16px;
+line-height: 1.33;
+border-radius: 6px;
+}*/
+
+
