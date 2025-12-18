@@ -14,12 +14,12 @@ document.querySelectorAll('a[href^="#"]').forEach(anchor => {
   });
 });
 
-// Add scroll-based nav background
-const nav = document.querySelector('nav');
+// Add scroll-based nav enhancement (inspired by TMC site)
+const nav = document.getElementById('main-nav');
 window.addEventListener('scroll', () => {
   if (window.scrollY > 50) {
-    nav.classList.add('shadow-sm');
+    nav.classList.add('nav-scrolled');
   } else {
-    nav.classList.remove('shadow-sm');
+    nav.classList.remove('nav-scrolled');
   }
 });

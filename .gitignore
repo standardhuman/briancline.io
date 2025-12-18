@@ -4,3 +4,8 @@ dist/
 *.log
 .env
 .env.local
+.vercel
+.env*.local
+
+# Temporary screenshot files
+projects-*.png

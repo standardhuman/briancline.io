@@ -13,3 +13,226 @@ body {
 section {
   scroll-margin-top: 4rem;
 }
+
+/* ─────────────────────────────────────────────────
+   Card Hover Effects (inspired by TMC & SailorSkills)
+   ───────────────────────────────────────────────── */
+.project-card {
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.04);
+  transition: transform 0.2s ease, box-shadow 0.2s ease, border-color 0.2s ease;
+}
+
+.project-card:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.08);
+}
+
+/* Focus card - SailorSkills highlight */
+.focus-card {
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
+  transition: box-shadow 0.2s ease;
+}
+
+.focus-card:hover {
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.1);
+}
+
+/* ─────────────────────────────────────────────────
+   Button hover enhancements
+   ───────────────────────────────────────────────── */
+.btn-primary {
+  transition: background-color 0.2s ease, transform 0.15s ease, box-shadow 0.2s ease;
+}
+
+.btn-primary:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+}
+
+.btn-primary:active {
+  transform: translateY(0);
+}
+
+/* ─────────────────────────────────────────────────
+   Navigation scroll effect
+   ───────────────────────────────────────────────── */
+.nav-scrolled {
+  background: rgba(255, 255, 255, 0.95);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+}
+
+/* ─────────────────────────────────────────────────
+   Image hover effects
+   ───────────────────────────────────────────────── */
+.project-card img {
+  transition: transform 0.3s ease;
+}
+
+.project-card:hover img {
+  transform: scale(1.02);
+}
+
+/* Linked project cards */
+a.project-card {
+  cursor: pointer;
+  text-decoration: none;
+  color: inherit;
+}
+
+a.project-card::after {
+  content: '↗';
+  position: absolute;
+  top: 0.75rem;
+  right: 0.75rem;
+  width: 1.5rem;
+  height: 1.5rem;
+  background: rgba(255, 255, 255, 0.9);
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 0.75rem;
+  color: #6b7280;
+  opacity: 0;
+  transition: opacity 0.2s ease;
+}
+
+a.project-card:hover::after {
+  opacity: 1;
+}
+
+a.project-card {
+  position: relative;
+}
+
+/* ─────────────────────────────────────────────────
+   Link hover effects
+   ───────────────────────────────────────────────── */
+.link-arrow {
+  transition: transform 0.2s ease;
+}
+
+a:hover .link-arrow {
+  transform: translateX(4px);
+}
+
+/* ─────────────────────────────────────────────────
+   Form input focus enhancements
+   ───────────────────────────────────────────────── */
+input:focus,
+textarea:focus {
+  box-shadow: 0 0 0 3px rgba(17, 24, 39, 0.1);
+}
+
+/* ─────────────────────────────────────────────────
+   Hero image polish
+   ───────────────────────────────────────────────── */
+.hero-image {
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.hero-image:hover {
+  transform: scale(1.02);
+  box-shadow: 0 16px 48px rgba(0, 0, 0, 0.12);
+}
+
+/* ─────────────────────────────────────────────────
+   Section polish (inspired by SailorSkills v2)
+   ───────────────────────────────────────────────── */
+
+/* Subtle gradient for focus section */
+.section-gradient {
+  background: linear-gradient(180deg, #f9fafb 0%, #f3f4f6 100%);
+}
+
+/* Category badges with subtle styling */
+.category-badge {
+  display: inline-block;
+  padding: 0.25rem 0.75rem;
+  background: rgba(17, 24, 39, 0.04);
+  border-radius: 9999px;
+  font-size: 0.75rem;
+  font-weight: 500;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  color: #6b7280;
+}
+
+/* Social icon hover effects */
+.social-icon {
+  transition: color 0.2s ease, transform 0.2s ease;
+}
+
+.social-icon:hover {
+  transform: translateY(-2px);
+}
+
+/* ─────────────────────────────────────────────────
+   Typography polish
+   ───────────────────────────────────────────────── */
+
+/* Better visual hierarchy for section headers */
+.section-label {
+  display: inline-block;
+  padding-bottom: 0.5rem;
+  border-bottom: 2px solid #111827;
+}
+
+/* Prose styling for background section */
+.prose p {
+  position: relative;
+}
+
+.prose p:first-of-type::first-letter {
+  font-size: 1.5em;
+  font-weight: 600;
+  color: #111827;
+}
+
+/* ─────────────────────────────────────────────────
+   Hero section enhancement
+   ───────────────────────────────────────────────── */
+.hero-section {
+  position: relative;
+  background: linear-gradient(180deg, #ffffff 0%, #fafafa 100%);
+}
+
+.hero-section::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  right: 0;
+  width: 50%;
+  height: 100%;
+  background: radial-gradient(ellipse at 70% 50%, rgba(17, 24, 39, 0.02) 0%, transparent 60%);
+  pointer-events: none;
+}
+
+/* Animated tagline effect */
+.tagline-fade {
+  opacity: 0.6;
+  transition: opacity 0.3s ease;
+}
+
+.tagline-fade:hover {
+  opacity: 1;
+}
+
+/* ─────────────────────────────────────────────────
+   Mobile responsive polish
+   ───────────────────────────────────────────────── */
+@media (max-width: 768px) {
+  .project-card:hover {
+    transform: none;
+  }
+
+  .hero-image:hover {
+    transform: none;
+  }
+
+  .btn-primary:hover {
+    transform: none;
+  }
+}
