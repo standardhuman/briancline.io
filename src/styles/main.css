@@ -196,18 +196,29 @@ textarea:focus {
    ───────────────────────────────────────────────── */
 .hero-section {
   position: relative;
-  background: linear-gradient(180deg, #ffffff 0%, #fafafa 100%);
+  background: url('/images/hero-bg.png') center center / cover no-repeat;
 }
 
 .hero-section::before {
   content: '';
   position: absolute;
   top: 0;
+  left: 0;
   right: 0;
-  width: 50%;
-  height: 100%;
-  background: radial-gradient(ellipse at 70% 50%, rgba(17, 24, 39, 0.02) 0%, transparent 60%);
+  bottom: 0;
+  background: linear-gradient(
+    to right,
+    rgba(255, 255, 255, 0.95) 0%,
+    rgba(255, 255, 255, 0.85) 40%,
+    rgba(255, 255, 255, 0.4) 70%,
+    rgba(255, 255, 255, 0.2) 100%
+  );
   pointer-events: none;
+}
+
+.hero-section > * {
+  position: relative;
+  z-index: 1;
 }
 
 /* Animated tagline effect */
