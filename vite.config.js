@@ -1,9 +1,17 @@
 import { defineConfig } from 'vite'
+import { resolve } from 'path'
 
 export default defineConfig({
   root: '.',
   build: {
     outDir: 'dist',
+    rollupOptions: {
+      input: {
+        main: resolve(__dirname, 'index.html'),
+        fireshift: resolve(__dirname, 'projects/fireshift.html'),
+        'podcast-renamer': resolve(__dirname, 'projects/podcast-renamer.html'),
+      },
+    },
   },
   server: {
     port: 3000,
