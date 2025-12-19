@@ -1,0 +1,262 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="FireShift - Mobile-first shift management for Burning Man Perimeter operations with offline-first architecture and voice commands.">
+  <title>FireShift | Brian Cline</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/src/styles/main.css">
+</head>
+<body class="bg-white text-gray-900 antialiased">
+
+  <!-- Navigation -->
+  <nav class="fixed top-0 left-0 right-0 bg-white/90 backdrop-blur-sm z-50 border-b border-gray-100">
+    <div class="max-w-4xl mx-auto px-6 py-4 flex justify-between items-center">
+      <a href="/#projects" class="inline-flex items-center text-gray-600 hover:text-gray-900 font-medium">
+        <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18"></path>
+        </svg>
+        Back to Projects
+      </a>
+      <a href="/#connect" class="px-4 py-2 bg-gray-900 text-white rounded-lg text-sm font-medium hover:bg-gray-800">
+        Let's Connect
+      </a>
+    </div>
+  </nav>
+
+  <!-- Hero -->
+  <section class="pt-32 pb-16">
+    <div class="max-w-4xl mx-auto px-6">
+      <span class="text-xs text-gray-400 font-medium uppercase tracking-wider">Open Source</span>
+      <h1 class="text-4xl md:text-5xl font-bold text-gray-900 mt-2 mb-4">FireShift</h1>
+      <p class="text-xl text-gray-600 max-w-2xl">
+        Mobile-first shift management for Burning Man Perimeter operations, featuring offline-first architecture, OCR schedule import, and voice commands for hands-free updates in the dust.
+      </p>
+    </div>
+  </section>
+
+  <!-- Features -->
+  <section class="py-12 bg-gray-50">
+    <div class="max-w-4xl mx-auto px-6">
+      <h2 class="text-2xl font-bold text-gray-900 mb-8">Features</h2>
+
+      <div class="grid md:grid-cols-2 gap-8">
+        <!-- Mobile App -->
+        <div>
+          <h3 class="text-lg font-semibold text-gray-900 mb-4">Mobile App</h3>
+          <ul class="space-y-3 text-gray-600">
+            <li class="flex items-start">
+              <span class="mr-3">📱</span>
+              <span>Offline-first with WatermelonDB - works in the desert</span>
+            </li>
+            <li class="flex items-start">
+              <span class="mr-3">📸</span>
+              <span>OCR schedule import from photos of paper schedules</span>
+            </li>
+            <li class="flex items-start">
+              <span class="mr-3">🎤</span>
+              <span>Voice commands for hands-free shift updates</span>
+            </li>
+            <li class="flex items-start">
+              <span class="mr-3">🚛</span>
+              <span>Real-time truck location tracking</span>
+            </li>
+            <li class="flex items-start">
+              <span class="mr-3">👥</span>
+              <span>Volunteer assignment management</span>
+            </li>
+            <li class="flex items-start">
+              <span class="mr-3">🔄</span>
+              <span>Automatic sync when connected</span>
+            </li>
+          </ul>
+        </div>
+
+        <!-- Web Dashboard -->
+        <div>
+          <h3 class="text-lg font-semibold text-gray-900 mb-4">Web Dashboard</h3>
+          <ul class="space-y-3 text-gray-600">
+            <li class="flex items-start">
+              <span class="mr-3">📊</span>
+              <span>Real-time analytics and reporting</span>
+            </li>
+            <li class="flex items-start">
+              <span class="mr-3">👨‍💼</span>
+              <span>Administrative oversight tools</span>
+            </li>
+            <li class="flex items-start">
+              <span class="mr-3">📈</span>
+              <span>Performance metrics tracking</span>
+            </li>
+            <li class="flex items-start">
+              <span class="mr-3">📄</span>
+              <span>PDF report generation</span>
+            </li>
+            <li class="flex items-start">
+              <span class="mr-3">🔐</span>
+              <span>Secure authentication</span>
+            </li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Voice Commands -->
+  <section class="py-12">
+    <div class="max-w-4xl mx-auto px-6">
+      <h2 class="text-2xl font-bold text-gray-900 mb-4">Voice Commands</h2>
+      <p class="text-gray-600 mb-6">Natural language commands for hands-free operation when you're covered in dust:</p>
+
+      <div class="bg-gray-900 rounded-xl p-6 font-mono text-sm">
+        <div class="text-gray-400 mb-2"># Assign volunteers to trucks</div>
+        <div class="text-green-400 mb-4">"Marty is driver, Squeaks is rider in truck 3"</div>
+
+        <div class="text-gray-400 mb-2"># Update truck locations</div>
+        <div class="text-green-400 mb-4">"Truck 2 is at P5"</div>
+
+        <div class="text-gray-400 mb-2"># Track meal preferences</div>
+        <div class="text-green-400 mb-4">"Nebula eats veggie"</div>
+
+        <div class="text-gray-400 mb-2"># Mark meals served</div>
+        <div class="text-green-400 mb-4">"Half Deaf has eaten"</div>
+
+        <div class="text-gray-400 mb-2"># Add notes</div>
+        <div class="text-green-400">"Note: Great teamwork today"</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Tech Stack -->
+  <section class="py-12 bg-gray-50">
+    <div class="max-w-4xl mx-auto px-6">
+      <h2 class="text-2xl font-bold text-gray-900 mb-8">Tech Stack</h2>
+
+      <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
+        <div class="bg-white rounded-lg p-4 border border-gray-200">
+          <div class="font-semibold text-gray-900">React Native</div>
+          <div class="text-sm text-gray-500">Mobile App</div>
+        </div>
+        <div class="bg-white rounded-lg p-4 border border-gray-200">
+          <div class="font-semibold text-gray-900">Expo</div>
+          <div class="text-sm text-gray-500">Build & Deploy</div>
+        </div>
+        <div class="bg-white rounded-lg p-4 border border-gray-200">
+          <div class="font-semibold text-gray-900">Next.js</div>
+          <div class="text-sm text-gray-500">Web Dashboard</div>
+        </div>
+        <div class="bg-white rounded-lg p-4 border border-gray-200">
+          <div class="font-semibold text-gray-900">Supabase</div>
+          <div class="text-sm text-gray-500">Backend & Auth</div>
+        </div>
+        <div class="bg-white rounded-lg p-4 border border-gray-200">
+          <div class="font-semibold text-gray-900">WatermelonDB</div>
+          <div class="text-sm text-gray-500">Offline Storage</div>
+        </div>
+        <div class="bg-white rounded-lg p-4 border border-gray-200">
+          <div class="font-semibold text-gray-900">TypeScript</div>
+          <div class="text-sm text-gray-500">Type Safety</div>
+        </div>
+        <div class="bg-white rounded-lg p-4 border border-gray-200">
+          <div class="font-semibold text-gray-900">ML Kit</div>
+          <div class="text-sm text-gray-500">OCR</div>
+        </div>
+        <div class="bg-white rounded-lg p-4 border border-gray-200">
+          <div class="font-semibold text-gray-900">Vercel</div>
+          <div class="text-sm text-gray-500">Hosting</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Architecture -->
+  <section class="py-12">
+    <div class="max-w-4xl mx-auto px-6">
+      <h2 class="text-2xl font-bold text-gray-900 mb-4">Architecture</h2>
+      <p class="text-gray-600 mb-6">Monorepo structure with shared packages:</p>
+
+      <div class="bg-gray-900 rounded-xl p-6 font-mono text-sm text-gray-300">
+        <div>burning-man-perimeter/</div>
+        <div class="ml-4">├── apps/</div>
+        <div class="ml-8">├── mobile/ <span class="text-gray-500"># React Native mobile app</span></div>
+        <div class="ml-8">└── web/ <span class="text-gray-500"># Next.js admin dashboard</span></div>
+        <div class="ml-4">├── packages/</div>
+        <div class="ml-8">├── shared/ <span class="text-gray-500"># Shared types and utilities</span></div>
+        <div class="ml-8">└── database/ <span class="text-gray-500"># Database schemas</span></div>
+        <div class="ml-4">└── supabase/ <span class="text-gray-500"># Migrations and config</span></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Status -->
+  <section class="py-12 bg-gray-50">
+    <div class="max-w-4xl mx-auto px-6">
+      <h2 class="text-2xl font-bold text-gray-900 mb-6">Project Status</h2>
+
+      <div class="mb-6">
+        <div class="flex justify-between text-sm mb-2">
+          <span class="font-medium text-gray-900">Overall Progress</span>
+          <span class="text-gray-600">65%</span>
+        </div>
+        <div class="h-3 bg-gray-200 rounded-full overflow-hidden">
+          <div class="h-full bg-gray-900 rounded-full" style="width: 65%"></div>
+        </div>
+      </div>
+
+      <div class="space-y-3">
+        <div class="flex items-center">
+          <span class="w-6 h-6 rounded-full bg-green-100 text-green-600 flex items-center justify-center text-sm mr-3">✓</span>
+          <span class="text-gray-700">Core offline-first architecture complete</span>
+        </div>
+        <div class="flex items-center">
+          <span class="w-6 h-6 rounded-full bg-green-100 text-green-600 flex items-center justify-center text-sm mr-3">✓</span>
+          <span class="text-gray-700">Schedule integration working (95%)</span>
+        </div>
+        <div class="flex items-center">
+          <span class="w-6 h-6 rounded-full bg-green-100 text-green-600 flex items-center justify-center text-sm mr-3">✓</span>
+          <span class="text-gray-700">Basic UI and navigation implemented</span>
+        </div>
+        <div class="flex items-center">
+          <span class="w-6 h-6 rounded-full bg-yellow-100 text-yellow-600 flex items-center justify-center text-sm mr-3">○</span>
+          <span class="text-gray-700">Voice commands and OCR (framework ready)</span>
+        </div>
+        <div class="flex items-center">
+          <span class="w-6 h-6 rounded-full bg-gray-100 text-gray-400 flex items-center justify-center text-sm mr-3">○</span>
+          <span class="text-gray-500">Authentication system</span>
+        </div>
+        <div class="flex items-center">
+          <span class="w-6 h-6 rounded-full bg-gray-100 text-gray-400 flex items-center justify-center text-sm mr-3">○</span>
+          <span class="text-gray-500">Web dashboard expansion</span>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Context -->
+  <section class="py-12">
+    <div class="max-w-4xl mx-auto px-6">
+      <h2 class="text-2xl font-bold text-gray-900 mb-4">Why This Exists</h2>
+      <p class="text-gray-600 leading-relaxed">
+        Built for the Burning Man Perimeter team - the volunteers who patrol the 7-mile perimeter of Black Rock City.
+        Managing 100+ volunteers across multiple shifts, trucks, and locations in an environment with no cell service
+        requires tools that work offline-first. Paper schedules get dusty and lost; this app survives the playa.
+      </p>
+    </div>
+  </section>
+
+  <!-- Footer -->
+  <footer class="py-12 border-t border-gray-200">
+    <div class="max-w-4xl mx-auto px-6 flex flex-col md:flex-row justify-between items-center gap-6">
+      <p class="text-gray-500 text-sm">
+        &copy; 2025 Brian Cline
+      </p>
+      <a href="/" class="text-gray-600 hover:text-gray-900 font-medium">briancline.io</a>
+    </div>
+  </footer>
+
+  <script type="module" src="/src/main.js"></script>
+</body>
+</html>
