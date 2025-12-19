@@ -19,6 +19,7 @@
     "vite": "^6.4.1"
   },
   "dependencies": {
-    "baseline-browser-mapping": "^2.9.10"
+    "baseline-browser-mapping": "^2.9.10",
+    "resend": "^6.6.0"
   }
 }

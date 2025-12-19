@@ -23,3 +23,60 @@ window.addEventListener('scroll', () => {
     nav.classList.remove('nav-scrolled');
   }
 });
+
+// Contact form handling
+const contactForm = document.getElementById('contact-form');
+if (contactForm) {
+  contactForm.addEventListener('submit', async (e) => {
+    e.preventDefault();
+
+    const submitBtn = contactForm.querySelector('button[type="submit"]');
+    const originalText = submitBtn.textContent;
+
+    // Show loading state
+    submitBtn.disabled = true;
+    submitBtn.textContent = 'Sending...';
+
+    const formData = {
+      name: contactForm.name.value,
+      email: contactForm.email.value,
+      message: contactForm.message.value,
+    };
+
+    try {
+      const response = await fetch('/api/contact', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(formData),
+      });
+
+      if (response.ok) {
+        submitBtn.textContent = 'Message Sent!';
+        submitBtn.classList.remove('bg-gray-900', 'hover:bg-gray-800');
+        submitBtn.classList.add('bg-green-600');
+        contactForm.reset();
+
+        // Reset button after 3 seconds
+        setTimeout(() => {
+          submitBtn.textContent = originalText;
+          submitBtn.classList.remove('bg-green-600');
+          submitBtn.classList.add('bg-gray-900', 'hover:bg-gray-800');
+          submitBtn.disabled = false;
+        }, 3000);
+      } else {
+        throw new Error('Failed to send');
+      }
+    } catch (error) {
+      submitBtn.textContent = 'Failed - Try Again';
+      submitBtn.classList.remove('bg-gray-900', 'hover:bg-gray-800');
+      submitBtn.classList.add('bg-red-600');
+
+      setTimeout(() => {
+        submitBtn.textContent = originalText;
+        submitBtn.classList.remove('bg-red-600');
+        submitBtn.classList.add('bg-gray-900', 'hover:bg-gray-800');
+        submitBtn.disabled = false;
+      }, 3000);
+    }
+  });
+}
