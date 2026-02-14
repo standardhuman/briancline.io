@@ -1,0 +1,16 @@
+[
+  {
+    "id": "bt_1767938578008_oglzna",
+    "start_datetime": "2026-01-09T18:00:00.000Z",
+    "end_datetime": "2026-01-09T19:00:00.000Z",
+    "reason": "Test blocked time for feature 40",
+    "created_at": "2026-01-09T06:02:58.008Z"
+  },
+  {
+    "id": "bt_1767958507520_6p1jno",
+    "start_datetime": "2026-01-10T18:00:00.000Z",
+    "end_datetime": "2026-01-10T19:00:00.000Z",
+    "reason": "Regression test for feature 40",
+    "created_at": "2026-01-09T11:35:07.520Z"
+  }
+]
