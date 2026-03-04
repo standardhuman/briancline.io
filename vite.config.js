@@ -8,6 +8,8 @@ export default defineConfig({
     rollupOptions: {
       input: {
         main: resolve(__dirname, 'index.html'),
+        training: resolve(__dirname, 'training.html'),
+        deliveries: resolve(__dirname, 'deliveries.html'),
         fireshift: resolve(__dirname, 'projects/fireshift.html'),
         'podcast-renamer': resolve(__dirname, 'projects/podcast-renamer.html'),
       },

@@ -1,0 +1,751 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="Professional sailing instruction on San Francisco Bay. Custom lessons aboard your own boat. $72/hr. USCG Master, US SAILING Certified Instructor Brian Cline.">
+  <title>Sailing Lessons | San Francisco Bay | Brian Cline</title>
+  <link rel="icon" href="/images/sailorskills-logo.png" type="image/png">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;500;600;700&family=Assistant:wght@300;400;700&display=swap" rel="stylesheet">
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    
+    :root {
+      --dark-blue: rgb(52, 84, 117);
+      --button-blue: rgb(32, 85, 179);
+      --button-blue-hover: rgb(21, 57, 119);
+      --red-accent: #E21C21;
+      --text-dark: rgb(24, 24, 24);
+      --text-gray: rgb(82, 82, 82);
+      --white: #ffffff;
+      --site-width: 980px;
+      --font-heading: 'Montserrat', sans-serif;
+      --font-body: 'Montserrat', sans-serif;
+      --font-light: 'Montserrat', sans-serif;
+    }
+
+    html { scroll-behavior: smooth; }
+    body {
+      font-family: var(--font-body);
+      color: var(--text-dark);
+      -webkit-font-smoothing: antialiased;
+      -moz-osx-font-smoothing: grayscale;
+      background: var(--white);
+      line-height: 1.4;
+    }
+
+    /* NAV */
+    .site-nav {
+      background: var(--white);
+      border-bottom: 1px solid rgba(0,0,0,0.08);
+      position: sticky;
+      top: 0;
+      z-index: 100;
+    }
+    .nav-inner {
+      max-width: var(--site-width);
+      margin: 0 auto;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      padding: 16px 20px;
+      gap: 32px;
+    }
+    .nav-inner a {
+      font-family: var(--font-heading);
+      font-size: 14px;
+      font-weight: 400;
+      color: var(--text-dark);
+      text-decoration: none;
+      letter-spacing: 0.05em;
+      transition: color 0.2s;
+    }
+    .nav-inner a:hover { color: var(--button-blue); }
+    .nav-inner a.active { font-weight: 600; }
+
+    /* HERO SECTION */
+    .hero {
+      background: var(--white);
+      text-align: center;
+      padding: 80px 20px 60px;
+    }
+    .hero h1 {
+      font-family: var(--font-heading);
+      font-size: 100px;
+      font-weight: 400;
+      color: var(--dark-blue);
+      letter-spacing: 0;
+      line-height: 1.2;
+    }
+    .hero .subtitle {
+      font-size: 20px;
+      color: var(--dark-blue);
+      letter-spacing: 0.7em;
+      margin-top: 8px;
+    }
+    .hero .divider {
+      width: 60px;
+      height: 1px;
+      background: var(--text-dark);
+      margin: 20px auto;
+    }
+    .hero .tagline {
+      font-size: 20px;
+      color: var(--dark-blue);
+      letter-spacing: 0.25em;
+    }
+    .hero .location {
+      font-size: 25px;
+      color: var(--red-accent);
+      letter-spacing: 0.5em;
+      margin-top: 16px;
+      line-height: 1.3;
+    }
+
+    /* PRICING + SKILLS SECTION */
+    .pricing-skills {
+      display: flex;
+      max-width: var(--site-width);
+      margin: 0 auto;
+      padding: 60px 20px;
+      gap: 0;
+    }
+    .pricing-col {
+      flex: 1;
+      text-align: center;
+      color: var(--dark-blue);
+    }
+    .pricing-col .from-text {
+      font-family: 'Montserrat', sans-serif;
+      font-size: 22px;
+      letter-spacing: 0.15em;
+      font-weight: 300;
+      color: var(--dark-blue);
+      margin-bottom: 8px;
+    }
+    .price-display {
+      display: flex;
+      align-items: baseline;
+      justify-content: center;
+      gap: 4px;
+    }
+    .price-dollar {
+      font-family: var(--font-heading);
+      font-size: 40px;
+      color: var(--dark-blue);
+    }
+    .price-number {
+      font-family: 'Assistant', sans-serif;
+      font-size: 100px;
+      font-weight: 700;
+      color: var(--dark-blue);
+      line-height: 0.9;
+    }
+    .price-per {
+      font-size: 20px;
+      color: var(--dark-blue);
+      line-height: 1.3;
+    }
+    .skills-divider {
+      width: 40px;
+      height: 1px;
+      background: var(--text-dark);
+      margin: 24px auto;
+    }
+    .skills-title {
+      font-weight: 700;
+      font-size: 20px;
+      color: var(--dark-blue);
+      margin-bottom: 16px;
+    }
+    .skills-list {
+      font-size: 20px;
+      color: var(--dark-blue);
+      line-height: 2.2;
+    }
+    .skills-serving {
+      font-style: italic;
+      margin-top: 16px;
+    }
+    .includes-title {
+      font-weight: 700;
+      font-size: 20px;
+      color: var(--text-gray);
+      letter-spacing: 0.15em;
+      margin-top: 32px;
+      margin-bottom: 16px;
+    }
+    .includes-list {
+      font-size: 20px;
+      color: var(--text-gray);
+      line-height: 2.4;
+    }
+    .cta-buttons {
+      margin-top: 32px;
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+      align-items: center;
+    }
+    .btn-primary {
+      display: inline-block;
+      background: var(--button-blue);
+      color: var(--white);
+      font-family: var(--font-heading);
+      font-size: 16px;
+      padding: 14px 32px;
+      border: 2px solid var(--button-blue);
+      text-decoration: none;
+      letter-spacing: 0.05em;
+      transition: all 0.2s;
+      text-align: center;
+    }
+    .btn-primary:hover {
+      background: var(--button-blue-hover);
+      border-color: var(--button-blue-hover);
+    }
+    .btn-secondary {
+      display: inline-block;
+      background: transparent;
+      color: var(--button-blue);
+      font-family: var(--font-heading);
+      font-size: 16px;
+      padding: 14px 32px;
+      border: 2px solid var(--button-blue);
+      text-decoration: none;
+      letter-spacing: 0.05em;
+      transition: all 0.2s;
+      text-align: center;
+    }
+    .btn-secondary:hover {
+      background: var(--button-blue);
+      color: var(--white);
+    }
+    .image-col {
+      flex: 1;
+      background-image: url('/images/training/aimee.png');
+      background-size: cover;
+      background-position: center;
+      min-height: 600px;
+    }
+
+    /* CALM CONFIDENCE SECTION */
+    .calm-section {
+      background: var(--white);
+      text-align: center;
+      padding: 80px 20px;
+    }
+    .calm-section h2 {
+      font-family: var(--font-heading);
+      font-size: 50px;
+      font-weight: 400;
+      line-height: 1.2;
+    }
+    .calm-section .calm-with {
+      font-style: italic;
+      font-size: 20px;
+      margin: 8px 0;
+    }
+    .calm-section .calm-subtitle {
+      font-size: 50px;
+      font-weight: 400;
+      line-height: 1.5;
+    }
+
+    /* BECOME SECTION (dark blue bg) */
+    .become-section {
+      background: var(--dark-blue);
+      text-align: center;
+      padding: 80px 20px;
+    }
+    .become-section h2 {
+      font-family: var(--font-heading);
+      font-size: 32px;
+      font-weight: 400;
+      color: var(--white);
+      letter-spacing: 0.2em;
+      max-width: 800px;
+      margin: 0 auto 32px;
+      line-height: 1.4;
+    }
+    .become-section .btn-cta {
+      display: inline-block;
+      background: transparent;
+      color: var(--white);
+      font-family: var(--font-heading);
+      font-size: 20px;
+      padding: 16px 40px;
+      border: 2px solid var(--white);
+      text-decoration: none;
+      transition: all 0.2s;
+    }
+    .become-section .btn-cta:hover {
+      background: var(--white);
+      color: var(--dark-blue);
+    }
+    .become-headshot {
+      width: 400px;
+      height: 400px;
+      object-fit: cover;
+      margin-top: 40px;
+    }
+
+    /* BIO SECTION */
+    .bio-section {
+      background: var(--white);
+      padding: 60px 20px;
+      max-width: var(--site-width);
+      margin: 0 auto;
+      display: flex;
+      gap: 40px;
+      align-items: flex-start;
+    }
+    .bio-image-col {
+      flex-shrink: 0;
+    }
+    .bio-image-col img {
+      width: 417px;
+      height: 351px;
+      object-fit: cover;
+    }
+    .bio-image-col .caption {
+      font-size: 15px;
+      margin-top: 8px;
+    }
+    .bio-image-col .caption em { font-style: italic; }
+    .bio-text {
+      font-size: 22px;
+      line-height: 1.41;
+      margin-left: 40px;
+    }
+    .bio-text .signature {
+      margin-top: 24px;
+    }
+    .bio-text .credentials {
+      font-size: 20px;
+      font-style: italic;
+    }
+
+    /* LEARN YOUR WAY */
+    .learn-section {
+      padding: 60px 20px;
+      text-align: center;
+    }
+    .learn-section .section-divider {
+      width: 60px;
+      height: 1px;
+      background: var(--text-dark);
+      margin: 0 auto 32px;
+    }
+    .learn-section h2 {
+      font-family: var(--font-heading);
+      font-size: 50px;
+      font-weight: 400;
+      color: var(--dark-blue);
+      letter-spacing: 0.2em;
+      margin-bottom: 32px;
+    }
+    .learn-features {
+      font-size: 23px;
+      color: var(--dark-blue);
+      line-height: 1.5;
+      max-width: 700px;
+      margin: 0 auto;
+    }
+    .learn-features .feature-title {
+      font-size: 25px;
+      font-weight: 400;
+    }
+    .learn-features .feature-desc {
+      font-size: 20px;
+      margin-bottom: 16px;
+    }
+
+    /* QUOTE */
+    .quote-section {
+      padding: 40px 20px;
+      text-align: center;
+    }
+    .quote-section .quote-divider {
+      width: 40px;
+      height: 2px;
+      background: var(--dark-blue);
+      margin: 0 auto 24px;
+    }
+    .quote-icon {
+      width: 40px;
+      height: 40px;
+      fill: var(--dark-blue);
+      margin-bottom: 16px;
+    }
+    .quote-text {
+      font-size: 24px;
+      font-style: italic;
+      color: var(--text-dark);
+      max-width: 700px;
+      margin: 0 auto 8px;
+    }
+    .quote-author {
+      font-size: 20px;
+      font-weight: 600;
+    }
+
+    /* SAIL SAFELY SECTION */
+    .safely-section {
+      background: var(--white);
+      padding: 60px 20px;
+      text-align: center;
+      max-width: var(--site-width);
+      margin: 0 auto;
+    }
+    .safely-section h2 {
+      font-family: var(--font-heading);
+      font-size: 32px;
+      font-weight: 400;
+      color: var(--dark-blue);
+      letter-spacing: 0.1em;
+      margin-bottom: 24px;
+    }
+    .safely-section p {
+      font-size: 18px;
+      line-height: 1.6;
+      max-width: 800px;
+      margin: 0 auto 24px;
+    }
+
+    /* CTA BAR */
+    .cta-bar {
+      background: var(--dark-blue);
+      text-align: center;
+      padding: 60px 20px;
+    }
+    .cta-bar h3 {
+      font-family: var(--font-heading);
+      font-size: 28px;
+      font-weight: 400;
+      color: var(--white);
+      letter-spacing: 0.1em;
+      margin-bottom: 24px;
+    }
+    .cta-bar .btn-cta {
+      display: inline-block;
+      background: transparent;
+      color: var(--white);
+      font-family: var(--font-heading);
+      font-size: 20px;
+      padding: 16px 40px;
+      border: 2px solid var(--white);
+      text-decoration: none;
+      transition: all 0.2s;
+    }
+    .cta-bar .btn-cta:hover {
+      background: var(--white);
+      color: var(--dark-blue);
+    }
+
+    /* SOCIAL LINKS */
+    .social-section {
+      text-align: center;
+      padding: 40px 20px;
+    }
+    .social-section a {
+      font-family: var(--font-heading);
+      font-size: 16px;
+      color: var(--dark-blue);
+      text-decoration: none;
+      margin: 0 16px;
+      letter-spacing: 0.1em;
+    }
+    .social-section a:hover { text-decoration: underline; }
+
+    /* TESTIMONIALS */
+    .testimonials {
+      padding: 60px 20px;
+      max-width: var(--site-width);
+      margin: 0 auto;
+    }
+    .testimonial-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 24px;
+    }
+    .testimonial-card {
+      background: var(--dark-blue);
+      padding: 40px 24px;
+      text-align: center;
+    }
+    .testimonial-card .avatar {
+      width: 80px;
+      height: 80px;
+      border-radius: 50%;
+      object-fit: cover;
+      margin-bottom: 16px;
+    }
+    .testimonial-card .avatar-placeholder {
+      width: 80px;
+      height: 80px;
+      border-radius: 50%;
+      background: rgba(255,255,255,0.2);
+      margin: 0 auto 16px;
+    }
+    .testimonial-card .name {
+      font-family: var(--font-heading);
+      font-size: 18px;
+      font-weight: 600;
+      color: var(--white);
+      margin-bottom: 4px;
+    }
+    .testimonial-card .role {
+      font-size: 14px;
+      color: rgba(255,255,255,0.7);
+      margin-bottom: 16px;
+    }
+    .testimonial-card .text {
+      font-size: 14px;
+      color: var(--white);
+      line-height: 1.6;
+    }
+
+    /* FINAL CTA */
+    .final-cta {
+      background: var(--dark-blue);
+      text-align: center;
+      padding: 60px 20px;
+    }
+    .final-cta h2 {
+      font-family: var(--font-heading);
+      font-size: 32px;
+      font-weight: 400;
+      color: var(--white);
+      letter-spacing: 0.1em;
+      margin-bottom: 24px;
+    }
+    .final-cta .btn-cta {
+      display: inline-block;
+      background: transparent;
+      color: var(--white);
+      font-family: var(--font-heading);
+      font-size: 20px;
+      padding: 16px 40px;
+      border: 2px solid var(--white);
+      text-decoration: none;
+      transition: all 0.2s;
+    }
+    .final-cta .btn-cta:hover {
+      background: var(--white);
+      color: var(--dark-blue);
+    }
+
+    /* FOOTER */
+    .site-footer {
+      text-align: center;
+      padding: 40px 20px;
+      font-size: 14px;
+      color: var(--text-gray);
+      border-top: 1px solid rgba(0,0,0,0.08);
+    }
+
+    /* RESPONSIVE */
+    @media (max-width: 768px) {
+      .hero h1 { font-size: 48px; }
+      .hero .subtitle { font-size: 14px; letter-spacing: 0.3em; }
+      .hero .tagline { font-size: 14px; letter-spacing: 0.15em; }
+      .hero .location { font-size: 18px; letter-spacing: 0.3em; }
+      
+      .pricing-skills { flex-direction: column; }
+      .image-col { min-height: 300px; }
+      .price-number { font-size: 72px; }
+      
+      .calm-section h2, .calm-section .calm-subtitle { font-size: 28px; }
+      
+      .become-section h2 { font-size: 22px; letter-spacing: 0.1em; }
+      .become-headshot { width: 280px; height: 280px; }
+      
+      .bio-section { flex-direction: column; }
+      .bio-image-col img { width: 100%; height: auto; }
+      .bio-text { margin-left: 0; font-size: 18px; }
+      
+      .learn-section h2 { font-size: 28px; letter-spacing: 0.1em; }
+      
+      .testimonial-grid { grid-template-columns: 1fr; }
+      
+      .nav-inner { flex-wrap: wrap; gap: 16px; }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Navigation -->
+  <nav class="site-nav">
+    <div class="nav-inner">
+      <a href="/">HOME</a>
+      <a href="/training" class="active">TRAINING</a>
+      <a href="/diving">DIVING</a>
+      <a href="/deliveries">DELIVERIES</a>
+    </div>
+  </nav>
+
+  <!-- Hero -->
+  <section class="hero">
+    <h1>TRAINING</h1>
+    <div class="subtitle">SAILOR SKILLS</div>
+    <div class="divider"></div>
+    <div class="tagline">INSTRUCTION FOR BOAT OWNERS</div>
+    <div class="location">SAN FRANCISCO BAY</div>
+  </section>
+
+  <!-- Pricing + Skills -->
+  <section class="pricing-skills">
+    <div class="pricing-col">
+      <div class="from-text">PROFESSIONAL SAIL AND POWER LESSONS FROM</div>
+      <div class="price-display">
+        <span class="price-dollar">$</span>
+        <span class="price-number">72</span>
+      </div>
+      <div class="price-per">per<br>hour</div>
+      
+      <div class="skills-divider"></div>
+      
+      <div class="skills-title">MASTER THESE SKILLS</div>
+      <div class="skills-list">
+        LINE HANDLING<br><br>
+        DOCKING AND DEPARTING<br><br>
+        EMERGENCY PROCEDURES<br><br>
+        LOCAL KNOWLEDGE<br><br>
+        COMMUNICATIONS<br><br>
+        SEAMANSHIP<br><br>
+        NAVIGATION<br><br>
+        AND MUCH MORE<br><br>
+        <span class="skills-serving">SERVING SAN FRANCISCO BAY</span>
+      </div>
+      
+      <div class="skills-divider"></div>
+      
+      <div class="includes-title">ALL LESSONS INCLUDE</div>
+      <div class="includes-list">
+        100% SATISFACTION GUARANTEE<br><br>
+        ONLINE LEARNING RESOURCES<br><br>
+        FREE CONSULTATION<br><br>
+        VESSEL INSPECTION<br><br>
+        READINESS CHECKLISTS<br><br>
+        EASY SCHEDULING
+      </div>
+      
+      <div class="cta-buttons">
+        <a href="https://sailorskills.com/book-now" class="btn-primary">BOOK A FREE CONSULTATION NOW ›</a>
+        <a href="/training#faq" class="btn-secondary">LEARN MORE ›</a>
+      </div>
+    </div>
+    <div class="image-col"></div>
+  </section>
+
+  <!-- Calm Confidence -->
+  <section class="calm-section">
+    <h2>EXPERIENCE CALM CONFIDENCE</h2>
+    <div class="calm-with">with</div>
+    <div class="calm-subtitle">CUSTOM SAILING LESSONS ABOARD YOUR OWN BOAT</div>
+  </section>
+
+  <!-- Become Section -->
+  <section class="become-section">
+    <h2>BECOME THE SKILLED BOAT OWNER YOU DESERVE TO BE</h2>
+    <a href="https://sailorskills.com/book-now" class="btn-cta">Book a Free Consultation</a>
+    <br>
+    <img src="/images/training/brian-headshot.png" alt="Instructor Brian Cline" class="become-headshot">
+  </section>
+
+  <!-- Bio Section -->
+  <section class="bio-section">
+    <div class="bio-image-col">
+      <img src="/images/training/brian-sailing.jpg" alt="Brian Cline with his dog Pocket Cruiser">
+      <p class="caption"><em>You'll probably get to meet </em>Pocket Cruiser<em> during our consultation</em></p>
+    </div>
+    <div class="bio-text">
+      <p>Over more than a decade of instructing, hundreds of students have entrusted me to develop their confidence as recreational and professional mariners in the most challenging conditions around.</p>
+      <br>
+      <p>From fundamental sailing skills to long-distance cruising, I specialize in calm, high-quality training tailored to your specific goals.</p>
+      <br>
+      <p class="signature">~ Brian Cline<br>
+      <span class="credentials">USCG Master, US SAILING Cruising Instructor</span></p>
+    </div>
+  </section>
+
+  <!-- Learn Your Way -->
+  <section class="learn-section">
+    <div class="section-divider"></div>
+    <h2>LEARN YOUR WAY</h2>
+    <div class="learn-features">
+      <div class="feature-title">Custom Lessons</div>
+      <div class="feature-desc">Tailored to you, your boat, and your goals. No big classes, no strangers.</div>
+      <div class="feature-title">Flexible Scheduling</div>
+      <div class="feature-desc">Lessons that fit your schedule</div>
+      <div class="feature-title">Singlehanding Skills</div>
+      <div class="feature-desc">The ultimate in self-reliance, rarely taught in schools</div>
+      <div class="feature-title">Online Resources</div>
+      <div class="feature-desc">Checklists, videos, how-to articles, training guides, and more</div>
+    </div>
+  </section>
+
+  <!-- Quote -->
+  <section class="quote-section">
+    <div class="quote-divider"></div>
+    <p class="quote-text">"You just solved 3 months of pain in 18 seconds."</p>
+    <p class="quote-author">- Andy Graham</p>
+  </section>
+
+  <!-- Sail Safely -->
+  <section class="cta-bar">
+    <h3>SAIL SAFELY WITH PERSONAL TRAINING</h3>
+  </section>
+  <section class="safely-section">
+    <p>Your training starts with a free 1-hour planning session and complimentary vessel inspection with me, certified instructor and licensed captain, Brian Cline. Together we'll discuss your goals, go over your vessel, and develop a plan that works for you. You'll leave this session knowing how to move forward in a practical, actionable way, and you'll know exactly what your boat needs, if anything, to be a safe, functional vessel.</p>
+    <p>Go ahead and book a free consultation for yourself. No expectations, no strings, and your satisfaction is guaranteed.</p>
+    <a href="https://sailorskills.com/book-now" class="btn-primary" style="margin-top: 16px;">Book a Free Consultation</a>
+  </section>
+
+  <!-- Social Links -->
+  <section class="social-section">
+    <a href="#">ARTICLES</a>
+    <a href="#">YOUTUBE</a>
+    <a href="#">FACEBOOK</a>
+  </section>
+
+  <!-- Testimonials -->
+  <section class="testimonials">
+    <div class="testimonial-grid">
+      <div class="testimonial-card">
+        <img src="/images/training/emily.jpg" alt="Emily Richards" class="avatar">
+        <div class="name">Emily Richards</div>
+        <div class="role">Film Producer</div>
+        <div class="text">Brian is the best kind of instructor there is. He quickly observed how I learned and adapted his style for me. He is extremely patient and incredibly knowledgeable about all aspects of sailing. The thing I loved the most about taking lessons with Brian is that I felt he had complete confidence in me. He allowed me to make (safe) mistakes and work through what went wrong, which is how I like to learn. I think the reason he was able to do so was that he was comfortable handling any situation that might come up! It was such a pleasure to learn from him and the experience added to my love of sailing!!</div>
+      </div>
+      <div class="testimonial-card">
+        <img src="/images/training/evan.jpg" alt="Evan McDonald" class="avatar">
+        <div class="name">Evan McDonald</div>
+        <div class="role">Three-time Bay Area Multihull Champion</div>
+        <div class="text">Brian is an effective teacher, with a style that builds confidence and mastery in his students. Unlike other teachers who tell you too exactly what to do, or don't assist when a student really needs help, Brian knows just how much to guide a student to maximize learning by doing. While teaching on the water, Brian will always intervene to ensure safety, but he also lets students make mistakes, and then patiently guides them, with gentle suggestions, to their own solutions and conclusions. Brian's students learn to be sailors who think for themselves and sail with confidence with a proper safety mindset.</div>
+      </div>
+      <div class="testimonial-card">
+        <img src="/images/training/aimee.png" alt="Aimee P" class="avatar">
+        <div class="name">Aimee P</div>
+        <div class="role">Adult Educator</div>
+        <div class="text">Brian is the most patient and skilled teacher I have met in all of my 37 years of any subject both in person and online. He is incredibly organized with his content and has a gift in quickly assessing which teaching methods are most compatible with each individual student's needs. I would highly recommend him for any student seeking sailing instruction. He is thorough and honest and makes learning really enjoyable and fun as well!</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Final CTA -->
+  <section class="final-cta">
+    <h2>Schedule a Free Consultation</h2>
+    <a href="https://sailorskills.com/book-now" class="btn-cta">Schedule Now</a>
+  </section>
+
+  <!-- Footer -->
+  <footer class="site-footer">
+    <p>2025 SAILOR SKILLS, LLC</p>
+  </footer>
+
+</body>
+</html>
