@@ -12,6 +12,7 @@ export default defineConfig({
         deliveries: resolve(__dirname, 'deliveries.html'),
         fireshift: resolve(__dirname, 'projects/fireshift.html'),
         'podcast-renamer': resolve(__dirname, 'projects/podcast-renamer.html'),
+        'training-faq': resolve(__dirname, 'training/faq.html'),
       },
     },
   },

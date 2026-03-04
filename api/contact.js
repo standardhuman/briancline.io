@@ -17,8 +17,8 @@ export default async function handler(req, res) {
 
   try {
     await resend.emails.send({
-      from: 'Brian Cline Site <onboarding@resend.dev>', // Update after verifying your domain
-      to: process.env.CONTACT_EMAIL || 'brian@sailorskills.com',
+      from: 'Brian Cline <detailing@sailorskills.com>',
+      to: 'standardhuman@gmail.com',
       replyTo: email,
       subject: `Contact from ${name} via briancline.co`,
       text: `Name: ${name}\nEmail: ${email}\n\nMessage:\n${message}`,

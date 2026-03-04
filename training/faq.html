@@ -1,0 +1,393 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="Frequently asked questions about sailing lessons on San Francisco Bay. Rates, booking, cancellation policy, insurance requirements. Brian Cline, USCG Master.">
+  <title>Training FAQ | Sailing Lessons | Brian Cline</title>
+  <link rel="icon" href="/images/sailorskills-logo.png" type="image/png">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;500;600;700&family=Assistant:wght@300;400;700&display=swap" rel="stylesheet">
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    
+    :root {
+      --dark-blue: rgb(52, 84, 117);
+      --button-blue: rgb(32, 85, 179);
+      --button-blue-hover: rgb(21, 57, 119);
+      --red-accent: #E21C21;
+      --text-dark: rgb(24, 24, 24);
+      --text-gray: rgb(82, 82, 82);
+      --white: #ffffff;
+      --site-width: 980px;
+      --font-heading: 'Montserrat', sans-serif;
+      --font-body: 'Montserrat', sans-serif;
+    }
+
+    html { scroll-behavior: smooth; }
+    body {
+      font-family: var(--font-body);
+      color: var(--text-dark);
+      -webkit-font-smoothing: antialiased;
+      -moz-osx-font-smoothing: grayscale;
+      background: var(--white);
+      line-height: 1.4;
+    }
+
+    /* NAV */
+    .site-nav {
+      background: var(--white);
+      border-bottom: 1px solid rgba(0,0,0,0.08);
+      position: sticky;
+      top: 0;
+      z-index: 100;
+    }
+    .nav-inner {
+      max-width: var(--site-width);
+      margin: 0 auto;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      padding: 16px 20px;
+      gap: 32px;
+    }
+    .nav-inner a {
+      font-family: var(--font-heading);
+      font-size: 14px;
+      font-weight: 400;
+      color: var(--text-dark);
+      text-decoration: none;
+      letter-spacing: 0.05em;
+      transition: color 0.2s;
+    }
+    .nav-inner a:hover { color: var(--button-blue); }
+    .nav-inner a.active { font-weight: 600; }
+
+    /* HERO HEADER */
+    .faq-hero {
+      background: var(--dark-blue);
+      text-align: center;
+      padding: 60px 20px;
+    }
+    .faq-hero h1 {
+      font-family: var(--font-heading);
+      font-size: 50px;
+      font-weight: 400;
+      color: var(--white);
+      letter-spacing: 0.1em;
+    }
+    .faq-hero .subtitle {
+      font-size: 20px;
+      color: var(--white);
+      letter-spacing: 0.7em;
+      margin-top: 8px;
+    }
+    .faq-hero .label {
+      font-size: 32px;
+      color: var(--white);
+      letter-spacing: 0.2em;
+      margin-top: 20px;
+    }
+    .faq-hero .faq-label {
+      font-size: 32px;
+      color: var(--white);
+      letter-spacing: 0.2em;
+      margin-top: 24px;
+    }
+
+    /* FAQ NAV */
+    .faq-nav {
+      background: var(--white);
+      text-align: center;
+      padding: 24px 20px;
+      border-bottom: 1px solid rgba(0,0,0,0.08);
+    }
+    .faq-nav a {
+      font-family: var(--font-heading);
+      font-size: 14px;
+      color: var(--dark-blue);
+      text-decoration: none;
+      margin: 0 12px;
+      letter-spacing: 0.05em;
+    }
+    .faq-nav a:hover { text-decoration: underline; }
+
+    /* FAQ CONTENT */
+    .faq-content {
+      max-width: 800px;
+      margin: 0 auto;
+      padding: 40px 20px 80px;
+    }
+    .faq-item {
+      margin-bottom: 48px;
+      scroll-margin-top: 80px;
+    }
+    .faq-item h3 {
+      font-family: var(--font-heading);
+      font-size: 40px;
+      font-weight: 400;
+      color: var(--dark-blue);
+      text-align: center;
+      margin-bottom: 16px;
+    }
+    .faq-item h4 {
+      font-family: var(--font-heading);
+      font-size: 28px;
+      font-weight: 600;
+      color: var(--dark-blue);
+      margin: 24px 0 8px;
+    }
+    .faq-item p {
+      font-size: 20px;
+      line-height: 1.5;
+      color: var(--text-dark);
+      margin-bottom: 12px;
+    }
+    .faq-item a {
+      color: var(--button-blue);
+      text-decoration: underline;
+    }
+    .faq-item strong { font-weight: 600; }
+    .faq-item em { font-style: italic; }
+    .faq-item ul {
+      margin: 12px 0 12px 40px;
+      font-size: 20px;
+      line-height: 1.5;
+    }
+    .faq-item ul li {
+      margin-bottom: 8px;
+    }
+    .faq-item .indent {
+      margin-left: 40px;
+    }
+
+    /* RATES TABLE */
+    .rate-table {
+      width: 100%;
+      border-collapse: collapse;
+      margin: 12px 0 24px;
+      font-size: 18px;
+    }
+    .rate-table td {
+      padding: 8px 12px;
+      border-bottom: 1px solid rgba(0,0,0,0.08);
+    }
+    .rate-table td:first-child { font-weight: 500; }
+
+    /* CTA BAR */
+    .cta-bar {
+      background: var(--dark-blue);
+      text-align: center;
+      padding: 60px 20px;
+    }
+    .cta-bar h3 {
+      font-family: var(--font-heading);
+      font-size: 28px;
+      font-weight: 400;
+      color: var(--white);
+      letter-spacing: 0.1em;
+      margin-bottom: 24px;
+    }
+    .btn-cta {
+      display: inline-block;
+      background: transparent;
+      color: var(--white);
+      font-family: var(--font-heading);
+      font-size: 20px;
+      padding: 16px 40px;
+      border: 2px solid var(--white);
+      text-decoration: none;
+      transition: all 0.2s;
+    }
+    .btn-cta:hover {
+      background: var(--white);
+      color: var(--dark-blue);
+    }
+
+    /* FOOTER */
+    .site-footer {
+      text-align: center;
+      padding: 40px 20px;
+      font-size: 14px;
+      color: var(--text-gray);
+      border-top: 1px solid rgba(0,0,0,0.08);
+    }
+
+    /* RESPONSIVE */
+    @media (max-width: 768px) {
+      .faq-hero h1 { font-size: 32px; }
+      .faq-hero .label { font-size: 22px; }
+      .faq-hero .faq-label { font-size: 22px; }
+      .faq-item h3 { font-size: 28px; }
+      .faq-item p { font-size: 18px; }
+      .nav-inner { flex-wrap: wrap; gap: 16px; }
+      .faq-nav a { display: inline-block; margin: 4px 8px; }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Navigation -->
+  <nav class="site-nav">
+    <div class="nav-inner">
+      <a href="https://briancline.co">HOME</a>
+      <a href="https://briancline.co/training" class="active">TRAINING</a>
+      <a href="https://sailorskills.com/diving">DIVING</a>
+      <a href="https://briancline.co/deliveries">DELIVERIES</a>
+      <a href="https://detailing.sailorskills.com">DETAILING</a>
+    </div>
+  </nav>
+
+  <!-- Hero Header -->
+  <section class="faq-hero">
+    <h1>TRAINING</h1>
+    <div class="subtitle">SAILOR SKILLS</div>
+    <div class="label">INSTRUCTION FOR BOAT OWNERS</div>
+    <div class="faq-label">F.A.Q.</div>
+  </section>
+
+  <!-- FAQ Navigation -->
+  <nav class="faq-nav">
+    <a href="#first-steps">First Steps</a>
+    <a href="#guarantee">Guarantee</a>
+    <a href="#duration">Duration</a>
+    <a href="#booking">Booking &amp; Cancellations</a>
+    <a href="#insurance">Insurance</a>
+    <a href="#rates">Rates</a>
+    <a href="#additional-people">Additional People</a>
+    <a href="#transfers">Transfers</a>
+    <a href="#expirations">Expirations</a>
+    <a href="#payment">Payment</a>
+  </nav>
+
+  <!-- FAQ Content -->
+  <div class="faq-content">
+
+    <div class="faq-item" id="first-steps">
+      <h3>What do I do first?</h3>
+      <p>Your training starts with <a href="mailto:brian@sailorskills.com?subject=Free%20Consultation%20Request">booking a free consultation</a>.</p>
+      <p>During this 1 hour session, we meet at your boat and get to know one another. I'll want to hear about your experience and your goals, and I'll answer any questions you might have. We'll also go over your boat, and I'll make you a list of any recommended improvements and equipment.</p>
+      <p>If we decide we'd like to work together, you'll receive an email from me containing a complete vessel assessment and training application. The Vessel Assessment will include any items specific to your vessel that need to be remedied prior to our first lesson, as well as recommended items. I'll also include the Pre-underway Checklist I use to evaluate every vessel prior to getting underway.</p>
+      <p>Get the ball rolling with <a href="mailto:brian@sailorskills.com?subject=Free%20Consultation%20Request">a free consultation</a>!</p>
+    </div>
+
+    <div class="faq-item" id="guarantee">
+      <h3>What if I don't like your instruction style?</h3>
+      <p>A perfectly reasonable concern. I want you to be happy with our time together, so I offer the following guarantee: Consider our first 3 hours of training together an evaluation period. If you aren't happy with your training and do not wish to continue, those 3 hours are on me. No charge and no hard feelings. Seriously.</p>
+    </div>
+
+    <div class="faq-item" id="duration">
+      <h3>How much training do I need to achieve my goals?</h3>
+      <p>Unsurprisingly, the answer is: <em>it depends</em>. This is one of the most asked questions, and for good reason: life is short! It's also one of the hardest questions to answer before we've sailed together. That's why I offer both an hour-long consultation followed by a guarantee-clad first 3-hours.</p>
+      <p>There's a reason the biggest package I offer is 4 days, which is also the maximum length I'll trust a weather forecast. It simply becomes too uncertain after that. After the first session, we'll both know more about what the next session should look like, and so on, and we'll be in constant conversation on this throughout.</p>
+    </div>
+
+    <div class="faq-item" id="booking">
+      <h3>How do I book or cancel a session?</h3>
+      <p>You can <a href="mailto:brian@sailorskills.com?subject=Free%20Consultation%20Request">book by emailing me</a>, and we'll find a time that works for both of us.</p>
+
+      <h4>Cancellations</h4>
+      <p>Email or text me to cancel or reschedule.</p>
+
+      <p><strong>Penalty-free Cancellations</strong></p>
+      <p>DECEMBER - MARCH: Cancel or reschedule a session for <em>any reason</em> up to <em>12 hours</em> prior to a session starting.</p>
+      <p>APRIL - NOVEMBER: Cancel or reschedule a session for <em>any reason</em> up to <em>48 hours</em> prior to a session starting.</p>
+
+      <p><strong>Cancellations Due to Wind</strong></p>
+      <p>You or I may cancel training at any time should either the observed or predicted weather conditions in an unavoidable portion of our training area exceed:</p>
+      <p>25 knots of sustained wind or<br>30 knots of gusting wind or<br>Air Quality Index of 100</p>
+      <p>In any of these cases, your training time will be pro-rated with no minimum.</p>
+
+      <p><strong>Cancellations Due to Rain</strong></p>
+      <p>The sail training industry typically doesn't accept rain as a valid reason for cancellation. It's just part of sailing. This is true, but there are good reasons to not be cold and wet when we have better days ahead. Not to mention learning tends to plummet when students are miserable. I'm not running a production operation here; my lessons cater to you. If you want to go out in the rain, we will and I'll be there for you 100%. If you prefer to book another time, we can do that instead.</p>
+
+      <p><strong>Cancellations due to Vessel, Equipment, and Crew Condition</strong></p>
+      <p>I reserve the right to terminate a training session at any time due to vessel, equipment, or crew unreadiness. Your training time will be pro-rated once we reach our port of origin with a minimum of 1 hour billed.</p>
+    </div>
+
+    <div class="faq-item" id="insurance">
+      <h3>Do I need insurance?</h3>
+      <p>You do need to have liability insurance at a minimum. If you've met your marina's requirements, you are probably covered. <strong>I require that I be added to your boat insurance as an additional insured or operator or captain prior to getting underway.</strong> Depending on your insurance company, this can be done online or with a phone call. Your carrier may request my experience and driver's license number; this information is included in my <a href="https://docs.google.com/document/d/e/2PACX-1vTeieV5lBw6z5WA5Gm21ViKZtEQl2ipbPnwqfGwX1wTFmKQ1KOT_h9rI8g29qZNVj-3P76phTU3Pwms/pub" target="_blank" rel="noopener">maritime résumé</a>, which you may share with your insurance company. Feel free to have them call me if needed.</p>
+      <p><strong>If your insurance carrier charges you for this</strong> ask them if they have an annual allowance for training. Many policies have an exception of 40 hours underway annually for an additional insured instructor at no cost.</p>
+    </div>
+
+    <div class="faq-item" id="rates">
+      <h3>What are your rates?</h3>
+      <p>I offer Single Day and Multi-Day Packages. Rates are independent of the number of students, so you can share with friends and save!</p>
+      <p><em>Add 3% to the below rates for credit card payments.</em></p>
+
+      <p><strong>Single Day Packages</strong></p>
+      <table class="rate-table">
+        <tr><td><strong>2 Hours</strong></td><td>$144 + tax</td></tr>
+        <tr><td><strong>Half-day</strong> (5 hours)</td><td>$360 + tax</td></tr>
+        <tr><td><strong>Full-day</strong> (7.5 hours)</td><td>$540 + tax</td></tr>
+      </table>
+
+      <p><strong>Multi-Day Packages</strong></p>
+      <table class="rate-table">
+        <tr><td><strong>Package A:</strong> 2 Full-days / 4 Half-days</td><td>$1,080 + tax</td></tr>
+        <tr><td><strong>Package B:</strong> 4 Full-days / 8 Half-days</td><td>$2,160 + tax</td></tr>
+      </table>
+    </div>
+
+    <div class="faq-item" id="additional-people">
+      <h3>Can I bring other people aboard during the lessons?</h3>
+      <p>Yes! There's no extra charge for additional people. I only ask that every person aboard completes the Training Application, which will be included in the email packet you'll receive after the free consultation. Keep me in the loop on what you are thinking, and together we can consider factors such as your crew objectives, time constraints, cockpit size, and layout.</p>
+    </div>
+
+    <div class="faq-item" id="transfers">
+      <h3>Can I transfer time to another person?</h3>
+      <p>Yes! You can designate anyone to be the recipient of lessons you've already purchased.</p>
+      <p>A transfer is training aboard any vessel other than the one inspected during the original consultation, or the original vessel without the original student aboard. A transfer is subject to the following terms:</p>
+      <ul>
+        <li>The recipient completes a 1-hour consultation and vessel assessment. This assessment costs $100 or one hour from the purchased lessons.</li>
+        <li>The recipient completes the Training Application</li>
+        <li>The recipient's vessel meets the required items from the Pre-Underway Checklist</li>
+        <li>The vessel and recipient are approved by your instructor</li>
+        <li>Your instructor is added to the vessel's insurance</li>
+        <li>All other original terms have been met</li>
+      </ul>
+    </div>
+
+    <div class="faq-item" id="expirations">
+      <h3>Do the training hours expire?</h3>
+      <p>I recognize that life happens and your ability to get all of your purchased training may be affected by factors beyond your control, including my availability (it hasn't happened yet!). So, I offer one calendar year from the date of purchase to use the lessons you have paid for. After one year, I may opt to void the remaining time and offer to refund any unused time at 30% of the purchased value.</p>
+      <p>Note: This hasn't even come close to happening yet. Also, it's common to underestimate how quickly even 4 days can pass, as well as how quickly you may progress.</p>
+    </div>
+
+    <div class="faq-item" id="payment">
+      <h3>How do I pay?</h3>
+
+      <p><strong>When to pay</strong></p>
+      <p><em>For Training:</em></p>
+      <p>After the first 3 hours of training, you may choose one of the following:</p>
+      <p class="indent">1. Pay for your current session.</p>
+      <p class="indent">2. Purchase a Multi-Day package. Your current session will count towards your package of choice.</p>
+      <p class="indent">3. Bump elbows and pay nothing (see my <a href="#guarantee">guarantee</a> above).</p>
+
+      <p><em>For Deliveries and Overnight Voyages</em></p>
+      <p>Payment in full is to be made upon completion of the voyage. The completion of the voyage is determined solely by the captain.</p>
+
+      <p><strong>How to pay</strong></p>
+      <p>Payment is made in person. There is a 10% discount for payment in cash, but I also accept electronic payment via virtually every platform (Paypal, Venmo, Zelle, credit cards, etc).</p>
+      <p><em>Please add 3% to credit card payments.</em></p>
+      <p>Please don't hesitate to contact me at <a href="mailto:brian@sailorskills.com">brian@sailorskills.com</a> with any questions or comments.</p>
+    </div>
+
+  </div>
+
+  <!-- Final CTA -->
+  <section class="cta-bar">
+    <h3>Schedule a Free Consultation</h3>
+    <a href="mailto:brian@sailorskills.com?subject=Free%20Consultation%20Request" class="btn-cta">Schedule Now</a>
+    <p style="font-size: 13px; color: rgba(255,255,255,0.7); margin-top: 8px;">Email me to schedule your free consultation</p>
+  </section>
+
+  <!-- Footer -->
+  <footer class="site-footer">
+    <p>2025 SAILOR SKILLS, LLC</p>
+  </footer>
+
+</body>
+</html>

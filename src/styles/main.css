@@ -25,6 +25,7 @@ section {
 .project-card:hover {
   transform: translateY(-4px);
   box-shadow: 0 8px 24px rgba(0, 0, 0, 0.08);
+  border-color: #00bcd4;
 }
 
 /* Focus card - SailorSkills highlight */
@@ -101,6 +102,7 @@ a.project-card::after {
 
 a.project-card:hover::after {
   opacity: 1;
+  color: #00bcd4;
 }
 
 a.project-card {
@@ -123,7 +125,8 @@ a:hover .link-arrow {
    ───────────────────────────────────────────────── */
 input:focus,
 textarea:focus {
-  box-shadow: 0 0 0 3px rgba(17, 24, 39, 0.1);
+  box-shadow: 0 0 0 3px rgba(0, 188, 212, 0.2);
+  border-color: #00bcd4;
 }
 
 /* ─────────────────────────────────────────────────
@@ -167,6 +170,7 @@ textarea:focus {
 
 .social-icon:hover {
   transform: translateY(-2px);
+  color: #00bcd4 !important;
 }
 
 /* ─────────────────────────────────────────────────
@@ -177,7 +181,7 @@ textarea:focus {
 .section-label {
   display: inline-block;
   padding-bottom: 0.5rem;
-  border-bottom: 2px solid #111827;
+  border-bottom: 2px solid #00bcd4;
 }
 
 /* Prose styling for background section */
@@ -188,7 +192,7 @@ textarea:focus {
 .prose p:first-of-type::first-letter {
   font-size: 1.5em;
   font-weight: 600;
-  color: #111827;
+  color: #00bcd4;
 }
 
 /* ─────────────────────────────────────────────────
