@@ -24,7 +24,7 @@ const POWER_MULTI_SURCHARGE = 1.70;
 const MIN_CHARGE = 99;
 
 // Per-sq-ft rates
-const WASH_RATE = 0.40;
+const WASH_RATE = 1.40;
 const POLISH_RATE = 1.20;
 const SPRING_WASH_RATE = 0.84;
 
