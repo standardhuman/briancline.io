@@ -37,7 +37,7 @@ const ESTIMATE_API_URL = "/api/detailing-estimate";
 
 function EstimateForm() {
   const [form, setForm] = useState({
-    name: "", email: "", marina: "", boatName: "", boatLength: "",
+    name: "", email: "", phone: "", marina: "", dockSlip: "", boatName: "", boatLength: "",
     services: [], notes: "",
   });
   const [submitting, setSubmitting] = useState(false);
@@ -68,7 +68,9 @@ function EstimateForm() {
         body: JSON.stringify({
           name: form.name,
           email: form.email,
+          phone: form.phone,
           marina: form.marina,
+          dockSlip: form.dockSlip,
           boatName: form.boatName,
           boatLength: form.boatLength,
           services: form.services.join(", "),
@@ -104,7 +106,9 @@ function EstimateForm() {
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             <div><Label>Name *</Label><Input required value={form.name} onChange={updateField("name")} /></div>
             <div><Label>Email *</Label><Input type="email" required value={form.email} onChange={updateField("email")} /></div>
+            <div><Label>Phone</Label><Input type="tel" value={form.phone} onChange={updateField("phone")} placeholder="(510) 555-1234" /></div>
             <div><Label>Marina</Label><Input value={form.marina} onChange={updateField("marina")} placeholder="e.g. Berkeley Marina" /></div>
+            <div><Label>Dock / Slip #</Label><Input value={form.dockSlip} onChange={updateField("dockSlip")} placeholder="e.g. F-12" /></div>
             <div><Label>Boat Name</Label><Input value={form.boatName} onChange={updateField("boatName")} /></div>
             <div><Label>Boat Length (ft)</Label><Input type="number" value={form.boatLength} onChange={updateField("boatLength")} /></div>
           </div>
