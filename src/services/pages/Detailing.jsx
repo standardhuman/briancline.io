@@ -21,7 +21,7 @@ const SAIL_SHAPE = 0.70;
 const POWER_SHAPE = 0.85;
 const POWER_SINGLE_SURCHARGE = 1.35;
 const POWER_MULTI_SURCHARGE = 1.70;
-const MIN_CHARGE = 75;
+const MIN_CHARGE = 99;
 
 // Per-sq-ft rates
 const WASH_RATE = 0.40;
