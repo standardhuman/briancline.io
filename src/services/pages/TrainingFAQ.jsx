@@ -31,7 +31,7 @@ Multi-Day: Package A — 2 Full-days / 4 Half-days for $1,080 + tax (save $120) 
   },
   {
     q: "How do I book or cancel a session?",
-    a: "Email me to set up your first session. You and I will both receive a confirmation. For cancellations or reschedules, email or text me.",
+    a: "Use the scheduling link on this page to book a free consultation or your first session — you'll pick a time that works and we'll both get a confirmation. For cancellations or reschedules, email or text me.",
   },
   {
     q: "What's the cancellation policy?",
@@ -99,7 +99,7 @@ export default function TrainingFAQ() {
         title="Ready to Get Started?"
         subtitle="Book a free consultation — no obligation."
         buttonText="Schedule a Consultation"
-        href="mailto:brian@briancline.co?subject=Sailing%20Lessons%20-%20Free%20Consultation"
+        href="https://schedule.briancline.co/connect"
       />
     </div>
   );

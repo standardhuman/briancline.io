@@ -49,7 +49,7 @@ export default function Training() {
         subtitle="One-on-one instruction on your boat, tailored to your goals. No group classes, no strangers — just you, your boat, and a decade of teaching experience."
         credentials="USCG Licensed Master · US Sailing Cruising Instructor"
         cta="Book a Free Consultation"
-        ctaHref="mailto:brian@briancline.co?subject=Sailing%20Lessons%20-%20Free%20Consultation"
+        ctaHref="https://schedule.briancline.co/connect"
       />
 
       {/* The Approach */}
@@ -187,7 +187,7 @@ export default function Training() {
         title="Schedule Your Free Consultation"
         subtitle="Tell me about your boat and what you'd like to learn. No obligation."
         buttonText="Get Started"
-        href="mailto:brian@briancline.co?subject=Sailing%20Lessons%20-%20Free%20Consultation"
+        href="https://schedule.briancline.co/connect"
       />
     </div>
   );
