@@ -18,6 +18,7 @@ const services = [
   { icon: Droplets, label: "Wash & Dry", desc: "Complete exterior wash, deck scrub, and dry" },
   { icon: Sparkles, label: "Polish & Wax", desc: "Restore shine and UV protection" },
   { icon: Shield, label: "Metal Polishing", desc: "Stainless steel, aluminum, chrome brightwork" },
+  { label: "Gelcoat & Paint Repair", desc: "Chips, cracks, scratches, and color matching" },
   { label: "Gelcoat Stain Removal", desc: "Waterline stains, rust, oxidation" },
   { label: "Decal Removal", desc: "Clean removal without surface damage" },
   { label: "Teak & Brightwork", desc: "Cleaning, oiling, or varnish renewal" },
@@ -27,6 +28,7 @@ const serviceCheckboxes = [
   "Wash & Dry",
   "Polish & Wax",
   "Metal Polishing",
+  "Gelcoat & Paint Repair",
   "Gelcoat Stain Removal",
   "Complete Detailing",
   "Teak / Brightwork",
@@ -154,7 +156,7 @@ export default function Detailing() {
       <PageHero
         title="Boat Detailing"
         subtitle="Above-the-waterline care for your boat. Wash, polish, wax, metal work, and brightwork — done right, on the East Bay."
-        price="From $5.00/ft"
+        price=""
         credentials="Serving Berkeley, Emeryville, Richmond, and Oakland marinas"
         cta="Get an Estimate"
         ctaHref="#estimate"
