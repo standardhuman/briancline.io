@@ -101,8 +101,7 @@ const LAST_CLEANED = [
 ];
 
 const SERVICE_LIST = [
-  "recurring_cleaning",
-  "onetime_cleaning",
+  "cleaning",
   "underwater_inspection",
   "item_recovery",
   "propeller_service",
@@ -196,7 +195,7 @@ function InputCard({ icon: Icon, title, description, children, visible = true })
 }
 
 // ── Estimate Card ──
-function EstimateCard({ estimate, boatLength, boatType, frequency, serviceKey }) {
+function EstimateCard({ estimate, boatLength, boatType, hullType, frequency, serviceKey }) {
   const navigate = useNavigate();
   const service = SERVICES[serviceKey];
 
@@ -290,7 +289,7 @@ function EstimateCard({ estimate, boatLength, boatType, frequency, serviceKey })
 
 // ── Main Page ──
 export default function Diving() {
-  const [serviceKey, setServiceKey] = useState("recurring_cleaning");
+  const [serviceKey, setServiceKey] = useState("cleaning");
   const [boatLength, setBoatLength] = useState(35);
   const [boatType, setBoatType] = useState("sailboat");
   const [hullType, setHullType] = useState("monohull");
@@ -350,7 +349,6 @@ export default function Diving() {
                       onClick={() => setServiceKey(key)}
                     >
                       <div className="font-medium text-sm leading-tight">{svc.name}</div>
-                      <div className="text-xs text-teal-600 font-medium mt-1">{svc.priceLabel}</div>
                     </OptionButton>
                   );
                 })}
@@ -488,6 +486,7 @@ export default function Diving() {
                 estimate={estimate}
                 boatLength={boatLength}
                 boatType={boatType}
+                hullType={hullType}
                 frequency={frequency}
                 serviceKey={serviceKey}
               />
