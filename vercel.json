@@ -1,12 +1,12 @@
 {
   "cleanUrls": true,
   "rewrites": [
-    { "source": "/diving", "destination": "/services.html" },
-    { "source": "/diving/calculator", "destination": "/services.html" },
-    { "source": "/detailing", "destination": "/services.html" },
-    { "source": "/training", "destination": "/services.html" },
-    { "source": "/training/faq", "destination": "/services.html" },
-    { "source": "/deliveries", "destination": "/services.html" }
+    { "source": "/diving", "destination": "/services" },
+    { "source": "/diving/calculator", "destination": "/services" },
+    { "source": "/detailing", "destination": "/services" },
+    { "source": "/training", "destination": "/services" },
+    { "source": "/training/faq", "destination": "/services" },
+    { "source": "/deliveries", "destination": "/services" }
   ],
   "redirects": [
     {
