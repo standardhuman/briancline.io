@@ -18,7 +18,7 @@ export default async function handler(req, res) {
   try {
     await resend.emails.send({
       from: 'Brian Cline <detailing@sailorskills.com>',
-      to: 'brian@briancline.co',
+      to: 'standardhuman@gmail.com',
       replyTo: email,
       subject: `Detailing Estimate Request — ${name}${boatName ? ` (${boatName})` : ''}`,
       text: [
