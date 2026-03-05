@@ -48,9 +48,9 @@ const BOAT_TYPE_ICONS = {
 // ── Options ──
 const BOAT_TYPES = [
   { value: "sailboat", label: "Sailboat" },
-  { value: "powerboat", label: "Powerboat", badge: "+25%" },
-  { value: "catamaran", label: "Catamaran", badge: "+25%" },
-  { value: "trimaran", label: "Trimaran", badge: "+50%" },
+  { value: "powerboat", label: "Powerboat" },
+  { value: "catamaran", label: "Catamaran" },
+  { value: "trimaran", label: "Trimaran" },
 ];
 
 const FREQUENCIES = [
@@ -60,9 +60,10 @@ const FREQUENCIES = [
 ];
 
 const PROPELLERS = [
-  { value: 1, label: "1", desc: "Standard" },
-  { value: 2, label: "2", desc: "+10%" },
-  { value: 3, label: "3", desc: "+20%" },
+  { value: 1, label: "1" },
+  { value: 2, label: "2" },
+  { value: 3, label: "3" },
+  { value: 4, label: "4" },
 ];
 
 const PAINT_AGES = [
