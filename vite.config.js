@@ -16,12 +16,8 @@ export default defineConfig({
       input: {
         main: resolve(__dirname, 'index.html'),
         services: resolve(__dirname, 'services.html'),
-        diving: resolve(__dirname, 'diving.html'),
-        training: resolve(__dirname, 'training.html'),
-        deliveries: resolve(__dirname, 'deliveries.html'),
         fireshift: resolve(__dirname, 'projects/fireshift.html'),
         'podcast-renamer': resolve(__dirname, 'projects/podcast-renamer.html'),
-        'training-faq': resolve(__dirname, 'training/faq.html'),
       },
     },
   },
