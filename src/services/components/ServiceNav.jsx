@@ -18,9 +18,10 @@ export default function ServiceNav() {
     <nav className="fixed top-0 left-0 right-0 bg-white/95 backdrop-blur-sm z-50 border-b border-gray-100">
       <div className="max-w-6xl mx-auto px-6 py-3 flex items-center justify-between">
         {/* Logo */}
-        <a href="/" className="text-lg font-bold text-gray-900" style={{ letterSpacing: "-0.02em" }}>
+        <a href="/" className="flex items-baseline gap-1.5 text-lg font-bold text-gray-900" style={{ letterSpacing: "-0.02em" }}>
           <span className="md:hidden">bc<span style={{ color: "#0073a8", fontSize: "1.4em", lineHeight: 0, position: "relative", top: "0.05em" }}>.</span></span>
           <span className="hidden md:inline">briancline<span style={{ color: "#0073a8" }}>.</span>co</span>
+          <span className="text-xs font-medium tracking-wide uppercase text-gray-400">marine</span>
         </a>
 
         {/* Desktop Nav */}
