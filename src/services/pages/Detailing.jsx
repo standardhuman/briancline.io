@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useMemo } from "react";
 import PageHero from "../components/PageHero";
 import PageCTA from "../components/PageCTA";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "../components/ui/card";
@@ -7,234 +7,386 @@ import { Input } from "../components/ui/input";
 import { Label } from "../components/ui/label";
 import { Textarea } from "../components/ui/textarea";
 import { Checkbox } from "../components/ui/checkbox";
-import { Badge } from "../components/ui/badge";
 import {
   Sparkles, Droplets, Shield, Camera, MessageSquare,
-  CheckCircle2, Send, Zap, Ship, Sailboat,
+  CheckCircle2, Send, Ship, Sailboat, TreePine,
 } from "lucide-react";
 import PageMeta from "../components/PageMeta";
 
-const services = [
-  { icon: Droplets, label: "Wash & Dry", desc: "Complete exterior wash, deck scrub, and dry" },
-  { icon: Sparkles, label: "Polish & Wax", desc: "Restore shine and UV protection" },
-  { icon: Shield, label: "Metal Polishing", desc: "Stainless steel, aluminum, chrome brightwork" },
-  { label: "Gelcoat & Paint Repair", desc: "Chips, cracks, scratches, and color matching" },
-  { label: "Gelcoat Stain Removal", desc: "Waterline stains, rust, oxidation" },
-  { label: "Decal Removal", desc: "Clean removal without surface damage" },
-  { label: "Teak & Brightwork", desc: "Cleaning, oiling, or varnish renewal" },
-];
+/* ═══════════════════════════════════════════
+   Pricing Engine
+   ═══════════════════════════════════════════ */
 
-const serviceCheckboxes = [
-  "Wash & Dry",
-  "Polish & Wax",
-  "Metal Polishing",
-  "Gelcoat & Paint Repair",
-  "Gelcoat Stain Removal",
-  "Complete Detailing",
-  "Teak / Brightwork",
-  "Other",
-];
-
-/* ── Spring Pressure Wash Calculator ── */
-
-const RATE_PER_SQFT = 0.84;
+const SAIL_SHAPE = 0.70;
+const POWER_SHAPE = 0.85;
+const POWER_SINGLE_SURCHARGE = 1.35;
+const POWER_MULTI_SURCHARGE = 1.70;
 const MIN_CHARGE = 75;
-const POWERBOAT_SINGLE_SURCHARGE = 1.35;
-const POWERBOAT_MULTI_SURCHARGE = 1.70;
-const SAIL_SHAPE_FACTOR = 0.70;
-const POWER_SHAPE_FACTOR = 0.85;
 
-function calcSpringWashPrice(length, beam, boatType, multiDeck) {
-  if (!length || !beam) return null;
+// Per-sq-ft rates
+const WASH_RATE = 0.40;
+const POLISH_RATE = 1.20;
+const SPRING_WASH_RATE = 0.84;
+
+// Metal polishing per-foot
+const METAL_SAIL_PER_FT = 2.50;
+const METAL_POWER_PER_FT = 1.80;
+
+// Oxidation multipliers
+const OXIDATION = {
+  "lt6mo": { label: "Less than 6 months", mult: 1.0 },
+  "6to12": { label: "6–12 months", mult: 1.3 },
+  "1to2yr": { label: "1–2 years", mult: 1.7 },
+  "2plus": { label: "2+ years", mult: 2.2 },
+  "never": { label: "Never / don't know", mult: 2.2 },
+};
+
+function getArea(length, beam, boatType) {
   const l = parseFloat(length);
   const b = parseFloat(beam);
-  if (l <= 0 || b <= 0) return null;
-
-  const shapeFactor = boatType === "power" ? POWER_SHAPE_FACTOR : SAIL_SHAPE_FACTOR;
-  const area = l * b * shapeFactor;
-  let price = area * RATE_PER_SQFT;
-
-  if (boatType === "power") {
-    price *= multiDeck ? POWERBOAT_MULTI_SURCHARGE : POWERBOAT_SINGLE_SURCHARGE;
-  }
-
-  return Math.max(MIN_CHARGE, Math.round(price));
+  if (!l || !b || l <= 0 || b <= 0) return null;
+  return l * b * (boatType === "power" ? POWER_SHAPE : SAIL_SHAPE);
 }
 
-function SpringSpecial() {
-  const [length, setLength] = useState("");
-  const [beam, setBeam] = useState("");
+function getPowerMult(boatType, multiDeck) {
+  if (boatType !== "power") return 1;
+  return multiDeck ? POWER_MULTI_SURCHARGE : POWER_SINGLE_SURCHARGE;
+}
+
+function calcLineItems({ length, beam, boatType, multiDeck, services, oxidation }) {
+  const area = getArea(length, beam, boatType);
+  if (!area) return null;
+
+  const l = parseFloat(length);
+  const pMult = getPowerMult(boatType, multiDeck);
+  const items = [];
+
+  if (services.springWash) {
+    items.push({
+      label: "🌿 Spring Pressure Wash",
+      desc: "Includes dock box & dock cleaning",
+      price: Math.max(MIN_CHARGE, Math.round(area * SPRING_WASH_RATE * pMult)),
+    });
+  }
+
+  if (services.washDry) {
+    items.push({
+      label: "Wash & Dry",
+      desc: "Complete exterior wash, deck scrub, dry",
+      price: Math.max(MIN_CHARGE, Math.round(area * WASH_RATE * pMult)),
+    });
+  }
+
+  if (services.polishWax) {
+    const oxMult = OXIDATION[oxidation]?.mult || 1.0;
+    items.push({
+      label: "Polish & Wax",
+      desc: `Includes gelcoat stain & oxidation removal (${OXIDATION[oxidation]?.label || "—"})`,
+      price: Math.max(MIN_CHARGE, Math.round(area * POLISH_RATE * oxMult * pMult)),
+    });
+  }
+
+  if (services.metal) {
+    const rate = boatType === "power" ? METAL_POWER_PER_FT : METAL_SAIL_PER_FT;
+    items.push({
+      label: "Metal Polishing",
+      desc: "Stainless, aluminum, chrome brightwork",
+      price: Math.max(MIN_CHARGE, Math.round(l * rate)),
+    });
+  }
+
+  if (services.teak) {
+    items.push({
+      label: "Teak & Brightwork",
+      desc: "Quoted on-site — varies by scope",
+      price: null,
+    });
+  }
+
+  return items;
+}
+
+/* ═══════════════════════════════════════════
+   Toggle Button Component
+   ═══════════════════════════════════════════ */
+
+function Toggle({ active, onClick, children, className = "" }) {
+  return (
+    <button
+      type="button"
+      onClick={onClick}
+      className={`px-4 py-3 rounded-lg border-2 text-sm font-medium transition-all ${
+        active
+          ? "border-primary bg-primary/5 text-primary"
+          : "border-gray-200 text-gray-600 hover:border-gray-300"
+      } ${className}`}
+    >
+      {children}
+    </button>
+  );
+}
+
+/* ═══════════════════════════════════════════
+   Detailing Estimator
+   ═══════════════════════════════════════════ */
+
+function DetailingEstimator() {
+  // Boat info
   const [boatType, setBoatType] = useState("sail");
   const [multiDeck, setMultiDeck] = useState(false);
+  const [length, setLength] = useState("");
+  const [beam, setBeam] = useState("");
 
-  const price = calcSpringWashPrice(length, beam, boatType, multiDeck);
+  // Services
+  const [services, setServices] = useState({
+    springWash: false,
+    washDry: true,
+    polishWax: false,
+    metal: false,
+    teak: false,
+  });
+
+  // Oxidation (only matters if polishWax is on)
+  const [oxidation, setOxidation] = useState("6to12");
+
+  function toggleSvc(key) {
+    setServices((s) => ({ ...s, [key]: !s[key] }));
+  }
+
+  const lineItems = useMemo(
+    () => calcLineItems({ length, beam, boatType, multiDeck, services, oxidation }),
+    [length, beam, boatType, multiDeck, services, oxidation]
+  );
+
+  const pricedItems = lineItems?.filter((i) => i.price !== null) || [];
+  const total = pricedItems.reduce((sum, i) => sum + i.price, 0);
+  const hasTeak = services.teak;
+  const hasAnyService = Object.values(services).some(Boolean);
+  const hasDimensions = lineItems !== null;
 
   return (
-    <section className="py-12 md:py-16" id="spring-special">
-      <div className="max-w-4xl mx-auto px-6">
-        <Card className="overflow-hidden border-0 shadow-xl">
-          {/* Banner header */}
-          <div className="bg-gradient-to-r from-emerald-600 to-teal-500 px-6 py-5 md:px-8">
-            <div className="flex items-center gap-3 mb-1">
-              <span className="text-2xl">🌿</span>
-              <h2 className="text-2xl md:text-3xl font-bold text-white">Spring Pressure Wash Special</h2>
-            </div>
-            <p className="text-emerald-50 text-sm md:text-base ml-11">
-              Blast off the winter grime, algae, and green buildup. Dock box &amp; dock cleaning included.
-            </p>
-          </div>
+    <section className="py-12 md:py-20" id="estimator">
+      <div className="max-w-5xl mx-auto px-6">
+        <div className="text-center mb-10">
+          <h2 className="text-3xl md:text-4xl font-bold text-foreground mb-3">Build Your Estimate</h2>
+          <p className="text-gray-600 max-w-2xl mx-auto">
+            Pick your services, enter your boat's dimensions, and get an instant ballpark.
+            Final pricing after an in-person walkthrough — estimates here are typically the same or lower.
+          </p>
+        </div>
 
-          <CardContent className="p-6 md:p-8">
-            <div className="grid md:grid-cols-2 gap-8">
-              {/* Left: inputs */}
-              <div className="space-y-5">
-                <h3 className="font-semibold text-foreground text-lg">Get your price</h3>
+        <div className="grid lg:grid-cols-5 gap-8">
+          {/* ── Left column: inputs (3/5) ── */}
+          <div className="lg:col-span-3 space-y-8">
 
-                {/* Boat type toggle */}
-                <div>
-                  <Label className="mb-2 block text-sm">Boat Type</Label>
-                  <div className="flex gap-2">
-                    <button
-                      type="button"
-                      onClick={() => { setBoatType("sail"); setMultiDeck(false); }}
-                      className={`flex-1 flex items-center justify-center gap-2 px-4 py-3 rounded-lg border-2 text-sm font-medium transition-all ${
-                        boatType === "sail"
-                          ? "border-emerald-500 bg-emerald-50 text-emerald-700"
-                          : "border-gray-200 text-gray-600 hover:border-gray-300"
-                      }`}
-                    >
-                      <Sailboat className="w-5 h-5" />
-                      Sailboat
-                    </button>
-                    <button
-                      type="button"
-                      onClick={() => setBoatType("power")}
-                      className={`flex-1 flex items-center justify-center gap-2 px-4 py-3 rounded-lg border-2 text-sm font-medium transition-all ${
-                        boatType === "power"
-                          ? "border-emerald-500 bg-emerald-50 text-emerald-700"
-                          : "border-gray-200 text-gray-600 hover:border-gray-300"
-                      }`}
-                    >
-                      <Ship className="w-5 h-5" />
-                      Powerboat
-                    </button>
-                  </div>
+            {/* Boat Type */}
+            <Card>
+              <CardContent className="p-5 space-y-4">
+                <Label className="text-base font-semibold block">Your Boat</Label>
+                <div className="flex gap-2">
+                  <Toggle
+                    active={boatType === "sail"}
+                    onClick={() => { setBoatType("sail"); setMultiDeck(false); }}
+                    className="flex-1 flex items-center justify-center gap-2"
+                  >
+                    <Sailboat className="w-5 h-5" /> Sailboat
+                  </Toggle>
+                  <Toggle
+                    active={boatType === "power"}
+                    onClick={() => setBoatType("power")}
+                    className="flex-1 flex items-center justify-center gap-2"
+                  >
+                    <Ship className="w-5 h-5" /> Powerboat
+                  </Toggle>
                 </div>
 
-                {/* Multi-deck toggle (powerboat only) */}
                 {boatType === "power" && (
-                  <div>
-                    <Label className="mb-2 block text-sm">Decks</Label>
-                    <div className="flex gap-2">
-                      <button
-                        type="button"
-                        onClick={() => setMultiDeck(false)}
-                        className={`flex-1 px-4 py-3 rounded-lg border-2 text-sm font-medium transition-all ${
-                          !multiDeck
-                            ? "border-emerald-500 bg-emerald-50 text-emerald-700"
-                            : "border-gray-200 text-gray-600 hover:border-gray-300"
-                        }`}
-                      >
-                        Single Deck
-                      </button>
-                      <button
-                        type="button"
-                        onClick={() => setMultiDeck(true)}
-                        className={`flex-1 px-4 py-3 rounded-lg border-2 text-sm font-medium transition-all ${
-                          multiDeck
-                            ? "border-emerald-500 bg-emerald-50 text-emerald-700"
-                            : "border-gray-200 text-gray-600 hover:border-gray-300"
-                        }`}
-                      >
-                        Flybridge / Multi-Deck
-                      </button>
-                    </div>
+                  <div className="flex gap-2">
+                    <Toggle active={!multiDeck} onClick={() => setMultiDeck(false)} className="flex-1">
+                      Single Deck
+                    </Toggle>
+                    <Toggle active={multiDeck} onClick={() => setMultiDeck(true)} className="flex-1">
+                      Flybridge / Multi-Deck
+                    </Toggle>
                   </div>
                 )}
 
-                {/* Dimensions */}
                 <div className="grid grid-cols-2 gap-4">
                   <div>
-                    <Label className="mb-1 block text-sm">Length (ft)</Label>
-                    <Input
-                      type="number"
-                      min="10"
-                      max="100"
-                      value={length}
-                      onChange={(e) => setLength(e.target.value)}
-                      placeholder="e.g. 32"
-                    />
-                    <p className="text-xs text-gray-400 mt-1">Model name length (e.g. Dana 24 = 24)</p>
+                    <Label className="text-sm mb-1 block">Length (ft)</Label>
+                    <Input type="number" min="10" max="100" value={length} onChange={(e) => setLength(e.target.value)} placeholder="e.g. 32" />
+                    <p className="text-xs text-gray-400 mt-1">Model name length</p>
                   </div>
                   <div>
-                    <Label className="mb-1 block text-sm">Beam (ft)</Label>
-                    <Input
-                      type="number"
-                      min="4"
-                      max="30"
-                      value={beam}
-                      onChange={(e) => setBeam(e.target.value)}
-                      placeholder="e.g. 10"
-                    />
-                    <p className="text-xs text-gray-400 mt-1">Widest point of the hull</p>
+                    <Label className="text-sm mb-1 block">Beam (ft)</Label>
+                    <Input type="number" min="4" max="30" value={beam} onChange={(e) => setBeam(e.target.value)} placeholder="e.g. 10" />
+                    <p className="text-xs text-gray-400 mt-1">Widest point of hull</p>
                   </div>
                 </div>
-              </div>
+              </CardContent>
+            </Card>
 
-              {/* Right: price display */}
-              <div className="flex flex-col items-center justify-center">
-                <div className="text-center p-6 rounded-2xl bg-gradient-to-br from-emerald-50 to-teal-50 w-full">
-                  {price !== null ? (
-                    <>
-                      <p className="text-sm text-gray-500 mb-1">Your price</p>
-                      <p className="text-5xl font-bold text-emerald-600">${price}</p>
-                      <p className="text-sm text-gray-500 mt-2">One-time spring cleaning</p>
-                    </>
-                  ) : (
-                    <>
-                      <p className="text-sm text-gray-500 mb-1">Enter your boat's dimensions</p>
-                      <p className="text-4xl font-bold text-gray-300">$—</p>
-                      <p className="text-sm text-gray-400 mt-2">Instant pricing, no surprises</p>
-                    </>
-                  )}
-                </div>
+            {/* Services */}
+            <Card>
+              <CardContent className="p-5 space-y-3">
+                <Label className="text-base font-semibold block">Services</Label>
 
-                <div className="mt-4 space-y-2 text-sm text-gray-600 w-full">
-                  <div className="flex items-center gap-2">
-                    <CheckCircle2 className="w-4 h-4 text-emerald-500 flex-shrink-0" />
-                    <span>Full pressure wash — deck, hull topsides, cockpit</span>
+                {/* Spring Special — featured */}
+                <button
+                  type="button"
+                  onClick={() => toggleSvc("springWash")}
+                  className={`w-full text-left p-4 rounded-lg border-2 transition-all ${
+                    services.springWash
+                      ? "border-emerald-500 bg-emerald-50"
+                      : "border-gray-200 hover:border-gray-300"
+                  }`}
+                >
+                  <div className="flex items-center justify-between">
+                    <div className="flex items-center gap-3">
+                      <span className="text-xl">🌿</span>
+                      <div>
+                        <span className="font-semibold text-foreground">Spring Pressure Wash</span>
+                        <span className="ml-2 text-xs font-medium text-emerald-600 bg-emerald-100 px-2 py-0.5 rounded-full">SEASONAL</span>
+                        <p className="text-sm text-gray-500 mt-0.5">Blast off winter algae &amp; grime. Dock box &amp; dock cleaning included.</p>
+                      </div>
+                    </div>
+                    <div className={`w-5 h-5 rounded border-2 flex items-center justify-center flex-shrink-0 ${
+                      services.springWash ? "bg-emerald-500 border-emerald-500" : "border-gray-300"
+                    }`}>
+                      {services.springWash && <CheckCircle2 className="w-4 h-4 text-white" />}
+                    </div>
                   </div>
-                  <div className="flex items-center gap-2">
-                    <CheckCircle2 className="w-4 h-4 text-emerald-500 flex-shrink-0" />
-                    <span>Dock box cleaning included</span>
-                  </div>
-                  <div className="flex items-center gap-2">
-                    <CheckCircle2 className="w-4 h-4 text-emerald-500 flex-shrink-0" />
-                    <span>Dock cleaning included</span>
-                  </div>
-                  <div className="flex items-center gap-2">
-                    <CheckCircle2 className="w-4 h-4 text-emerald-500 flex-shrink-0" />
-                    <span>Removes algae, mildew, and winter grime</span>
-                  </div>
-                </div>
+                </button>
 
-                {price !== null && (
-                  <a
-                    href="#estimate"
-                    className="mt-6 inline-flex items-center justify-center gap-2 w-full px-6 py-3 rounded-lg bg-emerald-600 hover:bg-emerald-700 text-white font-medium transition-colors"
+                {/* Regular services */}
+                {[
+                  { key: "washDry", icon: Droplets, label: "Wash & Dry", desc: "Complete exterior wash, deck scrub, and hand dry" },
+                  { key: "polishWax", icon: Sparkles, label: "Polish & Wax", desc: "Restore shine and UV protection. Includes gelcoat stain & oxidation removal." },
+                  { key: "metal", icon: Shield, label: "Metal Polishing", desc: "Stainless steel, aluminum, and chrome brightwork" },
+                  { key: "teak", icon: TreePine, label: "Teak & Brightwork", desc: "Cleaning, oiling, or varnish work — quoted on-site due to wide variation" },
+                ].map(({ key, icon: Icon, label, desc }) => (
+                  <button
+                    key={key}
+                    type="button"
+                    onClick={() => toggleSvc(key)}
+                    className={`w-full text-left p-4 rounded-lg border-2 transition-all ${
+                      services[key]
+                        ? "border-primary bg-primary/5"
+                        : "border-gray-200 hover:border-gray-300"
+                    }`}
                   >
-                    <Zap className="w-4 h-4" />
-                    Book This — ${price}
-                  </a>
-                )}
-              </div>
+                    <div className="flex items-center justify-between">
+                      <div className="flex items-center gap-3">
+                        <div className="w-9 h-9 rounded-lg bg-primary/10 flex items-center justify-center flex-shrink-0">
+                          <Icon className="w-5 h-5 text-primary" />
+                        </div>
+                        <div>
+                          <span className="font-semibold text-foreground">{label}</span>
+                          <p className="text-sm text-gray-500 mt-0.5">{desc}</p>
+                        </div>
+                      </div>
+                      <div className={`w-5 h-5 rounded border-2 flex items-center justify-center flex-shrink-0 ${
+                        services[key] ? "bg-primary border-primary" : "border-gray-300"
+                      }`}>
+                        {services[key] && <CheckCircle2 className="w-4 h-4 text-white" />}
+                      </div>
+                    </div>
+                  </button>
+                ))}
+              </CardContent>
+            </Card>
+
+            {/* Oxidation — only shown when Polish & Wax is selected */}
+            {services.polishWax && (
+              <Card>
+                <CardContent className="p-5 space-y-3">
+                  <Label className="text-base font-semibold block">When was your boat last polished or waxed?</Label>
+                  <p className="text-sm text-gray-500 -mt-1">This helps us estimate the oxidation level and effort required.</p>
+                  <div className="grid grid-cols-2 sm:grid-cols-3 gap-2">
+                    {Object.entries(OXIDATION).map(([key, { label }]) => (
+                      <Toggle
+                        key={key}
+                        active={oxidation === key}
+                        onClick={() => setOxidation(key)}
+                        className="text-center"
+                      >
+                        {label}
+                      </Toggle>
+                    ))}
+                  </div>
+                </CardContent>
+              </Card>
+            )}
+          </div>
+
+          {/* ── Right column: estimate card (2/5) ── */}
+          <div className="lg:col-span-2">
+            <div className="lg:sticky lg:top-8">
+              <Card className="border-0 shadow-xl overflow-hidden">
+                <div className="bg-gradient-to-br from-[#1565c0] to-[#0097a7] px-6 py-5">
+                  <h3 className="text-lg font-bold text-white">Your Estimate</h3>
+                  <p className="text-white/70 text-sm">Subject to in-person inspection</p>
+                </div>
+                <CardContent className="p-6">
+                  {!hasAnyService ? (
+                    <p className="text-gray-400 text-sm text-center py-6">Select at least one service to see pricing.</p>
+                  ) : !hasDimensions ? (
+                    <p className="text-gray-400 text-sm text-center py-6">Enter your boat's length and beam for an estimate.</p>
+                  ) : (
+                    <div className="space-y-3">
+                      {lineItems.map((item, i) => (
+                        <div key={i} className="flex justify-between items-start gap-4">
+                          <div>
+                            <p className="font-medium text-foreground text-sm">{item.label}</p>
+                            <p className="text-xs text-gray-500">{item.desc}</p>
+                          </div>
+                          <p className="font-semibold text-foreground text-sm whitespace-nowrap">
+                            {item.price !== null ? `$${item.price}` : "TBD"}
+                          </p>
+                        </div>
+                      ))}
+
+                      <hr className="my-3" />
+
+                      <div className="flex justify-between items-baseline">
+                        <span className="text-sm text-gray-600">Estimated total</span>
+                        <div className="text-right">
+                          <span className="text-3xl font-bold text-foreground">
+                            {hasTeak ? "from " : ""}${total}
+                          </span>
+                          {hasTeak && <p className="text-xs text-gray-500">+ teak (quoted on-site)</p>}
+                        </div>
+                      </div>
+
+                      <div className="mt-4 p-3 rounded-lg bg-amber-50 border border-amber-200">
+                        <p className="text-xs text-amber-800">
+                          This is a ballpark estimate. We'll walk your boat together and dial in the final scope and price.
+                          Actual cost is typically the same or lower.
+                        </p>
+                      </div>
+
+                      <a
+                        href="#estimate"
+                        className="mt-4 inline-flex items-center justify-center gap-2 w-full px-6 py-3 rounded-lg bg-primary hover:bg-primary/90 text-white font-medium transition-colors"
+                      >
+                        <Send className="w-4 h-4" />
+                        Request This Estimate
+                      </a>
+                    </div>
+                  )}
+                </CardContent>
+              </Card>
             </div>
-          </CardContent>
-        </Card>
+          </div>
+        </div>
       </div>
     </section>
   );
 }
+
+/* ═══════════════════════════════════════════
+   Estimate Request Form
+   ═══════════════════════════════════════════ */
 
 const ESTIMATE_API_URL = "/api/detailing-estimate";
 
@@ -246,6 +398,17 @@ function EstimateForm() {
   const [submitting, setSubmitting] = useState(false);
   const [submitted, setSubmitted] = useState(false);
   const [error, setError] = useState("");
+
+  const serviceCheckboxes = [
+    "Spring Pressure Wash",
+    "Wash & Dry",
+    "Polish & Wax",
+    "Metal Polishing",
+    "Teak & Brightwork",
+    "Gelcoat & Paint Repair",
+    "Decal Removal",
+    "Other",
+  ];
 
   function toggleService(svc) {
     setForm((f) => ({
@@ -293,7 +456,7 @@ function EstimateForm() {
       <Card className="text-center p-10">
         <CheckCircle2 className="w-12 h-12 text-green-500 mx-auto mb-4" />
         <h3 className="text-xl font-bold text-foreground mb-2">Request Sent!</h3>
-        <p className="text-gray-600">Brian will get back to you within 24 hours with an estimate.</p>
+        <p className="text-gray-600">Brian will get back to you within 24 hours to schedule a walkthrough and finalize your estimate.</p>
       </Card>
     );
   }
@@ -301,8 +464,8 @@ function EstimateForm() {
   return (
     <Card>
       <CardHeader>
-        <CardTitle className="text-xl">Get an Estimate</CardTitle>
-        <CardDescription>Tell me about your boat and what you need. I'll respond within 24 hours.</CardDescription>
+        <CardTitle className="text-xl">Request an Estimate</CardTitle>
+        <CardDescription>Tell me about your boat. I'll get back to you within 24 hours to schedule a walkthrough.</CardDescription>
       </CardHeader>
       <CardContent>
         <form onSubmit={handleSubmit} className="space-y-6">
@@ -333,7 +496,7 @@ function EstimateForm() {
 
           <div>
             <Label>Notes</Label>
-            <Textarea value={form.notes} onChange={updateField("notes")} placeholder="Anything specific you'd like done?" />
+            <Textarea value={form.notes} onChange={updateField("notes")} placeholder="Anything else we should know? (teak scope, specific stains, timeline, etc.)" />
           </div>
 
           {error && (
@@ -350,42 +513,29 @@ function EstimateForm() {
   );
 }
 
+/* ═══════════════════════════════════════════
+   Page
+   ═══════════════════════════════════════════ */
+
 export default function Detailing() {
   return (
     <div>
-      <PageMeta title="Boat Detailing | East Bay | Brian Cline" description="Professional boat detailing on the East Bay. Wash, polish, wax, metal polishing, gelcoat, and brightwork. From $5/ft." />
+      <PageMeta
+        title="Boat Detailing | East Bay | Brian Cline"
+        description="Professional boat detailing on the East Bay. Wash, polish, wax, metal polishing, gelcoat repair, and brightwork. Instant estimates."
+      />
       <PageHero
         title="Boat Detailing"
         subtitle="Above-the-waterline care for your boat. Wash, polish, wax, metal work, and brightwork — done right, on the East Bay."
         price=""
         credentials="Serving Berkeley, Emeryville, Richmond, and Oakland marinas"
-        cta="🌿 Spring Pressure Wash Special"
-        ctaHref="#spring-special"
+        cta="Get an Estimate"
+        ctaHref="#estimator"
       />
 
-      <SpringSpecial />
+      <DetailingEstimator />
 
-      {/* Services */}
-      <section className="py-16 md:py-24">
-        <div className="max-w-6xl mx-auto px-6">
-          <h2 className="text-3xl font-bold text-foreground mb-10 text-center">Services</h2>
-          <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
-            {services.map(({ icon: Icon, label, desc }) => (
-              <Card key={label} className="p-5 flex items-start gap-4">
-                <div className="w-10 h-10 rounded-lg bg-primary/10 flex items-center justify-center flex-shrink-0">
-                  {Icon ? <Icon className="w-5 h-5 text-primary" /> : <Sparkles className="w-5 h-5 text-primary" />}
-                </div>
-                <div>
-                  <h3 className="font-semibold text-foreground mb-1">{label}</h3>
-                  <p className="text-sm text-gray-600">{desc}</p>
-                </div>
-              </Card>
-            ))}
-          </div>
-        </div>
-      </section>
-
-      {/* What's Included */}
+      {/* What to Expect */}
       <section className="py-16 md:py-24 bg-gray-50">
         <div className="max-w-6xl mx-auto px-6">
           <h2 className="text-3xl font-bold text-foreground mb-10 text-center">What to Expect</h2>
@@ -406,7 +556,7 @@ export default function Detailing() {
         </div>
       </section>
 
-      {/* Estimate Form */}
+      {/* Estimate Request Form */}
       <section className="py-16 md:py-24" id="estimate">
         <div className="max-w-2xl mx-auto px-6">
           <EstimateForm />
@@ -415,9 +565,9 @@ export default function Detailing() {
 
       <PageCTA
         title="Get Your Boat Looking Its Best"
-        subtitle="Drop me a line for a free estimate."
-        buttonText="Request an Estimate"
-        href="#estimate"
+        subtitle="Use the calculator above for an instant estimate, or fill out the form and I'll get back to you within 24 hours."
+        buttonText="Build Your Estimate"
+        href="#estimator"
       />
     </div>
   );
