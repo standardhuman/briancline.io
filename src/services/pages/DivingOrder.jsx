@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useCallback } from "react";
+import React, { useState, useCallback } from "react";
 import { useSearchParams, useNavigate } from "react-router-dom";
 import { loadStripe } from "@stripe/stripe-js";
 import { Elements, CardNumberElement, CardExpiryElement, CardCvcElement, useStripe, useElements } from "@stripe/react-stripe-js";
@@ -33,17 +33,10 @@ const FREQUENCIES = [
 ];
 
 // ── Stripe loader (singleton) ──
-let stripePromise = null;
-
-function getStripePromise() {
-  if (stripePromise) return stripePromise;
-  stripePromise = fetch(`${SUPABASE_URL}/functions/v1/get-stripe-config`, {
-    headers: { Authorization: `Bearer ${SUPABASE_ANON_KEY}` },
-  })
-    .then((res) => res.json())
-    .then(({ publishableKey }) => loadStripe(publishableKey));
-  return stripePromise;
-}
+// Publishable key is safe to embed client-side (that's its purpose).
+// Using test key — no real charges.
+const STRIPE_PUBLISHABLE_KEY = "pk_test_s9GdaTKq62yzyAGjg2IHWI67";
+const stripePromise = loadStripe(STRIPE_PUBLISHABLE_KEY);
 
 // ── Stripe Element Styling ──
 const STRIPE_ELEMENT_OPTIONS = {
@@ -628,22 +621,8 @@ function OrderForm({ searchParams, navigate }) {
 export default function DivingOrder() {
   const [searchParams] = useSearchParams();
   const navigate = useNavigate();
-  const [stripeReady, setStripeReady] = useState(null);
-
-  useEffect(() => {
-    getStripePromise().then((s) => setStripeReady(s));
-  }, []);
-
-  if (!stripeReady) {
-    return (
-      <div className="flex items-center justify-center min-h-[50vh]">
-        <Loader2 className="w-8 h-8 animate-spin text-[#0073a8]" />
-      </div>
-    );
-  }
-
   return (
-    <Elements stripe={stripeReady}>
+    <Elements stripe={stripePromise}>
       <OrderForm searchParams={searchParams} navigate={navigate} />
     </Elements>
   );
