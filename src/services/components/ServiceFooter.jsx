@@ -10,7 +10,7 @@ export default function ServiceFooter() {
           <div>
             <a href="/" className="inline-flex items-baseline gap-2 text-xl font-bold">
               briancline<span className="text-[#0097a7]">.</span>co
-              <span className="text-xs font-medium tracking-wide uppercase text-gray-500">marine</span>
+              <span className="text-xs font-semibold tracking-wide uppercase text-[#0097a7]">marine</span>
             </a>
             <p className="mt-3 text-gray-400 text-sm leading-relaxed">
               Marine services on San Francisco Bay. Hull cleaning, sailing instruction, boat detailing, and vessel deliveries.
