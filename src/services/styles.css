@@ -1,0 +1,80 @@
+@import "tailwindcss";
+
+/* ── Design tokens (SailorSkills Marketplace) ── */
+:root {
+  --primary: 210 76% 39%;
+  --primary-foreground: 0 0% 100%;
+  --secondary: 187 100% 42%;
+  --secondary-foreground: 0 0% 100%;
+  --accent: 199 89% 48%;
+  --accent-foreground: 0 0% 100%;
+  --foreground: 215 92% 21%;
+  --background: 0 0% 100%;
+  --muted: 210 40% 96.1%;
+  --muted-foreground: 215 25% 45%;
+  --border: 214 32% 91%;
+  --input: 214 32% 91%;
+  --ring: 210 76% 39%;
+  --radius: 0.75rem;
+  --card: 0 0% 100%;
+  --card-foreground: 215 92% 21%;
+  --destructive: 0 84% 60%;
+  --destructive-foreground: 0 0% 100%;
+  --popover: 0 0% 100%;
+  --popover-foreground: 215 92% 21%;
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  font-family: 'Inter', system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+  color: hsl(var(--foreground));
+  background: hsl(var(--background));
+}
+
+/* ── Tailwind v4 theme ── */
+@theme {
+  --color-primary: hsl(210 76% 39%);
+  --color-primary-foreground: hsl(0 0% 100%);
+  --color-secondary: hsl(187 100% 42%);
+  --color-accent: hsl(199 89% 48%);
+  --color-foreground: hsl(215 92% 21%);
+  --color-background: hsl(0 0% 100%);
+  --color-muted: hsl(210 40% 96.1%);
+  --color-muted-foreground: hsl(215 25% 45%);
+  --color-border: hsl(214 32% 91%);
+  --color-ring: hsl(210 76% 39%);
+  --color-card: hsl(0 0% 100%);
+  --color-card-foreground: hsl(215 92% 21%);
+  --color-destructive: hsl(0 84% 60%);
+  --color-input: hsl(214 32% 91%);
+}
+
+/* Accordion animations */
+@keyframes accordion-down {
+  from { height: 0; }
+  to { height: var(--radix-accordion-content-height); }
+}
+@keyframes accordion-up {
+  from { height: var(--radix-accordion-content-height); }
+  to { height: 0; }
+}
+
+[data-state="open"] > [data-radix-accordion-content] {
+  animation: accordion-down 0.2s ease-out;
+}
+[data-state="closed"] > [data-radix-accordion-content] {
+  animation: accordion-up 0.2s ease-out;
+}
+
+/* Stripe element styling */
+.StripeElement {
+  padding: 10px 12px;
+}
+
+.StripeElement--focus {
+  border-color: hsl(210 76% 39%);
+  box-shadow: 0 0 0 2px hsl(210 76% 39% / 0.2);
+}

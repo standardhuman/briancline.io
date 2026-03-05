@@ -1,0 +1,631 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="Professional underwater vessel care in San Francisco Bay. Hull cleaning, anode service, item recovery from $4.50/ft. 4K underwater video with every service.">
+  <title>Diving Services | San Francisco Bay | Brian Cline</title>
+  <link rel="icon" href="/images/sailorskills-logo.png" type="image/png">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;500;600;700&family=Assistant:wght@300;400;700&display=swap" rel="stylesheet">
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    
+    :root {
+      --dark-blue: rgb(52, 84, 117);
+      --button-blue: rgb(32, 85, 179);
+      --button-blue-hover: rgb(21, 57, 119);
+      --text-dark: rgb(24, 24, 24);
+      --text-gray: rgb(82, 82, 82);
+      --white: #ffffff;
+      --site-width: 980px;
+      --font-heading: 'Montserrat', sans-serif;
+      --font-body: 'Montserrat', sans-serif;
+    }
+
+    html { scroll-behavior: smooth; }
+    body {
+      font-family: var(--font-body);
+      color: var(--text-dark);
+      -webkit-font-smoothing: antialiased;
+      -moz-osx-font-smoothing: grayscale;
+      background: var(--white);
+      line-height: 1.4;
+    }
+
+    /* NAV */
+    .site-nav {
+      background: var(--white);
+      border-bottom: 1px solid rgba(0,0,0,0.08);
+      position: sticky;
+      top: 0;
+      z-index: 100;
+    }
+    .nav-inner {
+      max-width: var(--site-width);
+      margin: 0 auto;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      padding: 16px 20px;
+      gap: 32px;
+    }
+    .nav-inner a {
+      font-family: var(--font-heading);
+      font-size: 14px;
+      font-weight: 400;
+      color: var(--text-dark);
+      text-decoration: none;
+      letter-spacing: 0.05em;
+      transition: color 0.2s;
+    }
+    .nav-inner a:hover { color: var(--button-blue); }
+    .nav-inner a.active { font-weight: 600; }
+
+    /* HERO */
+    .hero {
+      background: var(--white);
+      text-align: center;
+      padding: 80px 20px 60px;
+    }
+    .hero h1 {
+      font-family: var(--font-heading);
+      font-size: 100px;
+      font-weight: 400;
+      color: var(--dark-blue);
+      line-height: 1.2;
+    }
+    .hero .subtitle {
+      font-size: 20px;
+      color: var(--dark-blue);
+      letter-spacing: 0.7em;
+      margin-top: 8px;
+    }
+    .hero .divider {
+      width: 60px;
+      height: 1px;
+      background: var(--text-dark);
+      margin: 20px auto;
+    }
+    .hero .tagline {
+      font-size: 20px;
+      color: var(--dark-blue);
+      letter-spacing: 0.25em;
+    }
+    .hero .former {
+      font-size: 16px;
+      font-style: italic;
+      color: var(--text-gray);
+      margin-top: 12px;
+    }
+
+    /* PRICING + IMAGE */
+    .pricing-section {
+      display: flex;
+      max-width: var(--site-width);
+      margin: 0 auto;
+      padding: 60px 20px;
+      gap: 0;
+    }
+    .pricing-col {
+      flex: 1;
+      text-align: center;
+      color: var(--dark-blue);
+    }
+    .pricing-col .from-text {
+      font-size: 22px;
+      letter-spacing: 0.15em;
+      font-weight: 300;
+      color: var(--dark-blue);
+      margin-bottom: 8px;
+    }
+    .price-display {
+      display: flex;
+      align-items: baseline;
+      justify-content: center;
+      gap: 4px;
+    }
+    .price-dollar {
+      font-family: var(--font-heading);
+      font-size: 40px;
+      color: var(--dark-blue);
+    }
+    .price-number {
+      font-family: 'Assistant', sans-serif;
+      font-size: 100px;
+      font-weight: 700;
+      color: var(--dark-blue);
+      line-height: 0.9;
+    }
+    .price-per {
+      font-size: 20px;
+      color: var(--dark-blue);
+      line-height: 1.3;
+    }
+    .skills-divider {
+      width: 40px;
+      height: 1px;
+      background: var(--text-dark);
+      margin: 24px auto;
+    }
+    .skills-title {
+      font-weight: 700;
+      font-size: 20px;
+      color: var(--dark-blue);
+      margin-bottom: 16px;
+    }
+    .skills-list {
+      font-size: 20px;
+      color: var(--dark-blue);
+      line-height: 2.2;
+    }
+    .skills-serving {
+      font-style: italic;
+      margin-top: 16px;
+    }
+    .includes-title {
+      font-weight: 700;
+      font-size: 20px;
+      color: var(--text-gray);
+      letter-spacing: 0.15em;
+      margin-top: 32px;
+      margin-bottom: 16px;
+    }
+    .includes-list {
+      font-size: 20px;
+      color: var(--text-gray);
+      line-height: 2.4;
+    }
+    .cta-buttons {
+      margin-top: 32px;
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+      align-items: center;
+    }
+    .btn-primary {
+      display: inline-block;
+      background: var(--button-blue);
+      color: var(--white);
+      font-family: var(--font-heading);
+      font-size: 16px;
+      padding: 14px 32px;
+      border: 2px solid var(--button-blue);
+      text-decoration: none;
+      letter-spacing: 0.05em;
+      transition: all 0.2s;
+      text-align: center;
+    }
+    .btn-primary:hover {
+      background: var(--button-blue-hover);
+      border-color: var(--button-blue-hover);
+    }
+    .btn-secondary {
+      display: inline-block;
+      background: transparent;
+      color: var(--button-blue);
+      font-family: var(--font-heading);
+      font-size: 16px;
+      padding: 14px 32px;
+      border: 2px solid var(--button-blue);
+      text-decoration: none;
+      letter-spacing: 0.05em;
+      transition: all 0.2s;
+      text-align: center;
+    }
+    .btn-secondary:hover {
+      background: var(--button-blue);
+      color: var(--white);
+    }
+    .image-col {
+      flex: 1;
+      background-image: url('/images/diving/diving-hero.jpg');
+      background-size: cover;
+      background-position: center;
+      min-height: 600px;
+    }
+    .note-text {
+      font-size: 13px;
+      color: var(--text-gray);
+      margin-top: 8px;
+    }
+
+    /* WHY CHOOSE SECTION */
+    .why-section {
+      background: var(--white);
+      padding: 60px 20px;
+      text-align: center;
+    }
+    .why-section h2 {
+      font-family: var(--font-heading);
+      font-size: 32px;
+      font-weight: 400;
+      color: var(--dark-blue);
+      letter-spacing: 0.1em;
+      margin-bottom: 40px;
+    }
+    .why-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 32px;
+      max-width: var(--site-width);
+      margin: 0 auto;
+    }
+    .why-card {
+      padding: 24px;
+    }
+    .why-card h3 {
+      font-family: var(--font-heading);
+      font-size: 18px;
+      font-weight: 600;
+      color: var(--dark-blue);
+      margin-bottom: 8px;
+    }
+    .why-card p {
+      font-size: 15px;
+      color: var(--text-gray);
+      line-height: 1.6;
+    }
+
+    /* CTA BAR */
+    .cta-bar {
+      background: var(--dark-blue);
+      text-align: center;
+      padding: 60px 20px;
+    }
+    .cta-bar h3 {
+      font-family: var(--font-heading);
+      font-size: 28px;
+      font-weight: 400;
+      color: var(--white);
+      letter-spacing: 0.1em;
+      margin-bottom: 24px;
+    }
+    .btn-cta {
+      display: inline-block;
+      background: transparent;
+      color: var(--white);
+      font-family: var(--font-heading);
+      font-size: 20px;
+      padding: 16px 40px;
+      border: 2px solid var(--white);
+      text-decoration: none;
+      transition: all 0.2s;
+    }
+    .btn-cta:hover {
+      background: var(--white);
+      color: var(--dark-blue);
+    }
+
+    /* FAQ SECTION */
+    .faq-header {
+      background: var(--dark-blue);
+      text-align: center;
+      padding: 60px 20px;
+    }
+    .faq-header h2 {
+      font-family: var(--font-heading);
+      font-size: 50px;
+      font-weight: 400;
+      color: var(--white);
+      letter-spacing: 0.1em;
+    }
+    .faq-header .faq-subtitle {
+      font-size: 20px;
+      color: var(--white);
+      letter-spacing: 0.7em;
+      margin-top: 8px;
+    }
+    .faq-header .faq-label {
+      font-size: 32px;
+      color: var(--white);
+      letter-spacing: 0.2em;
+      margin-top: 20px;
+    }
+    .faq-nav {
+      background: var(--white);
+      text-align: center;
+      padding: 24px 20px;
+      border-bottom: 1px solid rgba(0,0,0,0.08);
+    }
+    .faq-nav a {
+      font-family: var(--font-heading);
+      font-size: 14px;
+      color: var(--dark-blue);
+      text-decoration: none;
+      margin: 0 12px;
+      letter-spacing: 0.05em;
+    }
+    .faq-nav a:hover { text-decoration: underline; }
+    .faq-content {
+      max-width: 800px;
+      margin: 0 auto;
+      padding: 40px 20px 80px;
+    }
+    .faq-item {
+      margin-bottom: 48px;
+      scroll-margin-top: 80px;
+    }
+    .faq-item h3 {
+      font-family: var(--font-heading);
+      font-size: 24px;
+      font-weight: 600;
+      color: var(--dark-blue);
+      margin-bottom: 16px;
+    }
+    .faq-item h4 {
+      font-family: var(--font-heading);
+      font-size: 18px;
+      font-weight: 600;
+      color: var(--dark-blue);
+      margin: 24px 0 8px;
+    }
+    .faq-item p {
+      font-size: 16px;
+      line-height: 1.7;
+      color: var(--text-dark);
+      margin-bottom: 12px;
+    }
+    .faq-item a {
+      color: var(--button-blue);
+      text-decoration: underline;
+    }
+    .faq-item strong { font-weight: 600; }
+    .faq-item em { font-style: italic; }
+
+    /* RATING SCALE */
+    .rating-table {
+      width: 100%;
+      border-collapse: collapse;
+      margin: 16px 0 24px;
+      font-size: 15px;
+    }
+    .rating-table td {
+      padding: 10px 12px;
+      border-bottom: 1px solid rgba(0,0,0,0.08);
+      vertical-align: top;
+    }
+    .rating-table td:first-child {
+      font-weight: 600;
+      white-space: nowrap;
+      width: 100px;
+    }
+
+    /* FOOTER */
+    .site-footer {
+      text-align: center;
+      padding: 40px 20px;
+      font-size: 14px;
+      color: var(--text-gray);
+      border-top: 1px solid rgba(0,0,0,0.08);
+    }
+
+    /* RESPONSIVE */
+    @media (max-width: 768px) {
+      .hero h1 { font-size: 48px; }
+      .hero .subtitle { font-size: 14px; letter-spacing: 0.3em; }
+      .pricing-section { flex-direction: column; }
+      .image-col { min-height: 300px; }
+      .price-number { font-size: 72px; }
+      .why-grid { grid-template-columns: 1fr; }
+      .faq-header h2 { font-size: 32px; }
+      .nav-inner { flex-wrap: wrap; gap: 16px; }
+      .faq-nav a { display: inline-block; margin: 4px 8px; }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Navigation -->
+  <nav class="site-nav">
+    <div class="nav-inner">
+      <a href="https://briancline.co">HOME</a>
+      <a href="https://briancline.co/training">TRAINING</a>
+      <a href="https://briancline.co/diving" class="active">DIVING</a>
+      <a href="https://briancline.co/deliveries">DELIVERIES</a>
+      <a href="https://detailing.sailorskills.com">DETAILING</a>
+    </div>
+  </nav>
+
+  <!-- Hero -->
+  <section class="hero">
+    <h1>DIVING</h1>
+    <div class="subtitle">SAILOR SKILLS</div>
+    <div class="divider"></div>
+    <div class="tagline">UNDERWATER VESSEL CARE</div>
+    <div class="former">Formerly Bottom Service</div>
+  </section>
+
+  <!-- Pricing + Image -->
+  <section class="pricing-section">
+    <div class="pricing-col">
+      <div class="from-text">PROFESSIONAL DIVER SERVICES FROM</div>
+      <div class="price-display">
+        <span class="price-dollar">$</span>
+        <span class="price-number">4.50</span>
+      </div>
+      <div class="price-per">per<br>foot</div>
+
+      <div class="skills-divider"></div>
+
+      <div class="skills-list">
+        HULL CLEANING<br><br>
+        ANODE SERVICE<br><br>
+        ITEM RECOVERY<br><br>
+        AND MORE
+      </div>
+
+      <p class="note-text" style="margin-top: 16px;">All prices shown are for labor only. Materials are additional.<br>$150 minimum service fee applies to all services.</p>
+
+      <div class="skills-divider"></div>
+
+      <p class="skills-serving">SERVING THE EAST BAY</p>
+
+      <div class="skills-divider"></div>
+
+      <div class="includes-title">ALL SERVICES INCLUDE</div>
+      <div class="includes-list">
+        100% SATISFACTION GUARANTEE<br><br>
+        DEPENDABLE COMMUNICATION<br><br>
+        EASY ACCOUNT MANAGEMENT<br><br>
+        PREDICTABLE SCHEDULING<br><br>
+        4K UNDERWATER VIDEO<br><br>
+        ONLINE SERVICE LOGS
+      </div>
+
+      <div class="cta-buttons">
+        <a href="mailto:brian@sailorskills.com?subject=Diving%20Service%20Inquiry" class="btn-primary">REQUEST A QUOTE ›</a>
+        <p class="note-text">Email me to schedule your service</p>
+        <a href="#faq" class="btn-secondary">LEARN MORE ›</a>
+      </div>
+    </div>
+    <div class="image-col"></div>
+  </section>
+
+  <!-- Why Choose -->
+  <section class="why-section">
+    <h2>WHY CHOOSE SAILOR SKILLS DIVING?</h2>
+    <div class="why-grid">
+      <div class="why-card">
+        <h3>100% Satisfaction Guarantee</h3>
+        <p>I stand behind my work with a complete satisfaction guarantee on all services.</p>
+      </div>
+      <div class="why-card">
+        <h3>Dependable Communication</h3>
+        <p>Stay informed with regular updates before, during, and after each service.</p>
+      </div>
+      <div class="why-card">
+        <h3>Easy Account Management</h3>
+        <p>Manage your service schedule and history through the convenient online portal.</p>
+      </div>
+      <div class="why-card">
+        <h3>Predictable Scheduling</h3>
+        <p>Set it and forget it — I'll maintain your boat on a reliable schedule.</p>
+      </div>
+      <div class="why-card">
+        <h3>4K Underwater Video</h3>
+        <p>Receive detailed video documentation of your hull's condition with each service.</p>
+      </div>
+      <div class="why-card">
+        <h3>Online Service Logs</h3>
+        <p>Access complete service history and reports anytime through your account.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- CTA Bar -->
+  <section class="cta-bar">
+    <h3>PROFESSIONAL UNDERWATER VESSEL CARE</h3>
+    <a href="mailto:brian@sailorskills.com?subject=Diving%20Service%20Inquiry" class="btn-cta">Request a Quote</a>
+    <p style="font-size: 13px; color: rgba(255,255,255,0.7); margin-top: 8px;">Email me to schedule your service</p>
+  </section>
+
+  <!-- FAQ Header -->
+  <section class="faq-header" id="faq">
+    <h2>DIVING</h2>
+    <div class="faq-subtitle">SAILOR SKILLS</div>
+    <div class="faq-label">F.A.Q.</div>
+  </section>
+
+  <!-- FAQ Navigation -->
+  <nav class="faq-nav">
+    <a href="#assessment">Assessment</a>
+    <a href="#paint">Paint Condition</a>
+    <a href="#billing">Billing</a>
+    <a href="#cleaning">Cleaning</a>
+    <a href="#special">Special Services</a>
+    <a href="#referrals">Referrals</a>
+  </nav>
+
+  <!-- FAQ Content -->
+  <div class="faq-content">
+
+    <div class="faq-item" id="assessment">
+      <h3>Assessment & Growth Ratings</h3>
+      <p>After each service, you'll receive a condition assessment rating for your hull:</p>
+      <table class="rating-table">
+        <tr><td>None</td><td>No visible marine growth. The hull appears clean and antifouling is effective.</td></tr>
+        <tr><td>Minimal</td><td>Light slime or isolated algae. Paint still provides good protection, but monitoring recommended.</td></tr>
+        <tr><td>Moderate</td><td>Noticeable slime, algae, or scattered barnacles. Antifouling may be losing effectiveness — cleaning should be scheduled soon.</td></tr>
+        <tr><td>Heavy</td><td>Dense slime, algae, barnacles, or other hard growth. Antifouling is likely failing; immediate cleaning needed.</td></tr>
+        <tr><td>Severe</td><td>Heavy colonies of barnacles, mussels, or tube worms plus pervasive slime. Antifouling offers no protection. Urgent cleaning and likely repainting required.</td></tr>
+      </table>
+      <p><em>Note: When two terms are used (e.g., Good/Fair), it indicates a spectrum. The waterline degrades fastest due to warmer temperatures and sunlight. Other high-wear areas include keel edges, rudder, and prop aperture surfaces.</em></p>
+    </div>
+
+    <div class="faq-item" id="paint">
+      <h3>Paint Condition Ratings</h3>
+      <table class="rating-table">
+        <tr><td>Excellent</td><td>Optimal coverage with highly effective antifouling. No flaking or peeling. Extended time before repainting needed.</td></tr>
+        <tr><td>Good</td><td>Adequate coverage with minor wear or slight thinning. Plan maintenance in the near future.</td></tr>
+        <tr><td>Fair</td><td>Significant wear with larger areas of thinning, peeling, or fouling. Repainting recommended soon.</td></tr>
+        <tr><td>Poor</td><td>Minimal protection with large exposed areas and significant fouling. Prioritize repainting to prevent long-term damage.</td></tr>
+        <tr><td>Missing</td><td>Paint absent in areas, exposing barrier coat, gel coat, or fiberglass. Rapid hard growth expected. These areas are scraped with metal tools. Painting well past due.</td></tr>
+      </table>
+    </div>
+
+    <div class="faq-item" id="billing">
+      <h3>Billing & Pricing</h3>
+      <p>I aim to bill within a week after your service. I coordinate service timing based on weather, inventory, and other factors to hit your ideal window. Any anode or variable charges are included when I bill for the service.</p>
+      
+      <h4>Are anodes included in the per-foot price?</h4>
+      <p>Anodes are additional. You're welcome to provide your own. I charge roughly chandlery prices plus tax.</p>
+
+      <h4>Can I get a quote before my first service?</h4>
+      <p>If your boat is in my service area, I'm happy to stop by for a look and present you with options before your first service.</p>
+    </div>
+
+    <div class="faq-item" id="cleaning">
+      <h3>Cleaning Process</h3>
+      <p>I use tools ranging from soft cloths to steel scrapers, matched to each growth type. I always use minimum effective abrasion to protect your paint. If I can't achieve a clean finish without removing paint, I'll let you know it's time to plan your next haul-out.</p>
+      
+      <h4>Why doesn't my hull look brand new after cleaning?</h4>
+      <p>The final appearance depends on your paint's remaining biocidal properties. If the protective properties are diminished, some stubborn algae may remain in the paint's microscopic texture. This algae is harmless, and removing it would require damaging the paint. Leaving it protects your hull, extends paint life, and minimizes environmental impact — while still restoring vessel performance.</p>
+
+      <h4>Do you clean the waterline?</h4>
+      <p>I clean up to the antifouling paint line only. To avoid gel coat damage, I don't scrub unpainted surfaces, including worn-through areas or where the paint line is below the waterline. If your waterline is submerged, consider lightening the vessel or raising the paint line at your next haul-out. For above-waterline cleaning, see my <a href="https://detailing.sailorskills.com">detailing services</a>.</p>
+    </div>
+
+    <div class="faq-item" id="special">
+      <h3>Special Services</h3>
+
+      <h4>Do you offer one-time cleanings?</h4>
+      <p>Yes! While regular service offers the best performance and savings, I'm happy to provide one-time cleanings — especially for voyage preparation.</p>
+
+      <h4>Can you clean before a race?</h4>
+      <p>Yes! I'll do my best to align your cleaning as close to race day as possible. If you're in my service area and I'm available, just let me know your needs and I'll work with you on timing.</p>
+
+      <h4>Can you retrieve items I dropped in the water?</h4>
+      <p>I'm happy to help! Off-schedule retrievals require booking as a one-time service. For regular clients, items retrieved during scheduled service incur no extra charge (just any added time).</p>
+      <p><strong>Important:</strong> Don't disturb the bottom before I arrive — one customer raked the bottom searching for a phone, and despite 40 minutes of searching, I couldn't locate it.</p>
+      <p>I cannot guarantee successful or undamaged retrieval. If I can't find the item in 20 minutes, I'll search another 20 minutes at no additional charge.</p>
+    </div>
+
+    <div class="faq-item" id="referrals">
+      <h3>Referral Program</h3>
+      <p>For each referral who signs up for ongoing service, you receive a free cleaning (anodes extra). Your friend gets 50% off their first cleaning. There's no limit — earn a year or more of free cleanings!</p>
+    </div>
+
+  </div>
+
+  <!-- Final CTA -->
+  <section class="cta-bar">
+    <h3>Get Started with a Free Assessment</h3>
+    <a href="mailto:brian@sailorskills.com?subject=Diving%20Service%20Inquiry" class="btn-cta">Request a Quote</a>
+    <p style="font-size: 13px; color: rgba(255,255,255,0.7); margin-top: 8px;">Email me to get started</p>
+  </section>
+
+  <!-- Footer -->
+  <footer class="site-footer">
+    <div style="margin-bottom: 16px; display: flex; justify-content: center; gap: 24px;">
+      <a href="https://www.youtube.com/channel/UCkw0I-S_krm8gjRZ4OHNg6g" target="_blank" rel="noopener" style="color: #666; text-decoration: none; transition: color 0.2s;" onmouseover="this.style.color='#00bcd4'" onmouseout="this.style.color='#666'">YouTube</a>
+      <a href="https://www.instagram.com/sailorskills/" target="_blank" rel="noopener" style="color: #666; text-decoration: none; transition: color 0.2s;" onmouseover="this.style.color='#00bcd4'" onmouseout="this.style.color='#666'">Instagram</a>
+      <a href="https://www.facebook.com/sailorskills" target="_blank" rel="noopener" style="color: #666; text-decoration: none; transition: color 0.2s;" onmouseover="this.style.color='#00bcd4'" onmouseout="this.style.color='#666'">Facebook</a>
+      <a href="mailto:brian@sailorskills.com" style="color: #666; text-decoration: none; transition: color 0.2s;" onmouseover="this.style.color='#00bcd4'" onmouseout="this.style.color='#666'">Email</a>
+    </div>
+    <p>© 2026 Sailor Skills, LLC</p>
+  </footer>
+
+</body>
+</html>

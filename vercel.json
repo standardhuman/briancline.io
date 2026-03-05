@@ -1,3 +1,18 @@
 {
-  "cleanUrls": true
+  "cleanUrls": true,
+  "rewrites": [
+    { "source": "/diving", "destination": "/services.html" },
+    { "source": "/diving/calculator", "destination": "/services.html" },
+    { "source": "/detailing", "destination": "/services.html" },
+    { "source": "/training", "destination": "/services.html" },
+    { "source": "/training/faq", "destination": "/services.html" },
+    { "source": "/deliveries", "destination": "/services.html" }
+  ],
+  "redirects": [
+    {
+      "source": "/training/faq.html",
+      "destination": "/training/faq",
+      "statusCode": 301
+    }
+  ]
 }
