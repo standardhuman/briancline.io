@@ -38,6 +38,17 @@ function TrimaranIcon({ className }) {
   );
 }
 
+function MonohullIcon({ className }) {
+  return (
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" className={className}>
+      {/* Single hull — top-down view */}
+      <path d="M12 2 C10 2, 9 6, 8.5 12 C9 18, 10 21, 12 22 C14 21, 15 18, 15.5 12 C15 6, 14 2, 12 2 Z" />
+      {/* Centerline keel */}
+      <line x1="12" y1="4" x2="12" y2="20" strokeDasharray="2 2" strokeWidth="1" />
+    </svg>
+  );
+}
+
 const BOAT_TYPE_ICONS = {
   sailboat: Sailboat,
   powerboat: Ship,
@@ -383,7 +394,7 @@ export default function Diving() {
             <InputCard icon={Anchor} title="Hull Type" description="Select your hull configuration" visible={vis.boatType}>
               <div className="grid grid-cols-3 gap-3">
                 {HULL_TYPES.map((h) => {
-                  const IconComp = h.value === "catamaran" ? CatamaranIcon : h.value === "trimaran" ? TrimaranIcon : Sailboat;
+                  const IconComp = h.value === "catamaran" ? CatamaranIcon : h.value === "trimaran" ? TrimaranIcon : MonohullIcon;
                   return (
                     <OptionButton key={h.value} selected={hullType === h.value} onClick={() => setHullType(h.value)}>
                       <IconComp className="w-8 h-8 mx-auto mb-1 text-[#0073a8]" />
