@@ -5,26 +5,58 @@ import { Button } from "../components/ui/button";
 import { Input } from "../components/ui/input";
 import { Accordion, AccordionItem, AccordionTrigger, AccordionContent } from "../components/ui/accordion";
 import { cn, formatCurrency } from "../lib/utils";
-import { calculateEstimate, RATES } from "../lib/diving-calculator";
+import { calculateEstimate, RATES, SERVICES, SERVICE_VISIBILITY } from "../lib/diving-calculator";
 import PageMeta from "../components/PageMeta";
 import {
-  Ruler, Ship, CalendarDays, Settings, Paintbrush, Clock, Wrench,
-  Calculator, ListChecks, CheckCircle2, HelpCircle, ArrowRight, Info
+  Ruler, Ship, Sailboat, CalendarDays, Settings, Paintbrush, Clock, Wrench,
+  Calculator, ListChecks, CheckCircle2, HelpCircle, ArrowRight, Info, Anchor
 } from "lucide-react";
+
+// ── Custom boat type icons ──
+function CatamaranIcon({ className }) {
+  return (
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" className={className}>
+      <path d="M5 4 C5 4, 4 12, 5 20 C5 20, 6 21, 7 20 C8 12, 7 4, 7 4 Z" />
+      <path d="M17 4 C17 4, 16 12, 17 20 C17 20, 18 21, 19 20 C20 12, 19 4, 19 4 Z" />
+      <line x1="7" y1="8" x2="17" y2="8" />
+      <line x1="7" y1="16" x2="17" y2="16" />
+    </svg>
+  );
+}
+
+function TrimaranIcon({ className }) {
+  return (
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" className={className}>
+      <path d="M11 3 C11 3, 10 12, 11 21 C11 21, 12 22, 13 21 C14 12, 13 3, 13 3 Z" />
+      <path d="M4 7 C4 7, 3.5 12, 4 17 C4 17, 4.5 17.5, 5 17 C5.5 12, 5 7, 5 7 Z" />
+      <path d="M19 7 C19 7, 18.5 12, 19 17 C19 17, 19.5 17.5, 20 17 C20.5 12, 20 7, 20 7 Z" />
+      <line x1="5" y1="10" x2="11" y2="10" />
+      <line x1="13" y1="10" x2="19" y2="10" />
+      <line x1="5" y1="14" x2="11" y2="14" />
+      <line x1="13" y1="14" x2="19" y2="14" />
+    </svg>
+  );
+}
+
+const BOAT_TYPE_ICONS = {
+  sailboat: Sailboat,
+  powerboat: Ship,
+  catamaran: CatamaranIcon,
+  trimaran: TrimaranIcon,
+};
 
 // ── Options ──
 const BOAT_TYPES = [
-  { value: "sailboat", label: "Sailboat", icon: Ship },
-  { value: "powerboat", label: "Powerboat", icon: Ship, badge: "+25%" },
-  { value: "catamaran", label: "Catamaran", icon: Ship, badge: "+25%" },
-  { value: "trimaran", label: "Trimaran", icon: Ship, badge: "+50%" },
+  { value: "sailboat", label: "Sailboat" },
+  { value: "powerboat", label: "Powerboat", badge: "+25%" },
+  { value: "catamaran", label: "Catamaran", badge: "+25%" },
+  { value: "trimaran", label: "Trimaran", badge: "+50%" },
 ];
 
 const FREQUENCIES = [
   { value: "monthly", label: "Monthly", desc: "Every month" },
   { value: "bimonthly", label: "Bi-monthly", desc: "Every 2 months" },
   { value: "quarterly", label: "Quarterly", desc: "Every 3 months" },
-  { value: "onetime", label: "One-Time", desc: "Single service" },
 ];
 
 const PROPELLERS = [
@@ -49,6 +81,15 @@ const LAST_CLEANED = [
   { value: "9-12", label: "9–12 months" },
   { value: "13-24", label: "1–2 years" },
   { value: "24+", label: "2+ years" },
+];
+
+const SERVICE_LIST = [
+  "recurring_cleaning",
+  "onetime_cleaning",
+  "underwater_inspection",
+  "item_recovery",
+  "propeller_service",
+  "anodes_only",
 ];
 
 const FAQS = [
@@ -121,7 +162,8 @@ function OptionButton({ selected, onClick, children, className }) {
 }
 
 // ── Input Card wrapper ──
-function InputCard({ icon: Icon, title, description, children }) {
+function InputCard({ icon: Icon, title, description, children, visible = true }) {
+  if (!visible) return null;
   return (
     <Card className="border-gray-100 shadow-sm">
       <CardHeader className="pb-3">
@@ -137,12 +179,13 @@ function InputCard({ icon: Icon, title, description, children }) {
 }
 
 // ── Estimate Card ──
-function EstimateCard({ estimate, boatLength, boatType, frequency }) {
+function EstimateCard({ estimate, boatLength, boatType, frequency, serviceKey }) {
   const navigate = useNavigate();
-  const freqParam = frequency === "onetime" ? "one_time" : frequency;
+  const service = SERVICES[serviceKey];
 
   const handleGetStarted = () => {
-    navigate(`/diving/order?length=${boatLength}&type=${boatType}&frequency=${freqParam}&estimate=${Math.round(estimate.total)}`);
+    const freqParam = frequency === "onetime" ? "one_time" : frequency;
+    navigate(`/diving/order?service=${serviceKey}&length=${boatLength}&type=${boatType}&frequency=${freqParam}&estimate=${Math.round(estimate.total)}`);
   };
 
   return (
@@ -150,6 +193,7 @@ function EstimateCard({ estimate, boatLength, boatType, frequency }) {
       <Card className="bg-gradient-to-br from-[#1565c0] to-[#0097a7] text-white border-0 shadow-xl">
         <CardHeader className="pb-2">
           <CardTitle className="text-lg text-white/90">Your Estimate</CardTitle>
+          <p className="text-white/60 text-sm">{service?.name}</p>
         </CardHeader>
         <CardContent className="space-y-4">
           <div className="text-center py-4">
@@ -229,6 +273,7 @@ function EstimateCard({ estimate, boatLength, boatType, frequency }) {
 
 // ── Main Page ──
 export default function Diving() {
+  const [serviceKey, setServiceKey] = useState("recurring_cleaning");
   const [boatLength, setBoatLength] = useState(35);
   const [boatType, setBoatType] = useState("sailboat");
   const [frequency, setFrequency] = useState("monthly");
@@ -237,9 +282,11 @@ export default function Diving() {
   const [lastCleaned, setLastCleaned] = useState("<2");
   const [anodeCount, setAnodeCount] = useState(0);
 
+  const vis = SERVICE_VISIBILITY[serviceKey] || {};
+
   const estimate = useMemo(
-    () => calculateEstimate({ boatLength, boatType, frequency, propellerCount, paintAge, lastCleaned, anodeCount }),
-    [boatLength, boatType, frequency, propellerCount, paintAge, lastCleaned, anodeCount]
+    () => calculateEstimate({ serviceKey, boatLength, boatType, frequency, propellerCount, paintAge, lastCleaned, anodeCount }),
+    [serviceKey, boatLength, boatType, frequency, propellerCount, paintAge, lastCleaned, anodeCount]
   );
 
   return (
@@ -260,10 +307,10 @@ export default function Diving() {
             <Calculator className="w-8 h-8 text-white" />
           </div>
           <h1 className="text-4xl md:text-5xl font-bold text-gray-900 mb-4">
-            Hull Cleaning Cost Estimator
+            Diving Services Estimator
           </h1>
           <p className="text-lg text-gray-600 max-w-2xl mx-auto">
-            Get an instant quote for professional hull cleaning services. Our pricing is transparent and based on your boat's specifications.
+            Get an instant quote for professional diving services. Our pricing is transparent and based on your boat's specifications.
           </p>
         </div>
       </div>
@@ -273,8 +320,27 @@ export default function Diving() {
         <div className="grid grid-cols-1 lg:grid-cols-5 gap-8">
           {/* Left: Input cards */}
           <div className="lg:col-span-3 space-y-6">
+            {/* 0. Service Type */}
+            <InputCard icon={Anchor} title="Service Type" description="Select the service you need">
+              <div className="grid grid-cols-2 md:grid-cols-3 gap-3">
+                {SERVICE_LIST.map((key) => {
+                  const svc = SERVICES[key];
+                  return (
+                    <OptionButton
+                      key={key}
+                      selected={serviceKey === key}
+                      onClick={() => setServiceKey(key)}
+                    >
+                      <div className="font-medium text-sm leading-tight">{svc.name}</div>
+                      <div className="text-xs text-teal-600 font-medium mt-1">{svc.priceLabel}</div>
+                    </OptionButton>
+                  );
+                })}
+              </div>
+            </InputCard>
+
             {/* 1. Boat Length */}
-            <InputCard icon={Ruler} title="Boat Length" description="Enter your boat's length in feet (LOA)">
+            <InputCard icon={Ruler} title="Boat Length" description="Enter your boat's length in feet (LOA)" visible={vis.boatLength}>
               <div className="flex items-center gap-4">
                 <Input
                   type="number" min={15} max={150}
@@ -293,21 +359,24 @@ export default function Diving() {
             </InputCard>
 
             {/* 2. Boat Type */}
-            <InputCard icon={Ship} title="Boat Type" description="Select your vessel type">
+            <InputCard icon={Ship} title="Boat Type" description="Select your vessel type" visible={vis.boatType}>
               <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
-                {BOAT_TYPES.map((t) => (
-                  <OptionButton key={t.value} selected={boatType === t.value} onClick={() => setBoatType(t.value)}>
-                    <t.icon className="w-6 h-6 mx-auto mb-1 text-[#0073a8]" />
-                    <div className="font-medium text-sm">{t.label}</div>
-                    {t.badge && <div className="text-xs text-teal-600 font-medium mt-0.5">{t.badge}</div>}
-                  </OptionButton>
-                ))}
+                {BOAT_TYPES.map((t) => {
+                  const IconComp = BOAT_TYPE_ICONS[t.value];
+                  return (
+                    <OptionButton key={t.value} selected={boatType === t.value} onClick={() => setBoatType(t.value)}>
+                      <IconComp className="w-8 h-8 mx-auto mb-1 text-[#0073a8]" />
+                      <div className="font-medium text-sm">{t.label}</div>
+                      {t.badge && <div className="text-xs text-teal-600 font-medium mt-0.5">{t.badge}</div>}
+                    </OptionButton>
+                  );
+                })}
               </div>
             </InputCard>
 
-            {/* 3. Service Frequency */}
-            <InputCard icon={CalendarDays} title="Service Frequency" description="How often do you need hull cleaning?">
-              <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
+            {/* 3. Service Frequency (recurring only) */}
+            <InputCard icon={CalendarDays} title="Service Frequency" description="How often do you need hull cleaning?" visible={vis.frequency}>
+              <div className="grid grid-cols-3 gap-3">
                 {FREQUENCIES.map((f) => (
                   <OptionButton key={f.value} selected={frequency === f.value} onClick={() => setFrequency(f.value)}>
                     <div className="font-semibold text-sm">{f.label}</div>
@@ -318,19 +387,19 @@ export default function Diving() {
             </InputCard>
 
             {/* 4. Propellers */}
-            <InputCard icon={Settings} title="Propellers" description="First propeller included. Additional propellers add 10% each.">
+            <InputCard icon={Settings} title="Propellers" description={serviceKey === "propeller_service" ? "$349 per propeller" : "First propeller included. Additional propellers add 10% each."} visible={vis.propellers}>
               <div className="flex gap-3">
                 {PROPELLERS.map((p) => (
                   <OptionButton key={p.value} selected={propellerCount === p.value} onClick={() => setPropellerCount(p.value)} className="w-20">
                     <div className="text-xl font-bold">{p.label}</div>
-                    <div className="text-xs text-gray-500">{p.desc}</div>
+                    {serviceKey !== "propeller_service" && <div className="text-xs text-gray-500">{p.desc}</div>}
                   </OptionButton>
                 ))}
               </div>
             </InputCard>
 
             {/* 5. Bottom Paint Age */}
-            <InputCard icon={Paintbrush} title="Bottom Paint Age" description="Paint condition affects marine growth estimates.">
+            <InputCard icon={Paintbrush} title="Bottom Paint Age" description="Paint condition affects marine growth estimates." visible={vis.paintAge}>
               <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-5 gap-3">
                 {PAINT_AGES.map((p) => (
                   <OptionButton key={p.value} selected={paintAge === p.value} onClick={() => setPaintAge(p.value)}>
@@ -342,7 +411,7 @@ export default function Diving() {
             </InputCard>
 
             {/* 6. Last Cleaned */}
-            <InputCard icon={Clock} title="Last Cleaned" description="Longer gaps between cleanings may increase marine growth surcharges.">
+            <InputCard icon={Clock} title="Last Cleaned" description="Longer gaps between cleanings may increase marine growth surcharges." visible={vis.lastCleaned}>
               <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-3">
                 {LAST_CLEANED.map((c) => (
                   <OptionButton key={c.value} selected={lastCleaned === c.value} onClick={() => setLastCleaned(c.value)}>
@@ -353,7 +422,7 @@ export default function Diving() {
             </InputCard>
 
             {/* 7. Anodes */}
-            <InputCard icon={Wrench} title="Anode Service" description="$15 per anode installation (labor only — anode parts additional)">
+            <InputCard icon={Wrench} title="Anode Service" description={serviceKey === "anodes_only" ? "$149 minimum + $15 per anode installation" : "$15 per anode installation (labor only — anode parts additional)"} visible={vis.anodes}>
               <div className="flex items-center gap-4">
                 <button
                   onClick={() => setAnodeCount(Math.max(0, anodeCount - 1))}
@@ -373,14 +442,22 @@ export default function Diving() {
             </InputCard>
           </div>
 
-          {/* Right: Sticky estimate */}
+          {/* Right: Sticky estimate — vertically centered */}
           <div className="lg:col-span-2">
-            <div className="lg:sticky lg:top-8">
+            <div
+              className="lg:sticky"
+              style={{
+                top: "calc(50vh - 200px)",
+                maxHeight: "calc(100vh - 120px)",
+                overflowY: "auto",
+              }}
+            >
               <EstimateCard
                 estimate={estimate}
                 boatLength={boatLength}
                 boatType={boatType}
                 frequency={frequency}
+                serviceKey={serviceKey}
               />
             </div>
           </div>

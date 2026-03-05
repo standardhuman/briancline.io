@@ -1,12 +1,69 @@
 /**
  * Diving calculator - ported from sailorskills-estimator
- * Hardcoded rates, no DB calls. Used by the public /diving page.
+ * Supports all 6 service types with correct pricing logic.
  */
 
-// ── Rates ──
+// ── Service Definitions ──
+export const SERVICES = {
+  recurring_cleaning: {
+    key: "recurring_cleaning",
+    name: "Recurring Cleaning & Anodes",
+    type: "per_foot",
+    rate: 4.49,
+    priceLabel: "From $4.49/ft",
+    description: "Regular hull cleaning. Includes anode inspection.",
+  },
+  onetime_cleaning: {
+    key: "onetime_cleaning",
+    name: "One-time Cleaning & Anodes",
+    type: "per_foot",
+    rate: 5.99,
+    priceLabel: "From $5.99/ft",
+    description: "Single hull cleaning + anode inspection.",
+  },
+  underwater_inspection: {
+    key: "underwater_inspection",
+    name: "Underwater Inspection",
+    type: "per_foot",
+    rate: 3.99,
+    priceLabel: "$3.99/ft, $149 min",
+    description: "Photo/video documentation. Insurance, pre-purchase, damage assessment.",
+  },
+  item_recovery: {
+    key: "item_recovery",
+    name: "Item Recovery",
+    type: "flat",
+    rate: 199,
+    priceLabel: "$199 flat",
+    description: "Recovery of lost items. Up to 45 min search. Not guaranteed.",
+  },
+  propeller_service: {
+    key: "propeller_service",
+    name: "Propeller Service",
+    type: "flat",
+    rate: 349,
+    priceLabel: "$349/propeller",
+    description: "Professional propeller removal/installation.",
+  },
+  anodes_only: {
+    key: "anodes_only",
+    name: "Anodes Only",
+    type: "flat",
+    rate: 149,
+    anodeRate: 15,
+    priceLabel: "$149 min + $15/anode",
+    description: "Anode inspection and replacement only.",
+  },
+};
+
+// ── Rates (legacy export) ──
 const RATES = {
   recurring: 4.49,
   onetime: 5.99,
+  inspection: 3.99,
+  itemRecovery: 199,
+  propellerService: 349,
+  anodesOnlyMin: 149,
   minimum: 149.00,
   anode: 15.00,
 };
@@ -15,6 +72,16 @@ const SURCHARGES = {
   powerboat: 0.25,
   catamaran: 0.25,
   trimaran: 0.50,
+};
+
+// ── Which input cards to show per service ──
+export const SERVICE_VISIBILITY = {
+  recurring_cleaning:    { boatLength: true, boatType: true, frequency: true, propellers: true, paintAge: true, lastCleaned: true, anodes: true },
+  onetime_cleaning:      { boatLength: true, boatType: true, frequency: false, propellers: true, paintAge: true, lastCleaned: true, anodes: true },
+  underwater_inspection: { boatLength: true, boatType: true, frequency: false, propellers: false, paintAge: false, lastCleaned: false, anodes: false },
+  item_recovery:         { boatLength: false, boatType: false, frequency: false, propellers: false, paintAge: false, lastCleaned: false, anodes: false },
+  propeller_service:     { boatLength: false, boatType: false, frequency: false, propellers: true, paintAge: false, lastCleaned: false, anodes: false },
+  anodes_only:           { boatLength: false, boatType: false, frequency: false, propellers: false, paintAge: false, lastCleaned: false, anodes: true },
 };
 
 // ── Hull fouling matrix (v2.0) ──
@@ -60,6 +127,7 @@ export function lookupFouling(paintAge, lastCleaned) {
 
 // ── Main calculator ──
 export function calculateEstimate({
+  serviceKey = "recurring_cleaning",
   boatLength = 35,
   boatType = "sailboat",
   frequency = "monthly",
@@ -68,13 +136,71 @@ export function calculateEstimate({
   lastCleaned = "<2",
   anodeCount = 0,
 }) {
-  const isOneTime = frequency === "onetime";
-  const rate = isOneTime ? RATES.onetime : RATES.recurring;
+  const service = SERVICES[serviceKey];
+  if (!service) return { items: [], subtotal: 0, total: 0, minimumApplied: false, rate: 0, isOneTime: true, fouling: null };
+
+  // ── Flat-rate services ──
+  if (serviceKey === "item_recovery") {
+    return {
+      items: [{ label: "Item Recovery", detail: "Flat rate", amount: 199 }],
+      subtotal: 199,
+      total: 199,
+      minimumApplied: false,
+      rate: 199,
+      isOneTime: true,
+      fouling: null,
+    };
+  }
+
+  if (serviceKey === "propeller_service") {
+    const count = Math.max(1, propellerCount);
+    const total = 349 * count;
+    return {
+      items: [{ label: "Propeller Service", detail: `${count} × $349`, amount: total }],
+      subtotal: total,
+      total,
+      minimumApplied: false,
+      rate: 349,
+      isOneTime: true,
+      fouling: null,
+    };
+  }
+
+  if (serviceKey === "anodes_only") {
+    const count = Math.max(0, anodeCount);
+    const anodeCost = count * 15;
+    const total = Math.max(149, anodeCost);
+    const items = [];
+    if (count > 0) {
+      items.push({ label: "Anode installation", detail: `${count} × $15`, amount: anodeCost });
+    }
+    const minimumApplied = anodeCost < 149;
+    if (minimumApplied) {
+      items.push({ label: "Minimum service charge", detail: "", amount: 149 });
+    }
+    return {
+      items,
+      subtotal: anodeCost || 149,
+      total,
+      minimumApplied,
+      rate: 15,
+      isOneTime: true,
+      fouling: null,
+    };
+  }
+
+  // ── Per-foot services (recurring, onetime, inspection) ──
+  const isOneTime = serviceKey === "onetime_cleaning" || serviceKey === "underwater_inspection";
+  let rate;
+  if (serviceKey === "recurring_cleaning") rate = RATES.recurring;
+  else if (serviceKey === "onetime_cleaning") rate = RATES.onetime;
+  else rate = RATES.inspection;
+
   const baseCost = rate * boatLength;
   const items = [];
 
   items.push({
-    label: `Base rate`,
+    label: "Base rate",
     detail: `$${rate}/ft × ${boatLength}ft`,
     amount: baseCost,
   });
@@ -82,7 +208,7 @@ export function calculateEstimate({
   let surchargeTotal = 0;
 
   // Boat type surcharge
-  if (boatType === "powerboat" || boatType === "catamaran" || boatType === "trimaran") {
+  if (boatType !== "sailboat" && SURCHARGES[boatType]) {
     const pct = SURCHARGES[boatType];
     const amt = baseCost * pct;
     surchargeTotal += amt;
@@ -94,8 +220,8 @@ export function calculateEstimate({
     });
   }
 
-  // Propeller surcharge
-  if (propellerCount > 1) {
+  // Propeller surcharge (cleaning services only)
+  if ((serviceKey === "recurring_cleaning" || serviceKey === "onetime_cleaning") && propellerCount > 1) {
     const additional = propellerCount - 1;
     const pct = additional * 0.10;
     const amt = baseCost * pct;
@@ -107,24 +233,27 @@ export function calculateEstimate({
     });
   }
 
-  // Growth surcharge from hull fouling matrix
-  const fouling = lookupFouling(paintAge, lastCleaned);
-  if (fouling.surcharge > 0) {
-    const amt = baseCost * fouling.surcharge;
-    surchargeTotal += amt;
-    items.push({
-      label: `Est. growth (${fouling.label})`,
-      detail: `+${(fouling.surcharge * 100).toFixed(0)}%`,
-      amount: amt,
-    });
+  // Growth surcharge (cleaning services only)
+  let fouling = null;
+  if (serviceKey === "recurring_cleaning" || serviceKey === "onetime_cleaning") {
+    fouling = lookupFouling(paintAge, lastCleaned);
+    if (fouling.surcharge > 0) {
+      const amt = baseCost * fouling.surcharge;
+      surchargeTotal += amt;
+      items.push({
+        label: `Est. growth (${fouling.label})`,
+        detail: `+${(fouling.surcharge * 100).toFixed(0)}%`,
+        amount: amt,
+      });
+    }
   }
 
-  // Anode installation
+  // Anode installation (cleaning services only)
   let anodeCost = 0;
-  if (anodeCount > 0) {
+  if ((serviceKey === "recurring_cleaning" || serviceKey === "onetime_cleaning") && anodeCount > 0) {
     anodeCost = anodeCount * RATES.anode;
     items.push({
-      label: `Anode installation`,
+      label: "Anode installation",
       detail: `${anodeCount} × $${RATES.anode}`,
       amount: anodeCost,
     });

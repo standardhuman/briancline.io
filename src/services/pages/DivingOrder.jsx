@@ -1,13 +1,14 @@
 import React, { useState, useEffect, useCallback } from "react";
 import { useSearchParams, useNavigate } from "react-router-dom";
 import { loadStripe } from "@stripe/stripe-js";
+import { Elements, CardNumberElement, CardExpiryElement, CardCvcElement, useStripe, useElements } from "@stripe/react-stripe-js";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "../components/ui/card";
 import { Button } from "../components/ui/button";
 import { Input } from "../components/ui/input";
 import { Textarea } from "../components/ui/textarea";
 import { Label } from "../components/ui/label";
-import { Checkbox } from "../components/ui/checkbox";
 import { cn, formatCurrency } from "../lib/utils";
+import { SERVICES } from "../lib/diving-calculator";
 import PageMeta from "../components/PageMeta";
 import {
   Ship, MapPin, User, Wrench, CreditCard, ArrowRight, Loader2,
@@ -29,21 +30,33 @@ const FREQUENCIES = [
   { value: "monthly", label: "Monthly" },
   { value: "bimonthly", label: "Every 2 Months" },
   { value: "quarterly", label: "Every 3 Months" },
-  { value: "one_time", label: "One-Time Service" },
 ];
 
 // ── Stripe loader (singleton) ──
 let stripePromise = null;
 
-async function getStripe() {
+function getStripePromise() {
   if (stripePromise) return stripePromise;
-  const res = await fetch(`${SUPABASE_URL}/functions/v1/get-stripe-config`, {
+  stripePromise = fetch(`${SUPABASE_URL}/functions/v1/get-stripe-config`, {
     headers: { Authorization: `Bearer ${SUPABASE_ANON_KEY}` },
-  });
-  const { publishableKey } = await res.json();
-  stripePromise = loadStripe(publishableKey);
+  })
+    .then((res) => res.json())
+    .then(({ publishableKey }) => loadStripe(publishableKey));
   return stripePromise;
 }
+
+// ── Stripe Element Styling ──
+const STRIPE_ELEMENT_OPTIONS = {
+  style: {
+    base: {
+      fontSize: "16px",
+      color: "#1f2937",
+      fontFamily: 'Inter, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif',
+      "::placeholder": { color: "#9ca3af" },
+    },
+    invalid: { color: "#ef4444" },
+  },
+};
 
 // ── Section Card ──
 function SectionCard({ icon: Icon, title, description, children }) {
@@ -73,16 +86,26 @@ function Field({ label, required, children, className }) {
   );
 }
 
-// ── Main Component ──
-export default function DivingOrder() {
-  const [searchParams] = useSearchParams();
-  const navigate = useNavigate();
+// ── Stripe-wrapped inner form ──
+function OrderForm({ searchParams, navigate }) {
+  const stripe = useStripe();
+  const elements = useElements();
 
   // Pre-fill from URL params
+  const serviceKey = searchParams.get("service") || "recurring_cleaning";
   const initialLength = searchParams.get("length") || "";
   const initialType = searchParams.get("type") || "sailboat";
   const initialFrequency = searchParams.get("frequency") || "monthly";
   const initialEstimate = searchParams.get("estimate") || "";
+
+  const service = SERVICES[serviceKey] || SERVICES.recurring_cleaning;
+
+  const isItemRecovery = serviceKey === "item_recovery";
+  const isAnodesOnly = serviceKey === "anodes_only";
+  const isPropellerService = serviceKey === "propeller_service";
+  const isRecurring = serviceKey === "recurring_cleaning";
+  const showBoatInfo = !isItemRecovery;
+  const showFrequency = isRecurring;
 
   // Form state
   const [form, setForm] = useState({
@@ -100,58 +123,29 @@ export default function DivingOrder() {
     billingAddress: "",
     billingCity: "",
     billingState: "",
-    serviceType: "hull_cleaning",
-    frequency: initialFrequency,
+    billingZip: "",
+    frequency: isRecurring ? initialFrequency : "one_time",
     notes: "",
+    // Item recovery fields
+    recoveryLocation: "",
+    itemDescription: "",
+    dateLost: "",
+    // Anodes only
+    anodeInfo: "",
+    // Propeller service
+    propellerCount: searchParams.get("propellers") || "1",
   });
 
   const [agreed, setAgreed] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [error, setError] = useState(null);
-  const [success, setSuccess] = useState(null); // { orderNumber }
-  const [cardComplete, setCardComplete] = useState(false);
+  const [success, setSuccess] = useState(null);
+  const [cardState, setCardState] = useState({
+    numberComplete: false,
+    expiryComplete: false,
+    cvcComplete: false,
+  });
   const [cardError, setCardError] = useState(null);
-
-  // Stripe refs
-  const [stripe, setStripe] = useState(null);
-  const [cardElement, setCardElement] = useState(null);
-  const cardContainerRef = React.useRef(null);
-
-  // Load Stripe and mount CardElement
-  useEffect(() => {
-    let mounted = true;
-    let element = null;
-
-    getStripe().then((stripeInstance) => {
-      if (!mounted || !cardContainerRef.current) return;
-      setStripe(stripeInstance);
-
-      const elements = stripeInstance.elements();
-      element = elements.create("card", {
-        style: {
-          base: {
-            fontSize: "16px",
-            color: "#1f2937",
-            fontFamily: '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif',
-            "::placeholder": { color: "#9ca3af" },
-          },
-          invalid: { color: "#ef4444" },
-        },
-      });
-      element.mount(cardContainerRef.current);
-      element.on("change", (event) => {
-        if (!mounted) return;
-        setCardComplete(event.complete);
-        setCardError(event.error ? event.error.message : null);
-      });
-      setCardElement(element);
-    });
-
-    return () => {
-      mounted = false;
-      if (element) element.destroy();
-    };
-  }, []);
 
   const updateField = useCallback((field, value) => {
     setForm((prev) => ({ ...prev, [field]: value }));
@@ -159,48 +153,63 @@ export default function DivingOrder() {
 
   const estimateAmount = initialEstimate ? parseInt(initialEstimate) : null;
 
+  const allCardComplete = cardState.numberComplete && cardState.expiryComplete && cardState.cvcComplete;
+
   const canSubmit =
     form.customerName &&
     form.customerEmail &&
     form.billingAddress &&
     form.billingCity &&
     form.billingState &&
+    form.billingZip &&
     agreed &&
-    cardComplete &&
+    allCardComplete &&
     !isSubmitting;
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    if (!canSubmit || !stripe || !cardElement) return;
+    if (!canSubmit || !stripe || !elements) return;
 
     setIsSubmitting(true);
     setError(null);
 
     try {
-      // Build form data for edge function
+      const cardNumberElement = elements.getElement(CardNumberElement);
+
       const formData = {
-        boatName: form.boatName,
-        boatLength: form.boatLength,
-        boatMake: form.boatMake,
-        boatModel: form.boatModel,
+        boatName: isItemRecovery ? "N/A - Item Recovery" : form.boatName,
+        boatLength: isItemRecovery ? "0" : form.boatLength,
+        boatMake: isItemRecovery ? "N/A" : form.boatMake,
+        boatModel: isItemRecovery ? "N/A" : form.boatModel,
         boatType: form.boatType,
-        marinaName: form.marina,
-        dock: form.dock,
-        slipNumber: form.slip,
+        marinaName: isItemRecovery ? "See recovery location" : form.marina,
+        dock: isItemRecovery ? "N/A" : form.dock,
+        slipNumber: isItemRecovery ? "N/A" : form.slip,
         customerName: form.customerName,
         customerEmail: form.customerEmail,
         customerPhone: form.customerPhone,
         billingAddress: form.billingAddress,
         billingCity: form.billingCity,
         billingState: form.billingState,
-        serviceInterval: form.frequency,
+        serviceInterval: isRecurring ? form.frequency : "one-time",
         customerNotes: form.notes,
         estimate: estimateAmount || 0,
-        service: "Hull Cleaning",
-        serviceDetails: `${form.boatType} - ${form.boatLength}ft - ${FREQUENCIES.find((f) => f.value === form.frequency)?.label || form.frequency}`,
+        service: service.name,
+        serviceDetails: `${service.name}${form.boatLength ? ` - ${form.boatLength}ft` : ""}`,
       };
 
-      // Call edge function
+      if (isItemRecovery) {
+        formData.recoveryLocation = form.recoveryLocation;
+        formData.itemDescription = form.itemDescription;
+        formData.dropDate = form.dateLost;
+      }
+      if (isAnodesOnly) {
+        formData.anodeDetails = form.anodeInfo;
+      }
+      if (isPropellerService) {
+        formData.propellerCount = form.propellerCount;
+      }
+
       const res = await fetch(`${SUPABASE_URL}/functions/v1/create-payment-intent`, {
         method: "POST",
         headers: {
@@ -217,7 +226,6 @@ export default function DivingOrder() {
 
       const { clientSecret, intentType, orderNumber } = await res.json();
 
-      // Confirm with Stripe
       const billingDetails = {
         name: form.customerName,
         email: form.customerEmail,
@@ -226,6 +234,7 @@ export default function DivingOrder() {
           line1: form.billingAddress,
           city: form.billingCity,
           state: form.billingState,
+          postal_code: form.billingZip,
           country: "US",
         },
       };
@@ -233,17 +242,15 @@ export default function DivingOrder() {
       let result;
       if (intentType === "setup") {
         result = await stripe.confirmCardSetup(clientSecret, {
-          payment_method: { card: cardElement, billing_details: billingDetails },
+          payment_method: { card: cardNumberElement, billing_details: billingDetails },
         });
       } else {
         result = await stripe.confirmCardPayment(clientSecret, {
-          payment_method: { card: cardElement, billing_details: billingDetails },
+          payment_method: { card: cardNumberElement, billing_details: billingDetails },
         });
       }
 
-      if (result.error) {
-        throw result.error;
-      }
+      if (result.error) throw result.error;
 
       setSuccess({ orderNumber });
     } catch (err) {
@@ -285,8 +292,8 @@ export default function DivingOrder() {
   return (
     <div>
       <PageMeta
-        title="Schedule Hull Cleaning | Brian Cline"
-        description="Schedule professional hull cleaning service on San Francisco Bay."
+        title={`Schedule ${service.name} | Brian Cline`}
+        description={`Schedule professional ${service.name.toLowerCase()} service on San Francisco Bay.`}
       />
 
       {/* Hero */}
@@ -300,7 +307,7 @@ export default function DivingOrder() {
             <Ship className="w-8 h-8 text-white" />
           </div>
           <h1 className="text-3xl md:text-4xl font-bold text-gray-900 mb-4">
-            Schedule Hull Cleaning Service
+            Schedule {service.name}
           </h1>
           <p className="text-lg text-gray-600 max-w-2xl mx-auto">
             Fill out the form below to get on the schedule.
@@ -314,53 +321,110 @@ export default function DivingOrder() {
       </div>
 
       <form onSubmit={handleSubmit} className="max-w-3xl mx-auto px-6 pb-16 space-y-6">
-        {/* 1. Boat Details */}
-        <SectionCard icon={Ship} title="Boat Details" description="Tell us about your vessel">
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-            <Field label="Boat Name">
-              <Input placeholder="Sea Spirit" value={form.boatName} onChange={(e) => updateField("boatName", e.target.value)} />
-            </Field>
-            <Field label="Boat Type">
-              <select
-                className="w-full h-10 rounded-md border border-gray-200 bg-white px-3 text-sm"
-                value={form.boatType}
-                onChange={(e) => updateField("boatType", e.target.value)}
-              >
-                {BOAT_TYPES.map((t) => (
-                  <option key={t.value} value={t.value}>{t.label}</option>
-                ))}
-              </select>
-            </Field>
-          </div>
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mt-4">
-            <Field label="Make">
-              <Input placeholder="Beneteau" value={form.boatMake} onChange={(e) => updateField("boatMake", e.target.value)} />
-            </Field>
-            <Field label="Model">
-              <Input placeholder="Oceanis 40.1" value={form.boatModel} onChange={(e) => updateField("boatModel", e.target.value)} />
-            </Field>
-            <Field label="Length (ft)">
-              <Input type="number" placeholder="40" value={form.boatLength} onChange={(e) => updateField("boatLength", e.target.value)} />
-            </Field>
-          </div>
-        </SectionCard>
+        {/* Boat Details (hidden for item recovery) */}
+        {showBoatInfo && (
+          <SectionCard icon={Ship} title="Boat Details" description="Tell us about your vessel">
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <Field label="Boat Name">
+                <Input placeholder="Sea Spirit" value={form.boatName} onChange={(e) => updateField("boatName", e.target.value)} />
+              </Field>
+              <Field label="Boat Type">
+                <select
+                  className="w-full h-10 rounded-md border border-gray-200 bg-white px-3 text-sm"
+                  value={form.boatType}
+                  onChange={(e) => updateField("boatType", e.target.value)}
+                >
+                  {BOAT_TYPES.map((t) => (
+                    <option key={t.value} value={t.value}>{t.label}</option>
+                  ))}
+                </select>
+              </Field>
+            </div>
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mt-4">
+              <Field label="Make">
+                <Input placeholder="Beneteau" value={form.boatMake} onChange={(e) => updateField("boatMake", e.target.value)} />
+              </Field>
+              <Field label="Model">
+                <Input placeholder="Oceanis 40.1" value={form.boatModel} onChange={(e) => updateField("boatModel", e.target.value)} />
+              </Field>
+              <Field label="Length (ft)">
+                <Input type="number" placeholder="40" value={form.boatLength} onChange={(e) => updateField("boatLength", e.target.value)} />
+              </Field>
+            </div>
 
-        {/* 2. Location */}
-        <SectionCard icon={MapPin} title="Boat Location" description="Where is your boat kept?">
-          <Field label="Marina">
-            <Input placeholder="Harbor Island West Marina" value={form.marina} onChange={(e) => updateField("marina", e.target.value)} />
-          </Field>
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mt-4">
-            <Field label="Dock">
-              <Input placeholder="C" value={form.dock} onChange={(e) => updateField("dock", e.target.value)} />
-            </Field>
-            <Field label="Slip">
-              <Input placeholder="42" value={form.slip} onChange={(e) => updateField("slip", e.target.value)} />
-            </Field>
-          </div>
-        </SectionCard>
+            {/* Propeller count for propeller service */}
+            {isPropellerService && (
+              <div className="mt-4">
+                <Field label="Number of Propellers">
+                  <Input type="number" min="1" max="4" value={form.propellerCount} onChange={(e) => updateField("propellerCount", e.target.value)} />
+                </Field>
+              </div>
+            )}
 
-        {/* 3. Your Information */}
+            {/* Anode info for anodes only */}
+            {isAnodesOnly && (
+              <div className="mt-4">
+                <Field label="Anode Information">
+                  <Textarea
+                    placeholder="Describe your anode needs — sizes, types, locations, how many you think need replacing..."
+                    rows={3}
+                    value={form.anodeInfo}
+                    onChange={(e) => updateField("anodeInfo", e.target.value)}
+                  />
+                </Field>
+              </div>
+            )}
+          </SectionCard>
+        )}
+
+        {/* Item Recovery Section */}
+        {isItemRecovery && (
+          <SectionCard icon={MapPin} title="Recovery Location" description="Where did you lose the item?">
+            <Field label="Location" required>
+              <Textarea
+                placeholder="Describe the location — marina name, dock, slip number, approximate area..."
+                rows={3}
+                value={form.recoveryLocation}
+                onChange={(e) => updateField("recoveryLocation", e.target.value)}
+              />
+            </Field>
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mt-4">
+              <Field label="Item Description" required>
+                <Input
+                  placeholder="What did you lose? (phone, keys, tool, etc.)"
+                  value={form.itemDescription}
+                  onChange={(e) => updateField("itemDescription", e.target.value)}
+                />
+              </Field>
+              <Field label="Date Lost">
+                <Input
+                  type="date"
+                  value={form.dateLost}
+                  onChange={(e) => updateField("dateLost", e.target.value)}
+                />
+              </Field>
+            </div>
+          </SectionCard>
+        )}
+
+        {/* Boat Location (not for item recovery) */}
+        {showBoatInfo && (
+          <SectionCard icon={MapPin} title="Boat Location" description="Where is your boat kept?">
+            <Field label="Marina">
+              <Input placeholder="Harbor Island West Marina" value={form.marina} onChange={(e) => updateField("marina", e.target.value)} />
+            </Field>
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mt-4">
+              <Field label="Dock">
+                <Input placeholder="C" value={form.dock} onChange={(e) => updateField("dock", e.target.value)} />
+              </Field>
+              <Field label="Slip">
+                <Input placeholder="42" value={form.slip} onChange={(e) => updateField("slip", e.target.value)} />
+              </Field>
+            </div>
+          </SectionCard>
+        )}
+
+        {/* Your Information */}
         <SectionCard icon={User} title="Your Information" description="Contact and billing details">
           <Field label="Full Name" required>
             <Input placeholder="John Smith" value={form.customerName} onChange={(e) => updateField("customerName", e.target.value)} />
@@ -378,39 +442,41 @@ export default function DivingOrder() {
               <Input placeholder="123 Main St" value={form.billingAddress} onChange={(e) => updateField("billingAddress", e.target.value)} />
             </Field>
           </div>
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mt-4">
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mt-4">
             <Field label="City" required>
               <Input placeholder="San Francisco" value={form.billingCity} onChange={(e) => updateField("billingCity", e.target.value)} />
             </Field>
             <Field label="State" required>
               <Input placeholder="CA" value={form.billingState} onChange={(e) => updateField("billingState", e.target.value)} />
             </Field>
+            <Field label="ZIP" required>
+              <Input placeholder="94107" value={form.billingZip} onChange={(e) => updateField("billingZip", e.target.value)} />
+            </Field>
           </div>
         </SectionCard>
 
-        {/* 4. Service Details */}
-        <SectionCard icon={Wrench} title="Service Details" description="What service do you need?">
+        {/* Service Details */}
+        <SectionCard icon={Wrench} title="Service Details">
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-            <Field label="Service Type">
-              <select
-                className="w-full h-10 rounded-md border border-gray-200 bg-white px-3 text-sm"
-                value={form.serviceType}
-                onChange={(e) => updateField("serviceType", e.target.value)}
-              >
-                <option value="hull_cleaning">Hull Cleaning</option>
-              </select>
+            <Field label="Service">
+              <div className="h-10 rounded-md border border-gray-200 bg-gray-50 px-3 flex items-center text-sm text-gray-700">
+                {service.name}
+              </div>
             </Field>
-            <Field label="Frequency">
-              <select
-                className="w-full h-10 rounded-md border border-gray-200 bg-white px-3 text-sm"
-                value={form.frequency}
-                onChange={(e) => updateField("frequency", e.target.value)}
-              >
-                {FREQUENCIES.map((f) => (
-                  <option key={f.value} value={f.value}>{f.label}</option>
-                ))}
-              </select>
-            </Field>
+
+            {showFrequency && (
+              <Field label="Frequency">
+                <select
+                  className="w-full h-10 rounded-md border border-gray-200 bg-white px-3 text-sm"
+                  value={form.frequency}
+                  onChange={(e) => updateField("frequency", e.target.value)}
+                >
+                  {FREQUENCIES.map((f) => (
+                    <option key={f.value} value={f.value}>{f.label}</option>
+                  ))}
+                </select>
+              </Field>
+            )}
           </div>
           <div className="mt-4">
             <Field label="Additional Notes">
@@ -424,29 +490,101 @@ export default function DivingOrder() {
           </div>
         </SectionCard>
 
-        {/* 5. Payment */}
+        {/* Payment — Separate Stripe Elements */}
         <SectionCard icon={CreditCard} title="Payment Information" description="Your card will be saved on file — not charged now">
-          <div
-            ref={cardContainerRef}
-            className="border border-gray-200 rounded-md p-3 bg-white"
-          />
+          {/* Card Number */}
+          <div className="mb-4">
+            <Label className="text-sm font-medium text-gray-700 mb-1.5 block">Card Number</Label>
+            <div className="border border-gray-200 rounded-md p-3 bg-white">
+              <CardNumberElement
+                options={STRIPE_ELEMENT_OPTIONS}
+                onChange={(e) => {
+                  setCardState((prev) => ({ ...prev, numberComplete: e.complete }));
+                  setCardError(e.error ? e.error.message : null);
+                }}
+              />
+            </div>
+          </div>
+
+          {/* Expiry + CVC side by side */}
+          <div className="grid grid-cols-2 gap-4 mb-4">
+            <div>
+              <Label className="text-sm font-medium text-gray-700 mb-1.5 block">Expiration</Label>
+              <div className="border border-gray-200 rounded-md p-3 bg-white">
+                <CardExpiryElement
+                  options={STRIPE_ELEMENT_OPTIONS}
+                  onChange={(e) => {
+                    setCardState((prev) => ({ ...prev, expiryComplete: e.complete }));
+                    if (e.error) setCardError(e.error.message);
+                  }}
+                />
+              </div>
+            </div>
+            <div>
+              <Label className="text-sm font-medium text-gray-700 mb-1.5 block">CVC</Label>
+              <div className="border border-gray-200 rounded-md p-3 bg-white">
+                <CardCvcElement
+                  options={STRIPE_ELEMENT_OPTIONS}
+                  onChange={(e) => {
+                    setCardState((prev) => ({ ...prev, cvcComplete: e.complete }));
+                    if (e.error) setCardError(e.error.message);
+                  }}
+                />
+              </div>
+            </div>
+          </div>
+
+          {/* Billing ZIP (plain input, already collected above but Stripe needs it too) */}
+          <div className="mb-4">
+            <Label className="text-sm font-medium text-gray-700 mb-1.5 block">Billing ZIP Code</Label>
+            <Input
+              placeholder="94107"
+              value={form.billingZip}
+              onChange={(e) => updateField("billingZip", e.target.value)}
+              className="max-w-[200px]"
+            />
+          </div>
+
           {cardError && (
             <p className="text-red-500 text-sm mt-2">{cardError}</p>
           )}
 
-          <div className="mt-4 flex items-start gap-3">
-            <Checkbox
-              id="agreement"
-              checked={agreed}
-              onCheckedChange={setAgreed}
-              className="mt-0.5"
-            />
-            <label htmlFor="agreement" className="text-sm text-gray-600 cursor-pointer leading-snug">
-              I authorize SailorSkills to charge the card on file after service completion.
-              {estimateAmount && (
-                <span className="font-medium"> Estimated amount: {formatCurrency(estimateAmount)}.</span>
-              )}
-            </label>
+          {/* Full Service Agreement */}
+          <div className="mt-6 border rounded-lg p-4 bg-gray-50 space-y-3">
+            <h4 className="font-semibold text-gray-900">Important Service Agreement</h4>
+
+            <p className="text-sm text-gray-700">
+              <strong>Billing:</strong> Your card will be charged only after service completion.
+            </p>
+
+            <p className="text-sm text-gray-700">
+              <strong>Estimate Notice:</strong> The final amount may vary from the provided estimate based on actual conditions found during service. Common variations include:
+            </p>
+
+            <ul className="text-sm text-gray-700 list-disc ml-5 space-y-1">
+              <li>Unexpected marine growth levels</li>
+              <li>Additional anode replacements needed</li>
+            </ul>
+
+            <p className="text-sm text-gray-700">
+              Any variations and their reasons will be documented in your service logs and underwater video.
+            </p>
+
+            <div className="flex items-start gap-3 pt-2">
+              <input
+                type="checkbox"
+                id="service-agreement"
+                checked={agreed}
+                onChange={(e) => setAgreed(e.target.checked)}
+                className="mt-1 h-4 w-4 rounded border-gray-300 text-primary-600 focus:ring-primary-500"
+              />
+              <label htmlFor="service-agreement" className="text-sm text-gray-700 cursor-pointer leading-snug">
+                I understand and agree to be billed for the service at time of completion, and that the final amount may vary from the estimate provided.
+                {estimateAmount && (
+                  <span className="font-medium"> Estimated amount: {formatCurrency(estimateAmount)}.</span>
+                )}
+              </label>
+            </div>
           </div>
         </SectionCard>
 
@@ -483,5 +621,30 @@ export default function DivingOrder() {
         </div>
       </form>
     </div>
+  );
+}
+
+// ── Main Component (wraps in Elements provider) ──
+export default function DivingOrder() {
+  const [searchParams] = useSearchParams();
+  const navigate = useNavigate();
+  const [stripeReady, setStripeReady] = useState(null);
+
+  useEffect(() => {
+    getStripePromise().then((s) => setStripeReady(s));
+  }, []);
+
+  if (!stripeReady) {
+    return (
+      <div className="flex items-center justify-center min-h-[50vh]">
+        <Loader2 className="w-8 h-8 animate-spin text-[#0073a8]" />
+      </div>
+    );
+  }
+
+  return (
+    <Elements stripe={stripeReady}>
+      <OrderForm searchParams={searchParams} navigate={navigate} />
+    </Elements>
   );
 }
