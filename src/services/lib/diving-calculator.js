@@ -130,6 +130,7 @@ export function calculateEstimate({
   serviceKey = "recurring_cleaning",
   boatLength = 35,
   boatType = "sailboat",
+  hullType = "monohull",
   frequency = "monthly",
   propellerCount = 1,
   paintAge = "<6mo",
@@ -207,14 +208,34 @@ export function calculateEstimate({
 
   let surchargeTotal = 0;
 
-  // Boat type surcharge
-  if (boatType !== "sailboat" && SURCHARGES[boatType]) {
-    const pct = SURCHARGES[boatType];
+  // Boat type surcharge (powerboat)
+  if (boatType === "powerboat") {
+    const pct = SURCHARGES.powerboat;
     const amt = baseCost * pct;
     surchargeTotal += amt;
-    const labels = { powerboat: "Powerboat", catamaran: "Catamaran", trimaran: "Trimaran" };
     items.push({
-      label: `${labels[boatType]} surcharge`,
+      label: "Powerboat surcharge",
+      detail: `+${(pct * 100).toFixed(0)}%`,
+      amount: amt,
+    });
+  }
+
+  // Hull type surcharge (catamaran / trimaran)
+  if (hullType === "catamaran") {
+    const pct = SURCHARGES.catamaran;
+    const amt = baseCost * pct;
+    surchargeTotal += amt;
+    items.push({
+      label: "Catamaran surcharge",
+      detail: `+${(pct * 100).toFixed(0)}%`,
+      amount: amt,
+    });
+  } else if (hullType === "trimaran") {
+    const pct = SURCHARGES.trimaran;
+    const amt = baseCost * pct;
+    surchargeTotal += amt;
+    items.push({
+      label: "Trimaran surcharge",
       detail: `+${(pct * 100).toFixed(0)}%`,
       amount: amt,
     });

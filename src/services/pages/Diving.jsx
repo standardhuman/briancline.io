@@ -49,6 +49,10 @@ const BOAT_TYPE_ICONS = {
 const BOAT_TYPES = [
   { value: "sailboat", label: "Sailboat" },
   { value: "powerboat", label: "Powerboat" },
+];
+
+const HULL_TYPES = [
+  { value: "monohull", label: "Monohull" },
   { value: "catamaran", label: "Catamaran" },
   { value: "trimaran", label: "Trimaran" },
 ];
@@ -186,7 +190,7 @@ function EstimateCard({ estimate, boatLength, boatType, frequency, serviceKey })
 
   const handleGetStarted = () => {
     const freqParam = frequency === "onetime" ? "one_time" : frequency;
-    navigate(`/diving/order?service=${serviceKey}&length=${boatLength}&type=${boatType}&frequency=${freqParam}&estimate=${Math.round(estimate.total)}`);
+    navigate(`/diving/order?service=${serviceKey}&length=${boatLength}&type=${boatType}&hull=${hullType}&frequency=${freqParam}&estimate=${Math.round(estimate.total)}`);
   };
 
   return (
@@ -277,6 +281,7 @@ export default function Diving() {
   const [serviceKey, setServiceKey] = useState("recurring_cleaning");
   const [boatLength, setBoatLength] = useState(35);
   const [boatType, setBoatType] = useState("sailboat");
+  const [hullType, setHullType] = useState("monohull");
   const [frequency, setFrequency] = useState("monthly");
   const [propellerCount, setPropellerCount] = useState(1);
   const [paintAge, setPaintAge] = useState("<6mo");
@@ -286,8 +291,8 @@ export default function Diving() {
   const vis = SERVICE_VISIBILITY[serviceKey] || {};
 
   const estimate = useMemo(
-    () => calculateEstimate({ serviceKey, boatLength, boatType, frequency, propellerCount, paintAge, lastCleaned, anodeCount }),
-    [serviceKey, boatLength, boatType, frequency, propellerCount, paintAge, lastCleaned, anodeCount]
+    () => calculateEstimate({ serviceKey, boatLength, boatType, hullType, frequency, propellerCount, paintAge, lastCleaned, anodeCount }),
+    [serviceKey, boatLength, boatType, hullType, frequency, propellerCount, paintAge, lastCleaned, anodeCount]
   );
 
   return (
@@ -359,16 +364,30 @@ export default function Diving() {
               </div>
             </InputCard>
 
-            {/* 2. Boat Type */}
-            <InputCard icon={Ship} title="Boat Type" description="Select your vessel type" visible={vis.boatType}>
-              <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
+            {/* 2. Boat Type (sail vs power) */}
+            <InputCard icon={Ship} title="Boat Type" description="Sail or power?" visible={vis.boatType}>
+              <div className="grid grid-cols-2 gap-3">
                 {BOAT_TYPES.map((t) => {
                   const IconComp = BOAT_TYPE_ICONS[t.value];
                   return (
                     <OptionButton key={t.value} selected={boatType === t.value} onClick={() => setBoatType(t.value)}>
                       <IconComp className="w-8 h-8 mx-auto mb-1 text-[#0073a8]" />
                       <div className="font-medium text-sm">{t.label}</div>
-                      {t.badge && <div className="text-xs text-teal-600 font-medium mt-0.5">{t.badge}</div>}
+                    </OptionButton>
+                  );
+                })}
+              </div>
+            </InputCard>
+
+            {/* 2b. Hull Type (mono/cat/tri) */}
+            <InputCard icon={Anchor} title="Hull Type" description="Select your hull configuration" visible={vis.boatType}>
+              <div className="grid grid-cols-3 gap-3">
+                {HULL_TYPES.map((h) => {
+                  const IconComp = h.value === "catamaran" ? CatamaranIcon : h.value === "trimaran" ? TrimaranIcon : Sailboat;
+                  return (
+                    <OptionButton key={h.value} selected={hullType === h.value} onClick={() => setHullType(h.value)}>
+                      <IconComp className="w-8 h-8 mx-auto mb-1 text-[#0073a8]" />
+                      <div className="font-medium text-sm">{h.label}</div>
                     </OptionButton>
                   );
                 })}
