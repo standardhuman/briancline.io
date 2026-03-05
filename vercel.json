@@ -3,6 +3,7 @@
   "rewrites": [
     { "source": "/diving", "destination": "/services" },
     { "source": "/diving/calculator", "destination": "/services" },
+    { "source": "/diving/order", "destination": "/services" },
     { "source": "/detailing", "destination": "/services" },
     { "source": "/training", "destination": "/services" },
     { "source": "/training/faq", "destination": "/services" },

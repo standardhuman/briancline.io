@@ -1,4 +1,5 @@
 import React, { useState, useMemo } from "react";
+import { useNavigate } from "react-router-dom";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "../components/ui/card";
 import { Button } from "../components/ui/button";
 import { Input } from "../components/ui/input";
@@ -6,13 +7,17 @@ import { Accordion, AccordionItem, AccordionTrigger, AccordionContent } from "..
 import { cn, formatCurrency } from "../lib/utils";
 import { calculateEstimate, RATES } from "../lib/diving-calculator";
 import PageMeta from "../components/PageMeta";
+import {
+  Ruler, Ship, CalendarDays, Settings, Paintbrush, Clock, Wrench,
+  Calculator, ListChecks, CheckCircle2, HelpCircle, ArrowRight, Info
+} from "lucide-react";
 
 // ── Options ──
 const BOAT_TYPES = [
-  { value: "sailboat", label: "Sailboat", icon: "⛵" },
-  { value: "powerboat", label: "Powerboat", icon: "🚤", badge: "+25%" },
-  { value: "catamaran", label: "Catamaran", icon: "🛥️", badge: "+25%" },
-  { value: "trimaran", label: "Trimaran", icon: "🚢", badge: "+50%" },
+  { value: "sailboat", label: "Sailboat", icon: Ship },
+  { value: "powerboat", label: "Powerboat", icon: Ship, badge: "+25%" },
+  { value: "catamaran", label: "Catamaran", icon: Ship, badge: "+25%" },
+  { value: "trimaran", label: "Trimaran", icon: Ship, badge: "+50%" },
 ];
 
 const FREQUENCIES = [
@@ -48,24 +53,52 @@ const LAST_CLEANED = [
 
 const FAQS = [
   {
-    q: "How long does a hull cleaning take?",
-    a: "Most boats take 30–90 minutes depending on size and growth level. A 35-foot sailboat with light growth is typically done in about 45 minutes.",
+    q: "How do you rate levels of marine growth?",
+    a: "We use a 5-level scale: None (clean hull, no visible growth), Minimal (light slime or algae film), Moderate (visible soft growth, some barnacle starts), Heavy (dense barnacles, mussels, or hard growth), Severe (thick multi-layer growth requiring extensive effort).",
   },
   {
-    q: "What if my boat has heavy growth?",
-    a: "Heavy or severe growth adds a surcharge because it takes significantly more time and effort. The estimator above factors this in based on your paint age and last cleaning date. After the initial cleaning, growth surcharges drop significantly with regular service.",
+    q: "How do you rate paint condition?",
+    a: "Also a 5-level scale: Excellent (fresh, smooth, fully intact), Good (minor wear, still effective), Fair (noticeable wear, reduced antifouling), Poor (significant erosion, bare spots), Missing (no antifouling paint present).",
   },
   {
-    q: "Do you service catamarans and trimarans?",
-    a: "Yes. Multi-hull vessels have more surface area, which is reflected in the surcharge. The cleaning process is the same — every hull gets the same attention.",
+    q: "How does billing work?",
+    a: "We bill within a week after service is completed. Any anode replacements or variable charges are included on the same invoice.",
   },
   {
-    q: "What areas do you serve?",
-    a: "I service marinas throughout San Francisco Bay — Richmond, Berkeley, Emeryville, Sausalito, San Francisco, and the South Bay. Not sure if I cover your marina? Just ask.",
+    q: "Are anodes extra?",
+    a: "Yes, anodes are an additional charge. You can provide your own or we'll supply them at roughly chandlery prices plus tax. There's a $15 installation fee per anode.",
   },
   {
-    q: "How do I schedule a recurring service?",
-    a: "Click 'Get Started' above and select your preferred frequency. You'll pick a date and we'll set up your recurring schedule. You can pause or cancel anytime.",
+    q: "Can you provide an estimate before beginning work?",
+    a: "Yes — we're happy to stop by your boat for a quick look before your first service so there are no surprises.",
+  },
+  {
+    q: "Do you offer a referral program?",
+    a: "Yes! Refer someone who signs up for recurring service and you get a free cleaning. Your friend gets 50% off their first cleaning. No limit on referrals.",
+  },
+  {
+    q: "What do you use to clean the bottom?",
+    a: "We match tools to the type and severity of growth, using the minimum effective abrasion. If the paint needs more help than cleaning can provide, we'll recommend a haul-out.",
+  },
+  {
+    q: "Will my paint look perfectly clean afterward?",
+    a: "It depends on the paint's biocidal properties. Some algae may remain in the paint texture — removing it would damage the paint itself. We clean as thoroughly as the paint allows.",
+  },
+  {
+    q: "How high up do you clean?",
+    a: "Up to the antifouling paint line only. We don't clean unpainted surfaces below the waterline.",
+  },
+  {
+    q: "Do you offer one-time services?",
+    a: "Yes, especially useful for voyage prep or a one-off cleaning before the season.",
+  },
+  {
+    q: "I need a cleaning before a race. Can you help?",
+    a: "Absolutely. We'll schedule as close to race day as possible to give you a clean bottom when it matters most.",
+  },
+  {
+    q: "I dropped something in the water. Can you retrieve it?",
+    a: "Yes — book as a one-time service. We'll do a 20-minute search plus a 20-minute bonus search. No guarantee of recovery, but we'll do our best. Please don't disturb the bottom before we arrive.",
   },
 ];
 
@@ -88,12 +121,12 @@ function OptionButton({ selected, onClick, children, className }) {
 }
 
 // ── Input Card wrapper ──
-function InputCard({ icon, title, description, children }) {
+function InputCard({ icon: Icon, title, description, children }) {
   return (
     <Card className="border-gray-100 shadow-sm">
       <CardHeader className="pb-3">
         <CardTitle className="text-lg font-semibold flex items-center gap-2">
-          <span className="text-xl">{icon}</span>
+          <Icon className="w-5 h-5 text-[#0073a8]" />
           {title}
         </CardTitle>
         {description && <CardDescription>{description}</CardDescription>}
@@ -105,8 +138,12 @@ function InputCard({ icon, title, description, children }) {
 
 // ── Estimate Card ──
 function EstimateCard({ estimate, boatLength, boatType, frequency }) {
+  const navigate = useNavigate();
   const freqParam = frequency === "onetime" ? "one_time" : frequency;
-  const orderUrl = `https://marketplace.sailorskills.com/order?length=${boatLength}&type=${boatType}&frequency=${freqParam}`;
+
+  const handleGetStarted = () => {
+    navigate(`/diving/order?length=${boatLength}&type=${boatType}&frequency=${freqParam}&estimate=${Math.round(estimate.total)}`);
+  };
 
   return (
     <div>
@@ -146,10 +183,11 @@ function EstimateCard({ estimate, boatLength, boatType, frequency }) {
             </div>
           </div>
 
-          <Button asChild className="w-full bg-white text-primary-700 hover:bg-gray-100 h-12 text-lg font-semibold rounded-xl">
-            <a href={orderUrl} className="flex items-center justify-center gap-2">
-              Get Started <span aria-hidden>→</span>
-            </a>
+          <Button
+            onClick={handleGetStarted}
+            className="w-full bg-[#0073a8] text-white hover:bg-[#005f8a] h-12 text-lg font-semibold rounded-xl flex items-center justify-center gap-2"
+          >
+            Get Started <ArrowRight className="w-5 h-5" />
           </Button>
 
           <p className="text-xs text-white/60 text-center">
@@ -162,7 +200,7 @@ function EstimateCard({ estimate, boatLength, boatType, frequency }) {
       <Card className="mt-4 border-gray-100 shadow-sm">
         <CardContent className="p-4">
           <div className="flex gap-3">
-            <span className="text-xl flex-shrink-0">ℹ️</span>
+            <Info className="w-5 h-5 text-[#0073a8] flex-shrink-0 mt-0.5" />
             <div className="text-sm text-gray-600">
               <p className="font-medium text-gray-900 mb-1">About our pricing</p>
               <ul className="space-y-1 text-xs">
@@ -219,7 +257,7 @@ export default function Diving() {
         </div>
         <div className="relative max-w-4xl mx-auto text-center">
           <div className="inline-flex items-center justify-center w-16 h-16 rounded-2xl bg-gradient-to-br from-primary-500 to-sky-600 mb-4">
-            <span className="text-3xl">🧮</span>
+            <Calculator className="w-8 h-8 text-white" />
           </div>
           <h1 className="text-4xl md:text-5xl font-bold text-gray-900 mb-4">
             Hull Cleaning Cost Estimator
@@ -236,7 +274,7 @@ export default function Diving() {
           {/* Left: Input cards */}
           <div className="lg:col-span-3 space-y-6">
             {/* 1. Boat Length */}
-            <InputCard icon="📏" title="Boat Length" description="Enter your boat's length in feet (LOA)">
+            <InputCard icon={Ruler} title="Boat Length" description="Enter your boat's length in feet (LOA)">
               <div className="flex items-center gap-4">
                 <Input
                   type="number" min={15} max={150}
@@ -255,11 +293,11 @@ export default function Diving() {
             </InputCard>
 
             {/* 2. Boat Type */}
-            <InputCard icon="⛵" title="Boat Type" description="Select your vessel type">
+            <InputCard icon={Ship} title="Boat Type" description="Select your vessel type">
               <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
                 {BOAT_TYPES.map((t) => (
                   <OptionButton key={t.value} selected={boatType === t.value} onClick={() => setBoatType(t.value)}>
-                    <div className="text-2xl mb-1">{t.icon}</div>
+                    <t.icon className="w-6 h-6 mx-auto mb-1 text-[#0073a8]" />
                     <div className="font-medium text-sm">{t.label}</div>
                     {t.badge && <div className="text-xs text-teal-600 font-medium mt-0.5">{t.badge}</div>}
                   </OptionButton>
@@ -268,7 +306,7 @@ export default function Diving() {
             </InputCard>
 
             {/* 3. Service Frequency */}
-            <InputCard icon="📅" title="Service Frequency" description="How often do you need hull cleaning?">
+            <InputCard icon={CalendarDays} title="Service Frequency" description="How often do you need hull cleaning?">
               <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
                 {FREQUENCIES.map((f) => (
                   <OptionButton key={f.value} selected={frequency === f.value} onClick={() => setFrequency(f.value)}>
@@ -280,7 +318,7 @@ export default function Diving() {
             </InputCard>
 
             {/* 4. Propellers */}
-            <InputCard icon="⚙️" title="Propellers" description="First propeller included. Additional propellers add 10% each.">
+            <InputCard icon={Settings} title="Propellers" description="First propeller included. Additional propellers add 10% each.">
               <div className="flex gap-3">
                 {PROPELLERS.map((p) => (
                   <OptionButton key={p.value} selected={propellerCount === p.value} onClick={() => setPropellerCount(p.value)} className="w-20">
@@ -292,7 +330,7 @@ export default function Diving() {
             </InputCard>
 
             {/* 5. Bottom Paint Age */}
-            <InputCard icon="🎨" title="Bottom Paint Age" description="Paint condition affects marine growth estimates.">
+            <InputCard icon={Paintbrush} title="Bottom Paint Age" description="Paint condition affects marine growth estimates.">
               <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-5 gap-3">
                 {PAINT_AGES.map((p) => (
                   <OptionButton key={p.value} selected={paintAge === p.value} onClick={() => setPaintAge(p.value)}>
@@ -304,7 +342,7 @@ export default function Diving() {
             </InputCard>
 
             {/* 6. Last Cleaned */}
-            <InputCard icon="🕐" title="Last Cleaned" description="Longer gaps between cleanings may increase marine growth surcharges.">
+            <InputCard icon={Clock} title="Last Cleaned" description="Longer gaps between cleanings may increase marine growth surcharges.">
               <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-3">
                 {LAST_CLEANED.map((c) => (
                   <OptionButton key={c.value} selected={lastCleaned === c.value} onClick={() => setLastCleaned(c.value)}>
@@ -315,7 +353,7 @@ export default function Diving() {
             </InputCard>
 
             {/* 7. Anodes */}
-            <InputCard icon="🔩" title="Anode Service" description="$15 per anode installation (labor only — anode parts additional)">
+            <InputCard icon={Wrench} title="Anode Service" description="$15 per anode installation (labor only — anode parts additional)">
               <div className="flex items-center gap-4">
                 <button
                   onClick={() => setAnodeCount(Math.max(0, anodeCount - 1))}
@@ -352,10 +390,13 @@ export default function Diving() {
       {/* Support section */}
       <section id="services-info" className="bg-gray-50 py-16">
         <div className="max-w-5xl mx-auto px-6">
-          <div className="grid md:grid-cols-3 gap-8">
+          <div className="grid md:grid-cols-2 gap-8 mb-8">
             {/* How It Works */}
             <Card className="p-6">
-              <h3 className="font-bold text-foreground mb-4">How It Works</h3>
+              <h3 className="font-bold text-foreground mb-4 flex items-center gap-2">
+                <ListChecks className="w-5 h-5 text-[#0073a8]" />
+                How It Works
+              </h3>
               <ol className="space-y-3 text-sm text-gray-600">
                 <li className="flex gap-3">
                   <span className="flex-shrink-0 w-6 h-6 rounded-full bg-primary-100 text-primary-700 text-xs font-bold flex items-center justify-center">1</span>
@@ -374,7 +415,10 @@ export default function Diving() {
 
             {/* What's Included */}
             <Card className="p-6">
-              <h3 className="font-bold text-foreground mb-4">What's Included</h3>
+              <h3 className="font-bold text-foreground mb-4 flex items-center gap-2">
+                <CheckCircle2 className="w-5 h-5 text-[#0073a8]" />
+                What's Included
+              </h3>
               <ul className="space-y-2 text-sm text-gray-600">
                 <li>✓ Complete hull scrub</li>
                 <li>✓ Running gear inspection</li>
@@ -384,19 +428,23 @@ export default function Diving() {
               </ul>
             </Card>
 
-            {/* FAQ */}
-            <Card className="p-6">
-              <h3 className="font-bold text-foreground mb-4">FAQ</h3>
-              <Accordion type="single" collapsible className="text-sm">
-                {FAQS.map((faq, i) => (
-                  <AccordionItem key={i} value={`faq-${i}`}>
-                    <AccordionTrigger className="text-sm text-left py-2">{faq.q}</AccordionTrigger>
-                    <AccordionContent className="text-gray-600 text-xs leading-relaxed">{faq.a}</AccordionContent>
-                  </AccordionItem>
-                ))}
-              </Accordion>
-            </Card>
           </div>
+
+          {/* FAQ — full width */}
+          <Card className="p-6">
+            <h3 className="font-bold text-foreground mb-4 flex items-center gap-2">
+              <HelpCircle className="w-5 h-5 text-[#0073a8]" />
+              Frequently Asked Questions
+            </h3>
+            <Accordion type="single" collapsible className="text-sm">
+              {FAQS.map((faq, i) => (
+                <AccordionItem key={i} value={`faq-${i}`}>
+                  <AccordionTrigger className="text-sm text-left py-3 font-medium">{faq.q}</AccordionTrigger>
+                  <AccordionContent className="text-gray-600 text-sm leading-relaxed">{faq.a}</AccordionContent>
+                </AccordionItem>
+              ))}
+            </Accordion>
+          </Card>
         </div>
       </section>
     </div>
