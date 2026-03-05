@@ -33,8 +33,7 @@ const serviceCheckboxes = [
   "Other",
 ];
 
-// Using Formspree for simplicity
-const FORMSPREE_URL = "https://formspree.io/f/xgeggrwb";
+const ESTIMATE_API_URL = "/api/detailing-estimate";
 
 function EstimateForm() {
   const [form, setForm] = useState({
@@ -63,9 +62,9 @@ function EstimateForm() {
     setError("");
 
     try {
-      const res = await fetch(FORMSPREE_URL, {
+      const res = await fetch(ESTIMATE_API_URL, {
         method: "POST",
-        headers: { "Content-Type": "application/json", Accept: "application/json" },
+        headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
           name: form.name,
           email: form.email,
@@ -74,7 +73,6 @@ function EstimateForm() {
           boatLength: form.boatLength,
           services: form.services.join(", "),
           notes: form.notes,
-          _subject: `Detailing Estimate Request — ${form.name}`,
         }),
       });
       if (!res.ok) throw new Error("Failed to send");
