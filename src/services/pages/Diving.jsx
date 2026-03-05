@@ -8,9 +8,9 @@ import { cn, formatCurrency } from "../lib/utils";
 import { calculateEstimate, RATES, SERVICES, SERVICE_VISIBILITY } from "../lib/diving-calculator";
 import PageMeta from "../components/PageMeta";
 import {
-  Ruler, Ship, Sailboat, CalendarDays, Settings, Paintbrush, Clock, Wrench,
+  Ruler, Ship, Sailboat, CalendarDays, Paintbrush, Clock, Wrench,
   Calculator, ListChecks, CheckCircle2, HelpCircle, ArrowRight, Info, Anchor,
-  Waves, Search, LifeBuoy
+  Waves, Search, LifeBuoy, Zap
 } from "lucide-react";
 
 // ── Custom boat type icons ──
@@ -46,6 +46,22 @@ function MonohullIcon({ className }) {
       <path d="M12 2 C10 2, 9 6, 8.5 12 C9 18, 10 21, 12 22 C14 21, 15 18, 15.5 12 C15 6, 14 2, 12 2 Z" />
       {/* Centerline keel */}
       <line x1="12" y1="4" x2="12" y2="20" strokeDasharray="2 2" strokeWidth="1" />
+    </svg>
+  );
+}
+
+function PropellerIcon({ className }) {
+  return (
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" className={className}>
+      {/* Center hub */}
+      <circle cx="12" cy="12" r="2" />
+      {/* Three blades, evenly spaced at 120° */}
+      {/* Blade 1 — top */}
+      <path d="M12 10 C10 8, 9 5, 10 3 C11 2, 13 2, 14 3 C15 5, 14 8, 12 10 Z" />
+      {/* Blade 2 — bottom-left */}
+      <path d="M10.3 13 C9 15, 6.5 16.5, 4.5 16 C3.5 15.5, 3 13.8, 4 12.5 C5.5 11, 8.5 11.5, 10.3 13 Z" />
+      {/* Blade 3 — bottom-right */}
+      <path d="M13.7 13 C15 15, 17.5 16.5, 19.5 16 C20.5 15.5, 21 13.8, 20 12.5 C18.5 11, 15.5 11.5, 13.7 13 Z" />
     </svg>
   );
 }
@@ -365,11 +381,11 @@ export default function Diving() {
                     <div className="font-medium text-sm">Item Recovery</div>
                   </OptionButton>
                   <OptionButton selected={serviceKey === "propeller_service"} onClick={() => setServiceKey("propeller_service")}>
-                    <Settings className="w-6 h-6 mx-auto mb-1 text-[#0073a8]" />
+                    <PropellerIcon className="w-6 h-6 mx-auto mb-1 text-[#0073a8]" />
                     <div className="font-medium text-sm">Propeller Service</div>
                   </OptionButton>
                   <OptionButton selected={serviceKey === "anodes_only"} onClick={() => setServiceKey("anodes_only")}>
-                    <Wrench className="w-6 h-6 mx-auto mb-1 text-[#0073a8]" />
+                    <Zap className="w-6 h-6 mx-auto mb-1 text-[#0073a8]" />
                     <div className="font-medium text-sm">Anodes Only</div>
                   </OptionButton>
                 </div>
@@ -438,7 +454,7 @@ export default function Diving() {
             </InputCard>
 
             {/* 4. Propellers */}
-            <InputCard icon={Settings} title="Propellers" description={serviceKey === "propeller_service" ? "$349 per propeller" : "First propeller included. Additional propellers add 10% each."} visible={vis.propellers}>
+            <InputCard icon={PropellerIcon} title="Propellers" description={serviceKey === "propeller_service" ? "$349 per propeller" : "First propeller included. Additional propellers add 10% each."} visible={vis.propellers}>
               <div className="flex gap-3">
                 {PROPELLERS.map((p) => (
                   <OptionButton key={p.value} selected={propellerCount === p.value} onClick={() => setPropellerCount(p.value)} className="w-20">
@@ -473,7 +489,7 @@ export default function Diving() {
             </InputCard>
 
             {/* 7. Anodes */}
-            <InputCard icon={Wrench} title="Anode Service" description={serviceKey === "anodes_only" ? "$149 minimum + $15 per anode installation" : "$15 per anode installation (labor only — anode parts additional)"} visible={vis.anodes}>
+            <InputCard icon={Zap} title="Anode Service" description={serviceKey === "anodes_only" ? "$149 minimum + $15 per anode installation" : "$15 per anode installation (labor only — anode parts additional)"} visible={vis.anodes}>
               <div className="flex items-center gap-4">
                 <button
                   onClick={() => setAnodeCount(Math.max(0, anodeCount - 1))}
