@@ -51,17 +51,17 @@ function MonohullIcon({ className }) {
 }
 
 function PropellerIcon({ className }) {
+  // 3 blades at exact 120° intervals using rotate transforms around center (12,12)
   return (
-    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" className={className}>
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" className={className}>
       {/* Center hub */}
-      <circle cx="12" cy="12" r="2" />
-      {/* Three blades, evenly spaced at 120° */}
-      {/* Blade 1 — top */}
-      <path d="M12 10 C10 8, 9 5, 10 3 C11 2, 13 2, 14 3 C15 5, 14 8, 12 10 Z" />
-      {/* Blade 2 — bottom-left */}
-      <path d="M10.3 13 C9 15, 6.5 16.5, 4.5 16 C3.5 15.5, 3 13.8, 4 12.5 C5.5 11, 8.5 11.5, 10.3 13 Z" />
-      {/* Blade 3 — bottom-right */}
-      <path d="M13.7 13 C15 15, 17.5 16.5, 19.5 16 C20.5 15.5, 21 13.8, 20 12.5 C18.5 11, 15.5 11.5, 13.7 13 Z" />
+      <circle cx="12" cy="12" r="2.2" />
+      {/* Blade template: teardrop from hub upward, rotated 3× at 120° */}
+      <g>
+        <path d="M12 10 C10.2 7.5, 10 4.5, 11 3.2 C11.5 2.6, 12.5 2.6, 13 3.2 C14 4.5, 13.8 7.5, 12 10 Z" transform="rotate(0 12 12)" />
+        <path d="M12 10 C10.2 7.5, 10 4.5, 11 3.2 C11.5 2.6, 12.5 2.6, 13 3.2 C14 4.5, 13.8 7.5, 12 10 Z" transform="rotate(120 12 12)" />
+        <path d="M12 10 C10.2 7.5, 10 4.5, 11 3.2 C11.5 2.6, 12.5 2.6, 13 3.2 C14 4.5, 13.8 7.5, 12 10 Z" transform="rotate(240 12 12)" />
+      </g>
     </svg>
   );
 }
