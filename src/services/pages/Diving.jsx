@@ -72,6 +72,7 @@ const FREQUENCIES = [
   { value: "monthly", label: "Monthly", desc: "Every month" },
   { value: "bimonthly", label: "Bi-monthly", desc: "Every 2 months" },
   { value: "quarterly", label: "Quarterly", desc: "Every 3 months" },
+  { value: "onetime", label: "One-Time", desc: "Single service" },
 ];
 
 const PROPELLERS = [
@@ -407,7 +408,7 @@ export default function Diving() {
 
             {/* 3. Service Frequency (recurring only) */}
             <InputCard icon={CalendarDays} title="Service Frequency" description="How often do you need hull cleaning?" visible={vis.frequency}>
-              <div className="grid grid-cols-3 gap-3">
+              <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
                 {FREQUENCIES.map((f) => (
                   <OptionButton key={f.value} selected={frequency === f.value} onClick={() => setFrequency(f.value)}>
                     <div className="font-semibold text-sm">{f.label}</div>
@@ -512,7 +513,7 @@ export default function Diving() {
                 </li>
                 <li className="flex gap-3">
                   <span className="flex-shrink-0 w-6 h-6 rounded-full bg-primary-100 text-primary-700 text-xs font-bold flex items-center justify-center">2</span>
-                  <div><strong className="text-foreground">Schedule Service</strong> — Pick a date that works</div>
+                  <div><strong className="text-foreground">Place Your Order</strong> — Submit your info and we'll get you on the schedule</div>
                 </li>
                 <li className="flex gap-3">
                   <span className="flex-shrink-0 w-6 h-6 rounded-full bg-primary-100 text-primary-700 text-xs font-bold flex items-center justify-center">3</span>

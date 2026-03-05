@@ -191,11 +191,11 @@ export function calculateEstimate({
   }
 
   // ── Per-foot services (recurring, onetime, inspection) ──
-  const isOneTime = serviceKey === "onetime_cleaning" || serviceKey === "underwater_inspection";
+  const isOneTime = serviceKey === "onetime_cleaning" || serviceKey === "underwater_inspection" || frequency === "onetime";
   let rate;
-  if (serviceKey === "recurring_cleaning") rate = RATES.recurring;
-  else if (serviceKey === "onetime_cleaning") rate = RATES.onetime;
-  else rate = RATES.inspection;
+  if (serviceKey === "underwater_inspection") rate = RATES.inspection;
+  else if (serviceKey === "onetime_cleaning" || frequency === "onetime") rate = RATES.onetime;
+  else rate = RATES.recurring;
 
   const baseCost = rate * boatLength;
   const items = [];
