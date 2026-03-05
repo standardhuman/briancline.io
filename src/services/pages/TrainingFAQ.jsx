@@ -99,7 +99,7 @@ export default function TrainingFAQ() {
         title="Ready to Get Started?"
         subtitle="Book a free consultation — no obligation."
         buttonText="Schedule a Consultation"
-        href="https://schedule.briancline.co/connect"
+        href="https://schedule.briancline.co/sailing"
       />
     </div>
   );
