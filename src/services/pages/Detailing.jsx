@@ -24,6 +24,7 @@ const POWER_MULTI_SURCHARGE = 1.70;
 const SPRING_POWER_SINGLE_SURCHARGE = 1.10;
 const SPRING_POWER_MULTI_SURCHARGE = 1.35;
 const MIN_CHARGE = 99;
+const COMFORT_MARGIN = 1.15; // estimates run ~15% high so we only lower in person
 
 // Per-sq-ft rates
 const WASH_RATE = 1.40;
@@ -70,7 +71,7 @@ function calcLineItems({ length, beam, boatType, multiDeck, services, oxidation 
     items.push({
       label: "🌿 Spring Pressure Wash",
       desc: "Includes dock box & dock cleaning",
-      price: Math.max(MIN_CHARGE, Math.round(area * SPRING_WASH_RATE * springMult)),
+      price: Math.max(MIN_CHARGE, Math.round(area * SPRING_WASH_RATE * springMult * COMFORT_MARGIN)),
     });
   }
 
@@ -78,7 +79,7 @@ function calcLineItems({ length, beam, boatType, multiDeck, services, oxidation 
     items.push({
       label: "Wash & Dry",
       desc: "Complete exterior wash, deck scrub, dry",
-      price: Math.max(MIN_CHARGE, Math.round(area * WASH_RATE * pMult)),
+      price: Math.max(MIN_CHARGE, Math.round(area * WASH_RATE * pMult * COMFORT_MARGIN)),
     });
   }
 
@@ -87,7 +88,7 @@ function calcLineItems({ length, beam, boatType, multiDeck, services, oxidation 
     items.push({
       label: "Polish & Wax",
       desc: `Includes gelcoat stain & oxidation removal (${OXIDATION[oxidation]?.label || "—"})`,
-      price: Math.max(MIN_CHARGE, Math.round(area * POLISH_RATE * oxMult * pMult)),
+      price: Math.max(MIN_CHARGE, Math.round(area * POLISH_RATE * oxMult * pMult * COMFORT_MARGIN)),
     });
   }
 
@@ -96,7 +97,7 @@ function calcLineItems({ length, beam, boatType, multiDeck, services, oxidation 
     items.push({
       label: "Metal Polishing",
       desc: "Stainless, aluminum, chrome brightwork",
-      price: Math.max(MIN_CHARGE, Math.round(l * rate)),
+      price: Math.max(MIN_CHARGE, Math.round(l * rate * COMFORT_MARGIN)),
     });
   }
 
