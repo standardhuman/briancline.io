@@ -42,7 +42,7 @@ const RATES = {
   recurring: 4.49,
   onetime: 5.99,
   inspection: 3.99,
-  itemRecovery: 199,
+  itemRecovery: 149,
   propellerService: 349,
   anodesOnlyMin: 149,
   minimum: 149.00,
@@ -123,7 +123,7 @@ export function calculateEstimate({
   // ── Flat-rate services ──
   if (serviceKey === "item_recovery") {
     return {
-      items: [{ label: "Item Recovery", detail: "Flat rate", amount: 199 }],
+      items: [{ label: "Item Recovery", detail: "Flat rate", amount: 149 }],
       subtotal: 199,
       total: 199,
       minimumApplied: false,
