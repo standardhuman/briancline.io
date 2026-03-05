@@ -357,7 +357,7 @@ export default function Diving() {
             </InputCard>
 
             {/* 1. Boat Length */}
-            <InputCard icon={Ruler} title="Boat Length" description="Enter your boat's length in feet (LOA)" visible={vis.boatLength}>
+            <InputCard icon={Ruler} title="Boat Length" description="Use the length from your boat's model name (e.g. Dana 24 = 24, Islander 36 = 36)" visible={vis.boatLength}>
               <div className="flex items-center gap-4">
                 <Input
                   type="number" min={15} max={150}
