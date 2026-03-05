@@ -21,6 +21,8 @@ const SAIL_SHAPE = 0.70;
 const POWER_SHAPE = 0.85;
 const POWER_SINGLE_SURCHARGE = 1.35;
 const POWER_MULTI_SURCHARGE = 1.70;
+const SPRING_POWER_SINGLE_SURCHARGE = 1.10;
+const SPRING_POWER_MULTI_SURCHARGE = 1.35;
 const MIN_CHARGE = 99;
 
 // Per-sq-ft rates
@@ -62,10 +64,13 @@ function calcLineItems({ length, beam, boatType, multiDeck, services, oxidation 
   const items = [];
 
   if (services.springWash) {
+    const springMult = boatType === "power"
+      ? (multiDeck ? SPRING_POWER_MULTI_SURCHARGE : SPRING_POWER_SINGLE_SURCHARGE)
+      : 1;
     items.push({
       label: "🌿 Spring Pressure Wash",
       desc: "Includes dock box & dock cleaning",
-      price: Math.max(MIN_CHARGE, Math.round(area * SPRING_WASH_RATE * pMult)),
+      price: Math.max(MIN_CHARGE, Math.round(area * SPRING_WASH_RATE * springMult)),
     });
   }
 
