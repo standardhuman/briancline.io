@@ -9,7 +9,8 @@ import { calculateEstimate, RATES, SERVICES, SERVICE_VISIBILITY } from "../lib/d
 import PageMeta from "../components/PageMeta";
 import {
   Ruler, Ship, Sailboat, CalendarDays, Settings, Paintbrush, Clock, Wrench,
-  Calculator, ListChecks, CheckCircle2, HelpCircle, ArrowRight, Info, Anchor
+  Calculator, ListChecks, CheckCircle2, HelpCircle, ArrowRight, Info, Anchor,
+  Waves, Search, LifeBuoy
 } from "lucide-react";
 
 // ── Custom boat type icons ──
@@ -339,19 +340,39 @@ export default function Diving() {
           <div className="lg:col-span-3 space-y-6">
             {/* 0. Service Type */}
             <InputCard icon={Anchor} title="Service Type" description="Select the service you need">
-              <div className="grid grid-cols-2 md:grid-cols-3 gap-3">
-                {SERVICE_LIST.map((key) => {
-                  const svc = SERVICES[key];
-                  return (
-                    <OptionButton
-                      key={key}
-                      selected={serviceKey === key}
-                      onClick={() => setServiceKey(key)}
-                    >
-                      <div className="font-medium text-sm leading-tight">{svc.name}</div>
-                    </OptionButton>
-                  );
-                })}
+              <div className="space-y-3">
+                {/* Primary service — full width, larger */}
+                <OptionButton
+                  selected={serviceKey === "cleaning"}
+                  onClick={() => setServiceKey("cleaning")}
+                  className="w-full py-5 flex items-center justify-center gap-3"
+                >
+                  <Waves className="w-7 h-7 text-[#0073a8] flex-shrink-0" />
+                  <div>
+                    <div className="font-semibold text-base">Cleaning & Anodes</div>
+                    <div className="text-xs text-gray-500 mt-0.5">Hull cleaning with anode inspection</div>
+                  </div>
+                </OptionButton>
+
+                {/* Secondary services — 2x2 grid */}
+                <div className="grid grid-cols-2 gap-3">
+                  <OptionButton selected={serviceKey === "underwater_inspection"} onClick={() => setServiceKey("underwater_inspection")}>
+                    <Search className="w-6 h-6 mx-auto mb-1 text-[#0073a8]" />
+                    <div className="font-medium text-sm">Inspection</div>
+                  </OptionButton>
+                  <OptionButton selected={serviceKey === "item_recovery"} onClick={() => setServiceKey("item_recovery")}>
+                    <LifeBuoy className="w-6 h-6 mx-auto mb-1 text-[#0073a8]" />
+                    <div className="font-medium text-sm">Item Recovery</div>
+                  </OptionButton>
+                  <OptionButton selected={serviceKey === "propeller_service"} onClick={() => setServiceKey("propeller_service")}>
+                    <Settings className="w-6 h-6 mx-auto mb-1 text-[#0073a8]" />
+                    <div className="font-medium text-sm">Propeller Service</div>
+                  </OptionButton>
+                  <OptionButton selected={serviceKey === "anodes_only"} onClick={() => setServiceKey("anodes_only")}>
+                    <Wrench className="w-6 h-6 mx-auto mb-1 text-[#0073a8]" />
+                    <div className="font-medium text-sm">Anodes Only</div>
+                  </OptionButton>
+                </div>
               </div>
             </InputCard>
 
