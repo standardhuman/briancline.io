@@ -1,4 +1,5 @@
 import React from "react";
+import { Link } from "react-router-dom";
 import PageHero from "../components/PageHero";
 import PageCTA from "../components/PageCTA";
 import { Card, CardContent } from "../components/ui/card";
@@ -23,31 +24,30 @@ const testimonials = [
     name: "Emily Richards",
     title: "Film Producer",
     image: "/images/training/emily.jpg",
-    quote: "Brian is an adaptive teacher who meets you exactly where you are. He has a knack for making complex concepts click, and his patience is extraordinary. I went from nervous to confident in just a few sessions.",
+    quote: "Brian is the best kind of instructor there is. He quickly observed how I learned and adapted his style for me. He is extremely patient and incredibly knowledgeable about all aspects of sailing. The thing I loved the most about taking lessons with Brian is that I felt he had complete confidence in me. He allowed me to make (safe) mistakes and work through what went wrong, which is how I like to learn.",
   },
   {
     name: "Evan McDonald",
     title: "Three-time Bay Area Multihull Champion",
     image: "/images/training/evan.jpg",
-    quote: "Brian builds confidence through understanding. He doesn't just teach you what to do — he teaches you why, which makes all the difference when you're out on your own.",
+    quote: "Brian is an effective teacher, with a style that builds confidence and mastery in his students. Unlike other teachers who tell you too exactly what to do, or don't assist when a student really needs help, Brian knows just how much to guide a student to maximize learning by doing. Brian's students learn to be sailors who think for themselves and sail with confidence with a proper safety mindset.",
   },
   {
     name: "Aimee P",
     title: "Adult Educator",
     image: "/images/training/aimee.png",
-    quote: "The most patient teacher I've ever had. Brian creates a safe space to learn, ask questions, and make mistakes. I never felt rushed or judged. Just supported.",
+    quote: "Brian is the most patient and skilled teacher I have met in all of my 37 years of any subject both in person and online. He is incredibly organized with his content and has a gift in quickly assessing which teaching methods are most compatible with each individual student's needs. I would highly recommend him for any student seeking sailing instruction.",
   },
 ];
 
 export default function Training() {
   return (
     <div>
-      <PageMeta title="Sailing Lessons | $72/hr | San Francisco Bay | Brian Cline" description="Private one-on-one sailing lessons on your boat. $72/hr. USCG Master, US Sailing Cruising Instructor, 20+ years experience." />
+      <PageMeta title="Private Sailing & Powerboat Lessons | San Francisco Bay | Brian Cline" description="Private one-on-one sailing and powerboat lessons on your boat. USCG Master, US Sailing Cruising Instructor, 20+ years experience. San Francisco Bay." />
       <PageHero
-        title="Private Sailing Lessons"
-        subtitle="One-on-one instruction on your boat, tailored to your goals. No group classes, no strangers — just you, your boat, and 20+ years of experience."
-        price="$72/hr"
-        credentials="USCG Licensed Master · US Sailing Cruising Instructor · 20+ years"
+        title="Private Sailing and Powerboat Lessons"
+        subtitle="One-on-one instruction on your boat, tailored to your goals. No group classes, no strangers — just you, your boat, and a decade of teaching experience."
+        credentials="USCG Licensed Master · US Sailing Cruising Instructor"
         cta="Book a Free Consultation"
         ctaHref="mailto:brian@briancline.co?subject=Sailing%20Lessons%20-%20Free%20Consultation"
       />
@@ -136,6 +136,50 @@ export default function Training() {
               </Card>
             ))}
           </div>
+        </div>
+      </section>
+
+      {/* About the Instructor */}
+      <section className="py-16 md:py-24">
+        <div className="max-w-6xl mx-auto px-6">
+          <div className="grid md:grid-cols-2 gap-12 items-center">
+            <div className="flex justify-center">
+              <img
+                src="/images/training/brian-headshot.png"
+                alt="Brian Cline, USCG Licensed Master"
+                className="rounded-2xl shadow-lg max-h-96 object-cover"
+              />
+            </div>
+            <div>
+              <h2 className="text-3xl font-bold text-foreground mb-6">About Your Instructor</h2>
+              <div className="space-y-4 text-gray-600 leading-relaxed">
+                <p>
+                  Over more than a decade of instructing, hundreds of students have entrusted me to develop their confidence as recreational and professional mariners in the most challenging conditions around. From fundamental sailing skills to long-distance cruising, I specialize in calm, high-quality training tailored to your specific goals.
+                </p>
+                <p>
+                  Your training starts with a free 1-hour planning session and complimentary vessel inspection. Together we'll discuss your goals, go over your vessel, and develop a plan that works for you. You'll leave knowing how to move forward in a practical, actionable way — and you'll know exactly what your boat needs, if anything, to be a safe, functional vessel.
+                </p>
+              </div>
+              <p className="mt-6 font-medium text-foreground">
+                — Brian Cline<br />
+                <span className="text-sm text-gray-500">USCG Master · US Sailing Cruising Instructor</span>
+              </p>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* FAQ Teaser */}
+      <section className="py-12 bg-gray-50">
+        <div className="max-w-3xl mx-auto px-6 text-center">
+          <h2 className="text-2xl font-bold text-foreground mb-3">Have Questions?</h2>
+          <p className="text-gray-600 mb-6">Rates, cancellations, insurance, what to expect — it's all covered.</p>
+          <Link
+            to="/training/faq"
+            className="inline-flex items-center justify-center rounded-md text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 border border-input bg-background hover:bg-accent hover:text-accent-foreground h-10 px-6"
+          >
+            Read the FAQ
+          </Link>
         </div>
       </section>
 

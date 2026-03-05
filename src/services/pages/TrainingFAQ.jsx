@@ -1,38 +1,94 @@
 import React from "react";
 import { Link } from "react-router-dom";
 import { Accordion, AccordionItem, AccordionTrigger, AccordionContent } from "../components/ui/accordion";
-import { Button } from "../components/ui/button";
 import PageCTA from "../components/PageCTA";
 import PageMeta from "../components/PageMeta";
 
 const faqs = [
-  { q: "What experience level do I need?", a: "None. I teach complete beginners through advanced sailors. Most of my students are adults who bought a boat and want to feel confident sailing it. A few sessions is usually enough to get comfortable." },
-  { q: "Do I need my own boat?", a: "Ideally, yes — lessons on your boat mean you learn your specific systems, rigging, and dock. If you don't have a boat yet, reach out and we'll figure something out." },
-  { q: "How many lessons will I need?", a: "Depends on your goals. Most people see a real difference after 3–5 sessions. Some want one refresher; others want ongoing coaching. We'll talk about it in the free consultation." },
-  { q: "Where do lessons take place?", a: "Wherever your boat is on San Francisco Bay — Richmond, Berkeley, Emeryville, Sausalito, SF Marina, and others. We'll use the local waters you'll actually be sailing." },
-  { q: "What about weather cancellations?", a: "Safety first. If conditions aren't suitable for your skill level, we reschedule at no charge. I'll never take you out in conditions I'm not comfortable teaching in." },
-  { q: "Can I bring a partner or crew member?", a: "Sure. Lessons can include one additional person at no extra cost. It's actually great for couples who want to sail together — you both learn, and you develop a shared language for crewing." },
-  { q: "How do I schedule?", a: "Email me to set up a free consultation. We'll talk about what you want to learn, I'll take a look at your boat if needed, and we'll pick a time that works. Weekdays and weekends available." },
-  { q: "What's your cancellation policy?", a: "24 hours notice for a full reschedule. Less than 24 hours, the session is charged. Exceptions for genuine emergencies — I'm reasonable about it." },
+  {
+    q: "What do I do first?",
+    a: `Your training starts with a free consultation. During this 1-hour session, we meet at your boat and get to know one another. I'll want to hear about your experience and your goals, and I'll answer any questions you might have. We'll also go over your boat, and I'll make you a list of any recommended improvements and equipment.
+
+If we decide we'd like to work together, you'll receive an email containing a complete vessel assessment and training application. The Vessel Assessment will include any items specific to your vessel that need to be remedied prior to our first lesson, as well as recommended items.`,
+  },
+  {
+    q: "What if I don't like your instruction style?",
+    a: "Consider our first 3 hours of training together an evaluation period. If you aren't happy with your training and do not wish to continue, those 3 hours are on me. No charge and no hard feelings. Seriously.",
+  },
+  {
+    q: "How much training do I need?",
+    a: `It depends — and for good reason: this is one of the most asked questions. It's also one of the hardest to answer before we've sailed together. That's why I offer both an hour-long consultation followed by a guarantee-clad first 3 hours.
+
+The biggest package I offer is 4 days, which is also the maximum length I'll trust a weather forecast. After the first session, we'll both know more about what the next session should look like, and we'll be in constant conversation about it throughout.`,
+  },
+  {
+    q: "What are your rates?",
+    a: `I offer Single Day and Multi-Day Packages. Rates are independent of the number of students, so you can share with friends and save. Add 3% for credit card payments.
+
+Single Day: Half-day (3 hours) $300 + tax · Full-day (6.5–7 hours) $600 + tax
+
+Multi-Day: Package A — 2 Full-days / 4 Half-days for $1,080 + tax (save $120) · Package B — 4 Full-days / 8 Half-days for $2,040 + tax (save $360)`,
+  },
+  {
+    q: "How do I book or cancel a session?",
+    a: "Email me to set up your first session. You and I will both receive a confirmation. For cancellations or reschedules, email or text me.",
+  },
+  {
+    q: "What's the cancellation policy?",
+    a: `December–March: Cancel or reschedule for any reason up to 12 hours prior.
+April–November: Cancel or reschedule for any reason up to 48 hours prior.
+
+Wind: Either of us may cancel if observed or predicted conditions in our training area exceed 25 knots sustained, 30 knots gusting, or AQI of 100. Your training time will be pro-rated with no minimum.
+
+Rain: If you want to go out in the rain, we will and I'll be there 100%. If you prefer to book another time, we can do that instead. Learning tends to plummet when students are miserable, and I'm not running a production operation — my lessons cater to you.
+
+Vessel/Crew: I reserve the right to terminate a session due to vessel, equipment, or crew unreadiness. Your time will be pro-rated with a minimum of 1 hour billed.`,
+  },
+  {
+    q: "Do I need insurance?",
+    a: `You need liability insurance at a minimum. If you've met your marina's requirements, you're probably covered.
+
+I require that I be added to your boat insurance as an additional insured or operator prior to getting underway. Depending on your carrier, this can be done online or with a phone call. Ask your carrier if they have an annual allowance for training — many policies have an exception of 40 hours underway annually for an additional insured instructor at no cost.`,
+  },
+  {
+    q: "Can I bring other people aboard?",
+    a: "No extra charge for additional people. I only ask that every person aboard completes the Training Application. Keep me in the loop on what you're thinking, and together we can consider factors like crew objectives, time constraints, cockpit size, and layout.",
+  },
+  {
+    q: "Can I transfer time to another person?",
+    a: `Yes — you can designate anyone to receive lessons you've purchased. A transfer (training aboard a different vessel, or the original vessel without the original student) requires: a 1-hour consultation and vessel assessment ($100 or one hour from purchased lessons), a completed Training Application, the vessel meets safety requirements, and I'm added to the vessel's insurance.`,
+  },
+  {
+    q: "Do the training hours expire?",
+    a: "You have one calendar year from the date of purchase to use your lessons. After one year, I may opt to void remaining time and offer a refund at 30% of the purchased value. In practice, this hasn't come close to happening. It's common to underestimate how quickly even 4 days can pass.",
+  },
+  {
+    q: "How do I pay?",
+    a: `After the first 3 hours of training, you can: (1) Pay for your current session, (2) Purchase a Multi-Day package — your current session counts toward it, or (3) Walk away and pay nothing (see the guarantee above).
+
+Payment is made in person. There is a 10% discount for cash. I also accept Paypal, Venmo, Zelle, and credit cards. Please add 3% for credit card payments.
+
+For deliveries and overnight voyages: Payment in full upon completion of the voyage.`,
+  },
 ];
 
 export default function TrainingFAQ() {
   return (
     <div>
-      <PageMeta title="Sailing Lessons FAQ | Brian Cline" description="Common questions about private sailing lessons on San Francisco Bay." />
+      <PageMeta title="Sailing Lessons FAQ | Brian Cline" description="Rates, cancellation policy, insurance, packages, and everything else about private sailing lessons on San Francisco Bay." />
       <section className="py-16 md:py-24">
         <div className="max-w-3xl mx-auto px-6">
           <div className="mb-4">
             <Link to="/training" className="text-sm text-primary font-medium hover:underline">← Back to Sailing Lessons</Link>
           </div>
-          <h1 className="text-4xl font-bold text-foreground mb-3">Sailing Lessons FAQ</h1>
-          <p className="text-gray-600 mb-10">Common questions about private sailing instruction on San Francisco Bay.</p>
+          <h1 className="text-4xl font-bold text-foreground mb-3">Training FAQ</h1>
+          <p className="text-gray-600 mb-10">Everything you need to know about how lessons work — rates, cancellations, insurance, and more.</p>
 
           <Accordion type="single" collapsible className="space-y-0">
             {faqs.map(({ q, a }, i) => (
               <AccordionItem key={i} value={`faq-${i}`}>
                 <AccordionTrigger className="text-base">{q}</AccordionTrigger>
-                <AccordionContent>{a}</AccordionContent>
+                <AccordionContent className="whitespace-pre-line">{a}</AccordionContent>
               </AccordionItem>
             ))}
           </Accordion>
