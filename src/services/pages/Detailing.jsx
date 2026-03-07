@@ -12,6 +12,7 @@ import {
   CheckCircle2, Send, Ship, Sailboat, TreePine,
 } from "lucide-react";
 import PageMeta from "../components/PageMeta";
+import JsonLd from "../components/JsonLd";
 
 /* ═══════════════════════════════════════════
    Pricing Engine
@@ -527,9 +528,19 @@ export default function Detailing() {
   return (
     <div>
       <PageMeta
-        title="Boat Detailing | East Bay | Brian Cline"
-        description="Professional boat detailing on the East Bay. Wash, polish, wax, metal polishing, gelcoat repair, and brightwork. Instant estimates."
+        title="Boat Detailing – San Francisco Bay Area | Brian Cline"
+        description="Professional boat detailing on San Francisco Bay. Wash, wax, polish, metal polishing, teak care, and gelcoat restoration. Serving Berkeley, Emeryville, Richmond, and Oakland marinas. Instant estimates."
       />
+      <JsonLd data={{
+        "@context": "https://schema.org",
+        "@type": "Service",
+        "name": "Boat Detailing - San Francisco Bay",
+        "description": "Complete above-waterline boat detailing services including wash, wax, polish, metal polishing, teak care, and gelcoat restoration throughout San Francisco Bay marinas.",
+        "provider": { "@id": "https://briancline.co/#marine-services" },
+        "areaServed": { "@type": "Place", "name": "San Francisco Bay Area" },
+        "serviceType": "Boat Detailing",
+        "url": "https://briancline.co/boat-detailing"
+      }} />
       <PageHero
         title="Boat Detailing"
         subtitle="Above-the-waterline care for your boat. Wash, polish, wax, metal work, and brightwork — done right, on the East Bay."

@@ -8,10 +8,10 @@ export default function ServiceFooter() {
         <div className="grid grid-cols-1 md:grid-cols-3 gap-12">
           {/* Brand */}
           <div>
-            <a href="/" className="inline-flex items-baseline gap-2 text-xl font-bold">
+            <Link to="/marine" className="inline-flex items-baseline gap-2 text-xl font-bold">
               briancline<span className="text-[#0097a7]">.</span>co
               <span className="text-xs font-semibold tracking-wide uppercase text-[#0097a7]">marine</span>
-            </a>
+            </Link>
             <p className="mt-3 text-gray-400 text-sm leading-relaxed">
               Marine services on San Francisco Bay. Hull cleaning, sailing instruction, boat detailing, and vessel deliveries.
             </p>
@@ -21,9 +21,9 @@ export default function ServiceFooter() {
           <div>
             <h3 className="font-semibold text-sm uppercase tracking-wider text-gray-400 mb-4">Services</h3>
             <ul className="space-y-2.5">
-              <li><Link to="/diving" className="text-gray-300 hover:text-white text-sm transition-colors">Hull Cleaning</Link></li>
-              <li><Link to="/detailing" className="text-gray-300 hover:text-white text-sm transition-colors">Boat Detailing</Link></li>
-              <li><Link to="/training" className="text-gray-300 hover:text-white text-sm transition-colors">Sailing Lessons</Link></li>
+              <li><Link to="/hull-cleaning" className="text-gray-300 hover:text-white text-sm transition-colors">Hull Cleaning</Link></li>
+              <li><Link to="/boat-detailing" className="text-gray-300 hover:text-white text-sm transition-colors">Boat Detailing</Link></li>
+              <li><Link to="/sailing-lessons" className="text-gray-300 hover:text-white text-sm transition-colors">Sailing Lessons</Link></li>
               <li><Link to="/deliveries" className="text-gray-300 hover:text-white text-sm transition-colors">Vessel Deliveries</Link></li>
             </ul>
           </div>
@@ -35,6 +35,11 @@ export default function ServiceFooter() {
               <li>
                 <a href="mailto:brian@briancline.co" className="text-gray-300 hover:text-white text-sm transition-colors">
                   brian@briancline.co
+                </a>
+              </li>
+              <li>
+                <a href="tel:+15102774855" className="text-gray-300 hover:text-white text-sm transition-colors">
+                  (510) 277-4855
                 </a>
               </li>
               <li>

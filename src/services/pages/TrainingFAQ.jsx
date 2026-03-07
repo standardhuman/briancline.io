@@ -75,11 +75,14 @@ For deliveries and overnight voyages: Payment in full upon completion of the voy
 export default function TrainingFAQ() {
   return (
     <div>
-      <PageMeta title="Sailing Lessons FAQ | Brian Cline" description="Rates, cancellation policy, insurance, packages, and everything else about private sailing lessons on San Francisco Bay." />
+      <PageMeta
+        title="Sailing Lessons FAQ – Rates & Policies | Brian Cline"
+        description="Rates, cancellation policy, insurance requirements, and packages for private sailing lessons on San Francisco Bay with Brian Cline."
+      />
       <section className="py-16 md:py-24">
         <div className="max-w-3xl mx-auto px-6">
           <div className="mb-4">
-            <Link to="/training" className="text-sm text-primary font-medium hover:underline">← Back to Sailing Lessons</Link>
+            <Link to="/sailing-lessons" className="text-sm text-primary font-medium hover:underline">← Back to Sailing Lessons</Link>
           </div>
           <h1 className="text-4xl font-bold text-foreground mb-3">Training FAQ</h1>
           <p className="text-gray-600 mb-10">Everything you need to know about how lessons work — rates, cancellations, insurance, and more.</p>

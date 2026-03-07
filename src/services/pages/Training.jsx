@@ -9,6 +9,7 @@ import {
   ShieldCheck, BookOpen, User, Ship, LifeBuoy, Quote,
 } from "lucide-react";
 import PageMeta from "../components/PageMeta";
+import JsonLd from "../components/JsonLd";
 
 const skills = [
   { icon: Anchor, label: "Line Handling & Docking" },
@@ -43,7 +44,20 @@ const testimonials = [
 export default function Training() {
   return (
     <div>
-      <PageMeta title="Private Sailing & Powerboat Lessons | San Francisco Bay | Brian Cline" description="Private one-on-one sailing and powerboat lessons on your boat. USCG Master, US Sailing Cruising Instructor, 20+ years experience. San Francisco Bay." />
+      <PageMeta
+        title="Sailing Lessons on San Francisco Bay | Brian Cline"
+        description="Learn to sail on San Francisco Bay with a US Sailing instructor. Private and small-group sailing lessons from basic keelboat to offshore passage making. Nearly 20 years of teaching experience."
+      />
+      <JsonLd data={{
+        "@context": "https://schema.org",
+        "@type": "Service",
+        "name": "Sailing Lessons - San Francisco Bay",
+        "description": "Private and small-group sailing instruction on San Francisco Bay. US Sailing certified instructor with nearly 20 years of experience. Beginner through advanced offshore passage making.",
+        "provider": { "@id": "https://briancline.co/#marine-services" },
+        "areaServed": { "@type": "Place", "name": "San Francisco Bay Area" },
+        "serviceType": "Sailing Instruction",
+        "url": "https://briancline.co/sailing-lessons"
+      }} />
       <PageHero
         title="Private Sailing and Powerboat Lessons"
         subtitle="One-on-one instruction on your boat, tailored to your goals. No group classes, no strangers — just you, your boat, and a decade of teaching experience."
@@ -175,7 +189,7 @@ export default function Training() {
           <h2 className="text-2xl font-bold text-foreground mb-3">Have Questions?</h2>
           <p className="text-gray-600 mb-6">Rates, cancellations, insurance, what to expect — it's all covered.</p>
           <Link
-            to="/training/faq"
+            to="/sailing-lessons/faq"
             className="inline-flex items-center justify-center rounded-md text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 border border-input bg-background hover:bg-accent hover:text-accent-foreground h-10 px-6"
           >
             Read the FAQ

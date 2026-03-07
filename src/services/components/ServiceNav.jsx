@@ -1,12 +1,12 @@
 import React from "react";
 import { Link, useLocation } from "react-router-dom";
 import { cn } from "../lib/utils";
-import { Anchor, Ship, GraduationCap, Sparkles, Truck } from "lucide-react";
+import { Anchor, Ship, GraduationCap, Sparkles } from "lucide-react";
 
 const navLinks = [
-  { to: "/diving", label: "Diving", icon: Anchor },
-  { to: "/detailing", label: "Detailing", icon: Sparkles },
-  { to: "/training", label: "Training", icon: GraduationCap },
+  { to: "/hull-cleaning", label: "Hull Cleaning", icon: Anchor },
+  { to: "/boat-detailing", label: "Boat Detailing", icon: Sparkles },
+  { to: "/sailing-lessons", label: "Sailing Lessons", icon: GraduationCap },
   { to: "/deliveries", label: "Deliveries", icon: Ship },
 ];
 
@@ -17,12 +17,12 @@ export default function ServiceNav() {
   return (
     <nav className="fixed top-0 left-0 right-0 bg-white/95 backdrop-blur-sm z-50 border-b border-gray-100">
       <div className="max-w-6xl mx-auto px-6 py-3 flex items-center justify-between">
-        {/* Logo */}
-        <a href="/" className="flex items-baseline gap-1.5 text-lg font-bold text-gray-900" style={{ letterSpacing: "-0.02em" }}>
+        {/* Logo — clicks to /marine */}
+        <Link to="/marine" className="flex items-baseline gap-1.5 text-lg font-bold text-gray-900" style={{ letterSpacing: "-0.02em" }}>
           <span className="md:hidden">bc<span style={{ color: "#0073a8", fontSize: "1.4em", lineHeight: 0, position: "relative", top: "0.05em" }}>.</span></span>
           <span className="hidden md:inline">briancline<span style={{ color: "#0073a8" }}>.</span>co</span>
           <span className="text-xs font-semibold tracking-wide uppercase" style={{ color: "#0097a7" }}>marine</span>
-        </a>
+        </Link>
 
         {/* Desktop Nav */}
         <div className="hidden md:flex items-center gap-1">

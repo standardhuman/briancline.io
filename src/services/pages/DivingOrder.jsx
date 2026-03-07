@@ -280,7 +280,7 @@ function OrderForm({ searchParams, navigate }) {
             You'll receive a confirmation email shortly.
           </p>
           <div className="flex gap-3 justify-center">
-            <Button variant="outline" onClick={() => navigate("/diving")}>
+            <Button variant="outline" onClick={() => navigate("/hull-cleaning")}>
               Back to Estimator
             </Button>
           </div>

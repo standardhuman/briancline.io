@@ -1,19 +1,50 @@
 {
   "cleanUrls": true,
-  "rewrites": [
-    { "source": "/diving", "destination": "/services" },
-    { "source": "/diving/calculator", "destination": "/services" },
-    { "source": "/diving/order", "destination": "/services" },
-    { "source": "/detailing", "destination": "/services" },
-    { "source": "/training", "destination": "/services" },
-    { "source": "/training/faq", "destination": "/services" },
-    { "source": "/deliveries", "destination": "/services" }
-  ],
   "redirects": [
     {
+      "source": "/diving",
+      "destination": "/hull-cleaning",
+      "statusCode": 301
+    },
+    {
+      "source": "/diving/calculator",
+      "destination": "/hull-cleaning/calculator",
+      "statusCode": 301
+    },
+    {
+      "source": "/diving/order",
+      "destination": "/hull-cleaning/order",
+      "statusCode": 301
+    },
+    {
+      "source": "/training",
+      "destination": "/sailing-lessons",
+      "statusCode": 301
+    },
+    {
+      "source": "/training/faq",
+      "destination": "/sailing-lessons/faq",
+      "statusCode": 301
+    },
+    {
       "source": "/training/faq.html",
-      "destination": "/training/faq",
+      "destination": "/sailing-lessons/faq",
+      "statusCode": 301
+    },
+    {
+      "source": "/detailing",
+      "destination": "/boat-detailing",
       "statusCode": 301
     }
+  ],
+  "rewrites": [
+    { "source": "/marine", "destination": "/services" },
+    { "source": "/hull-cleaning", "destination": "/services" },
+    { "source": "/hull-cleaning/calculator", "destination": "/services" },
+    { "source": "/hull-cleaning/order", "destination": "/services" },
+    { "source": "/boat-detailing", "destination": "/services" },
+    { "source": "/sailing-lessons", "destination": "/services" },
+    { "source": "/sailing-lessons/faq", "destination": "/services" },
+    { "source": "/deliveries", "destination": "/services" }
   ]
 }

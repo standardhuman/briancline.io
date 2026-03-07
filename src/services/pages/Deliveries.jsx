@@ -8,6 +8,7 @@ import {
   DollarSign, Clock, Users,
 } from "lucide-react";
 import PageMeta from "../components/PageMeta";
+import JsonLd from "../components/JsonLd";
 
 const steps = [
   { icon: ClipboardCheck, title: "Consultation", desc: "Free discussion about your delivery — origin, destination, timeline, any special requirements." },
@@ -20,7 +21,30 @@ const steps = [
 export default function Deliveries() {
   return (
     <div>
-      <PageMeta title="Boat Deliveries | West Coast | Brian Cline | USCG Master" description="Professional vessel delivery along the West Coast. USCG Licensed Master with extensive coastal and offshore experience." />
+      <PageMeta
+        title="Vessel Deliveries – West Coast & Beyond | Brian Cline"
+        description="Professional vessel delivery along the West Coast and beyond. USCG Licensed Master with extensive coastal and offshore passage experience. Free consultation."
+      />
+      <JsonLd data={{
+        "@context": "https://schema.org",
+        "@type": "Service",
+        "name": "Vessel Deliveries - West Coast",
+        "description": "Professional vessel delivery along the US West Coast and beyond. USCG Licensed Master with extensive coastal and offshore passage experience.",
+        "provider": { "@id": "https://briancline.co/#marine-services" },
+        "areaServed": { "@type": "Place", "name": "US West Coast" },
+        "serviceType": "Vessel Delivery",
+        "url": "https://briancline.co/deliveries"
+      }} />
+      <JsonLd data={{
+        "@context": "https://schema.org",
+        "@type": "FAQPage",
+        "mainEntity": [
+          { "@type": "Question", "name": "What about weather delays?", "acceptedAnswer": { "@type": "Answer", "text": "Standby rate applies when we're waiting for a safe weather window. I won't push through unsafe conditions to save money. Good route planning minimizes delays — most deliveries go smoothly." }},
+          { "@type": "Question", "name": "Can I come along on the delivery?", "acceptedAnswer": { "@type": "Answer", "text": "Absolutely. Many owners join for all or part of the trip. It's a great way to learn your boat on a real passage. You're welcome aboard as long as you're comfortable with the conditions." }},
+          { "@type": "Question", "name": "What about insurance?", "acceptedAnswer": { "@type": "Answer", "text": "I carry professional liability insurance. Your boat should be covered under your own marine insurance policy for the transit. I'll ask for a copy of your policy before departure." }},
+          { "@type": "Question", "name": "What areas do you cover?", "acceptedAnswer": { "@type": "Answer", "text": "Primarily the West Coast — San Francisco Bay to Alaska, Mexico, and everything in between. Deliveries to Hawaii and through the Canal are also available." }}
+        ]
+      }} />
       <PageHero
         title="Vessel Deliveries"
         subtitle="Safe, professional boat delivery along the West Coast and beyond. Your boat gets there in the same condition it left — or better."

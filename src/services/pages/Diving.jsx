@@ -7,6 +7,7 @@ import { Accordion, AccordionItem, AccordionTrigger, AccordionContent } from "..
 import { cn, formatCurrency } from "../lib/utils";
 import { calculateEstimate, RATES, SERVICES, SERVICE_VISIBILITY } from "../lib/diving-calculator";
 import PageMeta from "../components/PageMeta";
+import JsonLd from "../components/JsonLd";
 import {
   Ruler, Ship, Sailboat, CalendarDays, Paintbrush, Clock, Wrench,
   Calculator, ListChecks, CheckCircle2, HelpCircle, ArrowRight, Info, Anchor,
@@ -218,7 +219,7 @@ function EstimateCard({ estimate, boatLength, boatType, hullType, frequency, ser
 
   const handleGetStarted = () => {
     const freqParam = frequency === "onetime" ? "one_time" : frequency;
-    navigate(`/diving/order?service=${serviceKey}&length=${boatLength}&type=${boatType}&hull=${hullType}&frequency=${freqParam}&estimate=${Math.round(estimate.total)}`);
+    navigate(`/hull-cleaning/order?service=${serviceKey}&length=${boatLength}&type=${boatType}&hull=${hullType}&frequency=${freqParam}&estimate=${Math.round(estimate.total)}`);
   };
 
   return (
@@ -326,9 +327,28 @@ export default function Diving() {
   return (
     <div>
       <PageMeta
-        title="Hull Cleaning Cost Estimator | San Francisco Bay | Brian Cline"
-        description="Get an instant hull cleaning quote. Professional diving services on San Francisco Bay from $4.49/ft. Transparent pricing based on your boat's specs."
+        title="Hull Cleaning & Dive Services – San Francisco Bay | Brian Cline"
+        description="Professional underwater hull cleaning at Berkeley Marina, Oakland, Alameda, and SF Bay marinas. Subscription plans from $4.49/ft. Instant estimates, before/after video, and transparent pricing."
       />
+      <JsonLd data={{
+        "@context": "https://schema.org",
+        "@type": "Service",
+        "name": "Hull Cleaning - San Francisco Bay",
+        "description": "Professional underwater hull cleaning for sailboats and powerboats at Berkeley Marina, Oakland, Alameda, and throughout San Francisco Bay. Includes marine growth removal, zinc anode inspection, and propeller cleaning.",
+        "provider": { "@id": "https://briancline.co/#marine-services" },
+        "areaServed": { "@type": "Place", "name": "San Francisco Bay Area" },
+        "serviceType": "Hull Cleaning",
+        "url": "https://briancline.co/hull-cleaning"
+      }} />
+      <JsonLd data={{
+        "@context": "https://schema.org",
+        "@type": "FAQPage",
+        "mainEntity": FAQS.slice(0, 6).map(faq => ({
+          "@type": "Question",
+          "name": faq.q,
+          "acceptedAnswer": { "@type": "Answer", "text": faq.a }
+        }))
+      }} />
 
       {/* Hero */}
       <div className="relative overflow-hidden bg-gradient-to-br from-primary-50 via-white to-sky-50 px-6 pt-10 pb-14 mb-8">

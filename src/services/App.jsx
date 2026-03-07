@@ -1,7 +1,8 @@
 import React from "react";
-import { BrowserRouter, Routes, Route } from "react-router-dom";
+import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
 import ServiceLayout from "./components/ServiceLayout";
 import ScrollToTop from "./components/ScrollToTop";
+import Marine from "./pages/Marine";
 import Diving from "./pages/Diving";
 import DivingOrder from "./pages/DivingOrder";
 import Training from "./pages/Training";
@@ -15,13 +16,38 @@ export default function App() {
       <ScrollToTop />
       <Routes>
         <Route element={<ServiceLayout />}>
-          <Route path="/diving" element={<Diving />} />
-          <Route path="/diving/calculator" element={<Diving />} />
-          <Route path="/diving/order" element={<DivingOrder />} />
-          <Route path="/training" element={<Training />} />
-          <Route path="/training/faq" element={<TrainingFAQ />} />
+          {/* Marine landing page */}
+          <Route path="/marine" element={<Marine />} />
+
+          {/* Hull Cleaning (new canonical URL) */}
+          <Route path="/hull-cleaning" element={<Diving />} />
+          <Route path="/hull-cleaning/calculator" element={<Diving />} />
+          <Route path="/hull-cleaning/order" element={<DivingOrder />} />
+
+          {/* Legacy diving routes → redirect to new URLs */}
+          <Route path="/diving" element={<Navigate to="/hull-cleaning" replace />} />
+          <Route path="/diving/calculator" element={<Navigate to="/hull-cleaning/calculator" replace />} />
+          <Route path="/diving/order" element={<Navigate to="/hull-cleaning/order" replace />} />
+
+          {/* Sailing Lessons (new canonical URL) */}
+          <Route path="/sailing-lessons" element={<Training />} />
+          <Route path="/sailing-lessons/faq" element={<TrainingFAQ />} />
+
+          {/* Legacy training routes → redirect to new URLs */}
+          <Route path="/training" element={<Navigate to="/sailing-lessons" replace />} />
+          <Route path="/training/faq" element={<Navigate to="/sailing-lessons/faq" replace />} />
+
+          {/* Boat Detailing (new canonical URL) */}
+          <Route path="/boat-detailing" element={<Detailing />} />
+
+          {/* Legacy detailing route → redirect to new URL */}
+          <Route path="/detailing" element={<Navigate to="/boat-detailing" replace />} />
+
+          {/* Deliveries (unchanged) */}
           <Route path="/deliveries" element={<Deliveries />} />
-          <Route path="/detailing" element={<Detailing />} />
+
+          {/* Catch-all → marine landing */}
+          <Route path="*" element={<Navigate to="/marine" replace />} />
         </Route>
       </Routes>
     </BrowserRouter>
