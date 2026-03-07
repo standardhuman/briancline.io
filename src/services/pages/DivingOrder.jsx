@@ -96,8 +96,13 @@ function OrderForm({ searchParams, navigate }) {
   const serviceKey = searchParams.get("service") || "recurring_cleaning";
   const initialLength = searchParams.get("length") || "";
   const initialType = searchParams.get("type") || "sailboat";
+  const initialHull = searchParams.get("hull") || "monohull";
   const initialFrequency = searchParams.get("frequency") || "monthly";
   const initialEstimate = searchParams.get("estimate") || "";
+  const initialPropellers = searchParams.get("propellers") || "1";
+  const initialPaintAge = searchParams.get("paintAge") || "";
+  const initialLastCleaned = searchParams.get("lastCleaned") || "";
+  const initialAnodes = searchParams.get("anodes") || "0";
 
   const service = SERVICES[serviceKey] || SERVICES.recurring_cleaning;
 
@@ -196,7 +201,18 @@ function OrderForm({ searchParams, navigate }) {
         customerNotes: form.notes,
         estimate: estimateAmount || 0,
         service: service.name,
-        serviceDetails: `${service.name}${form.boatLength ? ` - ${form.boatLength}ft` : ""}`,
+        serviceDetails: {
+          serviceName: service.name,
+          boatLength: form.boatLength || initialLength,
+          boatType: form.boatType || initialType,
+          hullType: initialHull,
+          frequency: isRecurring ? form.frequency : "one-time",
+          propellerCount: initialPropellers,
+          paintAge: initialPaintAge,
+          lastCleaned: initialLastCleaned,
+          anodeCount: initialAnodes,
+          includesAnodes: parseInt(initialAnodes) > 0,
+        },
       };
 
       if (isItemRecovery) {

@@ -1,11 +1,15 @@
-import React from "react";
+import React, { useState } from "react";
 import PageHero from "../components/PageHero";
 import PageCTA from "../components/PageCTA";
-import { Card, CardContent, CardHeader, CardTitle } from "../components/ui/card";
+import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "../components/ui/card";
 import { Accordion, AccordionItem, AccordionTrigger, AccordionContent } from "../components/ui/accordion";
+import { Button } from "../components/ui/button";
+import { Input } from "../components/ui/input";
+import { Label } from "../components/ui/label";
+import { Textarea } from "../components/ui/textarea";
 import {
   ClipboardCheck, Ship, Route, MapPin, Handshake,
-  DollarSign, Clock, Users,
+  DollarSign, Clock, Users, Send, CheckCircle2,
 } from "lucide-react";
 import PageMeta from "../components/PageMeta";
 import JsonLd from "../components/JsonLd";
@@ -17,6 +21,137 @@ const steps = [
   { icon: MapPin, title: "Delivery", desc: "Professional, careful transit. Regular updates along the way." },
   { icon: Handshake, title: "Handoff", desc: "Walk-through at the destination. Everything documented." },
 ];
+
+/* ═══════════════════════════════════════════
+   Delivery Inquiry Form
+   ═══════════════════════════════════════════ */
+
+const DELIVERY_API_URL = "/api/delivery-inquiry";
+
+function DeliveryInquiryForm() {
+  const [form, setForm] = useState({
+    name: "", email: "", phone: "",
+    vesselMake: "", vesselModel: "", vesselLength: "", vesselYear: "", vesselCondition: "",
+    currentMarina: "", currentCity: "",
+    destMarina: "", destCity: "",
+    schedule: "", deadline: "",
+    notes: "",
+  });
+  const [submitting, setSubmitting] = useState(false);
+  const [submitted, setSubmitted] = useState(false);
+  const [error, setError] = useState("");
+
+  const updateField = (field) => (e) => setForm((f) => ({ ...f, [field]: e.target.value }));
+
+  async function handleSubmit(e) {
+    e.preventDefault();
+    if (!form.name || !form.email) return;
+    setSubmitting(true);
+    setError("");
+
+    try {
+      const res = await fetch(DELIVERY_API_URL, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(form),
+      });
+      if (!res.ok) throw new Error("Failed to send");
+      setSubmitted(true);
+    } catch {
+      setError("Failed to send. Email brian@briancline.co directly.");
+      setSubmitting(false);
+    }
+  }
+
+  if (submitted) {
+    return (
+      <Card className="text-center p-10">
+        <CheckCircle2 className="w-12 h-12 text-green-500 mx-auto mb-4" />
+        <h3 className="text-xl font-bold text-foreground mb-2">Inquiry Sent!</h3>
+        <p className="text-gray-600">Brian will review your delivery details and get back to you within 24 hours to discuss the plan.</p>
+      </Card>
+    );
+  }
+
+  return (
+    <Card>
+      <CardHeader>
+        <CardTitle className="text-xl">Request a Delivery Quote</CardTitle>
+        <CardDescription>Tell me about your vessel and where it needs to go. I'll get back to you within 24 hours.</CardDescription>
+      </CardHeader>
+      <CardContent>
+        <form onSubmit={handleSubmit} className="space-y-6">
+          {/* Vessel Details */}
+          <div>
+            <Label className="text-base font-semibold mb-3 block">Vessel Details</Label>
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <div><Label>Make</Label><Input value={form.vesselMake} onChange={updateField("vesselMake")} placeholder="e.g. Beneteau" /></div>
+              <div><Label>Model</Label><Input value={form.vesselModel} onChange={updateField("vesselModel")} placeholder="e.g. Oceanis 40.1" /></div>
+              <div><Label>Length (ft)</Label><Input type="number" value={form.vesselLength} onChange={updateField("vesselLength")} placeholder="e.g. 40" /></div>
+              <div><Label>Year</Label><Input type="number" value={form.vesselYear} onChange={updateField("vesselYear")} placeholder="e.g. 2019" /></div>
+            </div>
+            <div className="mt-4">
+              <Label>Overall Condition</Label>
+              <Input value={form.vesselCondition} onChange={updateField("vesselCondition")} placeholder="Good — well-maintained, all systems operational" />
+            </div>
+          </div>
+
+          {/* Current Location */}
+          <div>
+            <Label className="text-base font-semibold mb-3 block">Current Location</Label>
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <div><Label>Marina</Label><Input value={form.currentMarina} onChange={updateField("currentMarina")} placeholder="e.g. Berkeley Marina" /></div>
+              <div><Label>City</Label><Input value={form.currentCity} onChange={updateField("currentCity")} placeholder="e.g. Berkeley, CA" /></div>
+            </div>
+          </div>
+
+          {/* Destination */}
+          <div>
+            <Label className="text-base font-semibold mb-3 block">Destination</Label>
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <div><Label>Marina</Label><Input value={form.destMarina} onChange={updateField("destMarina")} placeholder="e.g. Channel Islands Harbor" /></div>
+              <div><Label>City</Label><Input value={form.destCity} onChange={updateField("destCity")} placeholder="e.g. Oxnard, CA" /></div>
+            </div>
+          </div>
+
+          {/* Schedule */}
+          <div>
+            <Label className="text-base font-semibold mb-3 block">Schedule</Label>
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <div><Label>When does it need to happen?</Label><Input value={form.schedule} onChange={updateField("schedule")} placeholder="e.g. April 2026, flexible on dates" /></div>
+              <div><Label>Deadline (if any)</Label><Input value={form.deadline} onChange={updateField("deadline")} placeholder="e.g. Must arrive by April 15" /></div>
+            </div>
+          </div>
+
+          {/* Contact Info */}
+          <div>
+            <Label className="text-base font-semibold mb-3 block">Contact Information</Label>
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <div><Label>Name *</Label><Input required value={form.name} onChange={updateField("name")} /></div>
+              <div><Label>Email *</Label><Input type="email" required value={form.email} onChange={updateField("email")} /></div>
+              <div className="md:col-span-2"><Label>Phone</Label><Input type="tel" value={form.phone} onChange={updateField("phone")} placeholder="(510) 555-1234" /></div>
+            </div>
+          </div>
+
+          {/* Notes */}
+          <div>
+            <Label>Additional Notes</Label>
+            <Textarea value={form.notes} onChange={updateField("notes")} placeholder="Anything else — crew preferences, insurance details, vessel quirks, etc." rows={4} />
+          </div>
+
+          {error && (
+            <div className="bg-red-50 border border-red-200 text-red-700 p-3 rounded-lg text-sm">{error}</div>
+          )}
+
+          <Button type="submit" disabled={submitting} className="w-full gap-2">
+            <Send className="w-4 h-4" />
+            {submitting ? "Sending..." : "Submit Delivery Inquiry"}
+          </Button>
+        </form>
+      </CardContent>
+    </Card>
+  );
+}
 
 export default function Deliveries() {
   return (
@@ -50,7 +185,7 @@ export default function Deliveries() {
         subtitle="Safe, professional boat delivery along the West Coast and beyond. Your boat gets there in the same condition it left — or better."
         credentials="USCG Licensed Master · Experienced offshore and coastal passages"
         cta="Plan Your Delivery"
-        ctaHref="mailto:brian@briancline.co?subject=Vessel%20Delivery%20Inquiry"
+        ctaHref="#inquiry"
       />
 
       {/* Process */}
@@ -150,11 +285,18 @@ export default function Deliveries() {
         </div>
       </section>
 
+      {/* Delivery Inquiry Form */}
+      <section className="py-16 md:py-24 bg-gray-50" id="inquiry">
+        <div className="max-w-2xl mx-auto px-6">
+          <DeliveryInquiryForm />
+        </div>
+      </section>
+
       <PageCTA
         title="Let's Plan Your Delivery"
-        subtitle="Tell me where your boat is and where it needs to go."
-        buttonText="Start Planning"
-        href="mailto:brian@briancline.co?subject=Vessel%20Delivery%20-%20Let's%20Plan"
+        subtitle="Fill out the form above or reach out directly."
+        buttonText="Request a Quote"
+        href="#inquiry"
       />
     </div>
   );

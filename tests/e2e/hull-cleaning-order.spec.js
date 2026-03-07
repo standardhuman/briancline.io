@@ -1,0 +1,269 @@
+/**
+ * E2E tests for the Hull Cleaning order flow.
+ * Tests the calculator UI, form submission, and Stripe payment in test mode.
+ */
+import { test, expect } from '@playwright/test';
+
+const BASE = '/hull-cleaning';
+const ORDER_BASE = '/hull-cleaning/order';
+
+// Test card numbers for Stripe test mode
+const STRIPE_TEST_CARD = '4242424242424242';
+const STRIPE_TEST_EXP = '12/30';
+const STRIPE_TEST_CVC = '123';
+
+// ── Helper: locate the Service Type card area ──
+function serviceTypeArea(page) {
+  return page.locator('[class*="CardContent"]').filter({ hasText: 'Service Type' }).first();
+}
+
+// ── Calculator UI Tests ──
+
+test.describe('Hull Cleaning Calculator UI', () => {
+  test.beforeEach(async ({ page }) => {
+    await page.goto(BASE);
+    await page.waitForSelector('text=Diving Services Estimator');
+  });
+
+  test('should display all service type options', async ({ page }) => {
+    // Use exact: true to avoid matching substrings / overlapping text
+    await expect(page.getByRole('button', { name: 'Cleaning & Anodes Hull', exact: false })).toBeVisible();
+    await expect(page.getByRole('button', { name: 'Inspection', exact: true })).toBeVisible();
+    await expect(page.getByRole('button', { name: 'Item Recovery', exact: true })).toBeVisible();
+    await expect(page.getByRole('button', { name: 'Propeller Service', exact: true })).toBeVisible();
+    await expect(page.getByRole('button', { name: 'Anodes Only', exact: true })).toBeVisible();
+  });
+
+  test('should show/hide input cards based on service type', async ({ page }) => {
+    // Cleaning should show all cards
+    await expect(page.getByRole('heading', { name: 'Boat Length' })).toBeVisible();
+    await expect(page.getByRole('heading', { name: 'Boat Type' })).toBeVisible();
+    await expect(page.getByRole('heading', { name: 'Service Frequency' })).toBeVisible();
+    await expect(page.getByRole('heading', { name: 'Propellers' })).toBeVisible();
+    await expect(page.getByRole('heading', { name: 'Bottom Paint Age' })).toBeVisible();
+    await expect(page.getByRole('heading', { name: 'Last Cleaned' })).toBeVisible();
+    await expect(page.getByRole('heading', { name: 'Anode Service' })).toBeVisible();
+
+    // Switch to Item Recovery — should hide all
+    await page.getByRole('button', { name: 'Item Recovery', exact: true }).click();
+    await expect(page.getByRole('heading', { name: 'Boat Length' })).not.toBeVisible();
+    await expect(page.getByRole('heading', { name: 'Boat Type' })).not.toBeVisible();
+
+    // Switch to Propeller Service — should show only propellers
+    await page.getByRole('button', { name: 'Propeller Service', exact: true }).click();
+    await expect(page.getByRole('heading', { name: 'Propellers' })).toBeVisible();
+    await expect(page.getByRole('heading', { name: 'Boat Length' })).not.toBeVisible();
+  });
+
+  test('should calculate estimate for default cleaning config', async ({ page }) => {
+    // Default: 35ft sailboat, monthly, monohull, 1 propeller, <6mo paint, <2 last cleaned
+    const estimateCard = page.getByText('Your Estimate').first();
+    await expect(estimateCard).toBeVisible();
+
+    // Should show a dollar amount
+    const totalText = page.locator('.text-5xl').first();
+    await expect(totalText).toBeVisible();
+    const total = await totalText.textContent();
+    expect(total).toMatch(/\$/);
+  });
+
+  test('should update estimate when changing boat length', async ({ page }) => {
+    const totalEl = page.locator('.text-5xl').first();
+    const initialTotal = await totalEl.textContent();
+
+    // Change boat length to 50
+    const lengthInput = page.locator('input[type="number"]').first();
+    await lengthInput.fill('50');
+
+    // Wait for estimate to update
+    await page.waitForTimeout(200);
+    const newTotal = await totalEl.textContent();
+
+    // 50ft should cost more than 35ft
+    const parsePrice = (s) => parseFloat(s.replace(/[^0-9.]/g, ''));
+    expect(parsePrice(newTotal)).toBeGreaterThan(parsePrice(initialTotal));
+  });
+
+  test('should show powerboat surcharge when powerboat selected', async ({ page }) => {
+    // Select powerboat (in the Boat Type card, not service type)
+    await page.getByRole('button', { name: 'Powerboat', exact: true }).first().click();
+    await expect(page.getByText('Powerboat surcharge')).toBeVisible();
+  });
+
+  test('should show catamaran surcharge', async ({ page }) => {
+    await page.getByRole('button', { name: 'Catamaran', exact: true }).click();
+    await expect(page.getByText('Catamaran surcharge')).toBeVisible();
+  });
+
+  test('should show trimaran surcharge', async ({ page }) => {
+    await page.getByRole('button', { name: 'Trimaran', exact: true }).click();
+    await expect(page.getByText('Trimaran surcharge')).toBeVisible();
+  });
+
+  test('should show growth surcharge for poor conditions', async ({ page }) => {
+    // Click "2+ years" for paint age (first one)
+    await page.getByText('2+ years', { exact: true }).first().click();
+    // Click "2+ years" for last cleaned (second one, same text)
+    await page.getByText('2+ years', { exact: true }).last().click();
+    await expect(page.getByText('Est. growth').first()).toBeVisible();
+  });
+
+  test('should show propeller surcharge for multiple propellers', async ({ page }) => {
+    // Find the propellers card and click "2"
+    const propSection = page.getByRole('heading', { name: 'Propellers' }).locator('..').locator('..');
+    await propSection.getByText('2', { exact: true }).click();
+    // Check in the estimate card (right side)
+    await expect(page.getByText('Additional propeller', { exact: true })).toBeVisible();
+  });
+
+  test('should add anode costs', async ({ page }) => {
+    // Click the + button for anodes 3 times
+    const anodeSection = page.getByRole('heading', { name: 'Anode Service' }).locator('..').locator('..');
+    const plusBtn = anodeSection.getByText('+');
+    await plusBtn.click();
+    await plusBtn.click();
+    await plusBtn.click();
+
+    // Check in the estimate card
+    await expect(page.getByText('Anode installation', { exact: true })).toBeVisible();
+    await expect(page.getByText('3 × $15')).toBeVisible();
+  });
+
+  test('should show different rate for one-time vs recurring', async ({ page }) => {
+    const totalEl = page.locator('.text-5xl').first();
+
+    // Monthly (recurring)
+    const monthlyTotal = await totalEl.textContent();
+    await expect(page.getByText('per service')).toBeVisible();
+
+    // Switch to One-Time (in the frequency card)
+    await page.getByRole('button', { name: 'One-Time Single service' }).click();
+    await page.waitForTimeout(200);
+    const onetimeTotal = await totalEl.textContent();
+    await expect(page.getByText('one-time service', { exact: true })).toBeVisible();
+
+    // One-time should be more expensive
+    const parsePrice = (s) => parseFloat(s.replace(/[^0-9.]/g, ''));
+    expect(parsePrice(onetimeTotal)).toBeGreaterThan(parsePrice(monthlyTotal));
+  });
+
+  test('item recovery should show flat $199', async ({ page }) => {
+    await page.getByRole('button', { name: 'Item Recovery', exact: true }).click();
+    await page.waitForTimeout(200);
+    const totalEl = page.locator('.text-5xl').first();
+    const total = await totalEl.textContent();
+    expect(total).toContain('199');
+  });
+
+  test('propeller service should charge per propeller', async ({ page }) => {
+    await page.getByRole('button', { name: 'Propeller Service', exact: true }).click();
+    await page.waitForTimeout(200);
+    const totalEl = page.locator('.text-5xl').first();
+    const total = await totalEl.textContent();
+    expect(total).toContain('349');
+  });
+});
+
+// ── Order Form Tests ──
+// Note: The order form lives at /hull-cleaning/order which is served via
+// React Router inside the services SPA. Direct navigation works in production
+// via Vercel rewrites. In dev mode, the Vite middleware handles it.
+
+test.describe('Hull Cleaning Order Form', () => {
+  test('should pre-fill form from URL params', async ({ page }) => {
+    await page.goto(`${ORDER_BASE}?service=cleaning&length=42&type=powerboat&hull=catamaran&frequency=monthly&estimate=250`);
+    await page.waitForSelector('text=Schedule');
+
+    // Check length is pre-filled
+    const lengthInput = page.locator('input[placeholder="40"]');
+    await expect(lengthInput).toHaveValue('42');
+
+    // Check estimated cost is shown
+    await expect(page.getByText('Estimated cost: $250')).toBeVisible();
+  });
+
+  test('should display all form sections', async ({ page }) => {
+    await page.goto(`${ORDER_BASE}?service=cleaning&length=35&type=sailboat&frequency=monthly&estimate=157`);
+    await page.waitForSelector('text=Schedule');
+
+    await expect(page.getByText('Boat Details')).toBeVisible();
+    await expect(page.getByText('Boat Location')).toBeVisible();
+    await expect(page.getByText('Your Information')).toBeVisible();
+    await expect(page.getByText('Service Details')).toBeVisible();
+    await expect(page.getByText('Payment Information')).toBeVisible();
+  });
+
+  test('should require mandatory fields before submit', async ({ page }) => {
+    await page.goto(`${ORDER_BASE}?service=cleaning&length=35&type=sailboat&frequency=monthly&estimate=157`);
+    await page.waitForSelector('text=Schedule');
+
+    const submitBtn = page.getByText('Complete Order');
+    await expect(submitBtn).toBeDisabled();
+  });
+});
+
+// ── Full Order Flow with Stripe Test Mode ──
+
+test.describe('Full Order Flow (Stripe Test Mode)', () => {
+  test('should complete order with test card', async ({ page }) => {
+    // Go to order page with params
+    await page.goto(`${ORDER_BASE}?service=cleaning&length=35&type=sailboat&hull=monohull&frequency=monthly&estimate=157`);
+    await page.waitForSelector('text=Schedule');
+
+    // Fill boat details
+    await page.locator('input[placeholder="Sea Spirit"]').fill('Test Vessel');
+    await page.locator('input[placeholder="Beneteau"]').fill('Test Make');
+    await page.locator('input[placeholder="Oceanis 40.1"]').fill('Test Model');
+
+    // Fill location
+    await page.locator('input[placeholder="Harbor Island West Marina"]').fill('Berkeley Marina');
+    await page.locator('input[placeholder="C"]').fill('D');
+    await page.locator('input[placeholder="42"]').first().fill('99');
+
+    // Fill customer info
+    await page.locator('input[placeholder="John Smith"]').fill('E2E Test User');
+    await page.locator('input[placeholder="john@example.com"]').fill('test@example.com');
+    await page.locator('input[placeholder="(510) 555-1234"]').fill('(510) 555-9999');
+    await page.locator('input[placeholder="123 Main St"]').fill('123 Test St');
+    await page.locator('input[placeholder="San Francisco"]').fill('Berkeley');
+    await page.locator('input[placeholder="CA"]').fill('CA');
+    await page.locator('input[placeholder="94107"]').first().fill('94710');
+
+    // Wait for Stripe elements to load
+    await page.waitForTimeout(3000);
+
+    // Card number iframe
+    const cardNumberFrame = page.frameLocator('iframe[title*="card number"]').first();
+    await cardNumberFrame.locator('input[name="cardnumber"]').fill(STRIPE_TEST_CARD);
+
+    // Expiry iframe
+    const expiryFrame = page.frameLocator('iframe[title*="expiration"]').first();
+    await expiryFrame.locator('input[name="exp-date"]').fill(STRIPE_TEST_EXP);
+
+    // CVC iframe
+    const cvcFrame = page.frameLocator('iframe[title*="CVC"]').first();
+    await cvcFrame.locator('input[name="cvc"]').fill(STRIPE_TEST_CVC);
+
+    // Check the agreement box
+    await page.locator('#service-agreement').check();
+
+    // Submit
+    const submitBtn = page.getByText('Complete Order');
+    await expect(submitBtn).toBeEnabled();
+    await submitBtn.click();
+
+    // Wait for confirmation (up to 30s for network round-trip)
+    await page.waitForSelector('text=Order Confirmed', { timeout: 30000 });
+    await expect(page.getByText('Order Confirmed!')).toBeVisible();
+
+    // Verify order number is shown
+    const orderNumber = page.locator('.font-mono');
+    await expect(orderNumber).toBeVisible();
+    const orderText = await orderNumber.textContent();
+    expect(orderText).toMatch(/^ORD-/);
+  });
+});
+
+// Note: Navigation from calculator to order form is tested via unit tests
+// (URL parameter passing) since React Router client-side navigation in 
+// a Vite MPA setup is hard to test with Playwright's URL-based assertions.

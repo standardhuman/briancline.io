@@ -12,6 +12,7 @@
   "license": "ISC",
   "description": "Personal landing page for Brian Cline",
   "devDependencies": {
+    "@playwright/test": "^1.58.2",
     "@tailwindcss/postcss": "^4.1.18",
     "@types/react": "^19.2.14",
     "@types/react-dom": "^19.2.3",
@@ -19,7 +20,8 @@
     "autoprefixer": "^10.4.23",
     "postcss": "^8.5.6",
     "tailwindcss": "^4.1.18",
-    "vite": "^6.4.1"
+    "vite": "^6.4.1",
+    "vitest": "^4.0.18"
   },
   "dependencies": {
     "@radix-ui/react-accordion": "^1.2.12",

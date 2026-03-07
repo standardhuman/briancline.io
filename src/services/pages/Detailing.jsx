@@ -137,7 +137,7 @@ function Toggle({ active, onClick, children, className = "" }) {
    Detailing Estimator
    ═══════════════════════════════════════════ */
 
-function DetailingEstimator() {
+function DetailingEstimator({ onStateChange }) {
   // Boat info
   const [boatType, setBoatType] = useState("sail");
   const [multiDeck, setMultiDeck] = useState(false);
@@ -170,6 +170,13 @@ function DetailingEstimator() {
   const hasTeak = services.teak;
   const hasAnyService = Object.values(services).some(Boolean);
   const hasDimensions = lineItems !== null;
+
+  // Push calculator state up so the estimate form can pre-populate
+  React.useEffect(() => {
+    if (onStateChange) {
+      onStateChange({ boatType, length, beam, services, lineItems, total });
+    }
+  }, [boatType, length, beam, services, lineItems, total, onStateChange]);
 
   return (
     <section className="py-12 md:py-20" id="estimator">
@@ -332,7 +339,11 @@ function DetailingEstimator() {
               <Card className="border-0 shadow-xl overflow-hidden">
                 <div className="bg-gradient-to-br from-[#1565c0] to-[#0097a7] px-6 py-5">
                   <h3 className="text-lg font-bold text-white">Your Estimate</h3>
-                  <p className="text-white/70 text-sm">Subject to in-person inspection</p>
+                  <p className="text-white/70 text-sm">
+                    {services.springWash && !services.washDry && !services.polishWax && !services.metal && !services.teak
+                      ? "Fixed price — no surprises"
+                      : "Subject to in-person inspection"}
+                  </p>
                 </div>
                 <CardContent className="p-6">
                   {!hasAnyService ? (
@@ -365,12 +376,24 @@ function DetailingEstimator() {
                         </div>
                       </div>
 
-                      <div className="mt-4 p-3 rounded-lg bg-amber-50 border border-amber-200">
-                        <p className="text-xs text-amber-800">
-                          This is a ballpark estimate. We'll walk your boat together and dial in the final scope and price.
-                          Actual cost is typically the same or lower.
-                        </p>
-                      </div>
+                      {/* Only show ballpark notice when spring wash is NOT the sole service */}
+                      {!(services.springWash && !services.washDry && !services.polishWax && !services.metal && !services.teak) && (
+                        <div className="mt-4 p-3 rounded-lg bg-amber-50 border border-amber-200">
+                          <p className="text-xs text-amber-800">
+                            This is a ballpark estimate. We'll walk your boat together and dial in the final scope and price.
+                            Actual cost is typically the same or lower.
+                          </p>
+                        </div>
+                      )}
+
+                      {/* Spring wash only — fixed price notice */}
+                      {services.springWash && !services.washDry && !services.polishWax && !services.metal && !services.teak && (
+                        <div className="mt-4 p-3 rounded-lg bg-emerald-50 border border-emerald-200">
+                          <p className="text-xs text-emerald-800">
+                            Spring pressure wash pricing is fixed — this is your price, not a ballpark.
+                          </p>
+                        </div>
+                      )}
 
                       <a
                         href="#estimate"
@@ -397,10 +420,30 @@ function DetailingEstimator() {
 
 const ESTIMATE_API_URL = "/api/detailing-estimate";
 
-function EstimateForm() {
+function EstimateForm({ calculatorState }) {
+  const {
+    boatType: calcBoatType,
+    length: calcLength,
+    beam: calcBeam,
+    services: calcServices,
+    lineItems: calcLineItems,
+    total: calcTotal,
+  } = calculatorState || {};
+
+  // Pre-populate from calculator selections
+  const preSelectedServices = [];
+  if (calcServices?.springWash) preSelectedServices.push("Spring Pressure Wash");
+  if (calcServices?.washDry) preSelectedServices.push("Wash & Dry");
+  if (calcServices?.polishWax) preSelectedServices.push("Polish & Wax");
+  if (calcServices?.metal) preSelectedServices.push("Metal Polishing");
+  if (calcServices?.teak) preSelectedServices.push("Teak & Brightwork");
+
   const [form, setForm] = useState({
-    name: "", email: "", phone: "", marina: "", dockSlip: "", boatName: "", boatLength: "",
-    services: [], notes: "",
+    name: "", email: "", phone: "", marina: "", dockSlip: "", boatName: "",
+    boatLength: calcLength || "",
+    services: preSelectedServices,
+    notes: "",
+    anythingElse: "",
   });
   const [submitting, setSubmitting] = useState(false);
   const [submitted, setSubmitted] = useState(false);
@@ -445,9 +488,15 @@ function EstimateForm() {
           marina: form.marina,
           dockSlip: form.dockSlip,
           boatName: form.boatName,
-          boatLength: form.boatLength,
+          boatLength: form.boatLength || calcLength,
           services: form.services.join(", "),
           notes: form.notes,
+          anythingElse: form.anythingElse,
+          // Include calculator estimate data
+          boatType: calcBoatType || "",
+          beam: calcBeam || "",
+          estimateTotal: calcTotal || null,
+          estimateLineItems: calcLineItems?.map(i => `${i.label}: ${i.price !== null ? '$' + i.price : 'TBD'}`).join(", ") || "",
         }),
       });
       if (!res.ok) throw new Error("Failed to send");
@@ -502,8 +551,13 @@ function EstimateForm() {
           </div>
 
           <div>
+            <Label>Anything else you'd like us to look at?</Label>
+            <Textarea value={form.anythingElse} onChange={updateField("anythingElse")} placeholder="Services not in the calculator? Specific problem areas? Special requests?" />
+          </div>
+
+          <div>
             <Label>Notes</Label>
-            <Textarea value={form.notes} onChange={updateField("notes")} placeholder="Anything else we should know? (teak scope, specific stains, timeline, etc.)" />
+            <Textarea value={form.notes} onChange={updateField("notes")} placeholder="Timeline, access codes, preferred schedule, etc." />
           </div>
 
           {error && (
@@ -525,6 +579,9 @@ function EstimateForm() {
    ═══════════════════════════════════════════ */
 
 export default function Detailing() {
+  // Lift calculator state so we can pass it to the estimate form
+  const [calculatorState, setCalculatorState] = useState(null);
+
   return (
     <div>
       <PageMeta
@@ -550,7 +607,7 @@ export default function Detailing() {
         ctaHref="#estimator"
       />
 
-      <DetailingEstimator />
+      <DetailingEstimator onStateChange={setCalculatorState} />
 
       {/* What to Expect */}
       <section className="py-16 md:py-24 bg-gray-50">
@@ -576,7 +633,7 @@ export default function Detailing() {
       {/* Estimate Request Form */}
       <section className="py-16 md:py-24" id="estimate">
         <div className="max-w-2xl mx-auto px-6">
-          <EstimateForm />
+          <EstimateForm calculatorState={calculatorState} />
         </div>
       </section>
 

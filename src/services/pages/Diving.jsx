@@ -219,7 +219,19 @@ function EstimateCard({ estimate, boatLength, boatType, hullType, frequency, ser
 
   const handleGetStarted = () => {
     const freqParam = frequency === "onetime" ? "one_time" : frequency;
-    navigate(`/hull-cleaning/order?service=${serviceKey}&length=${boatLength}&type=${boatType}&hull=${hullType}&frequency=${freqParam}&estimate=${Math.round(estimate.total)}`);
+    const params = new URLSearchParams({
+      service: serviceKey,
+      length: String(boatLength),
+      type: boatType,
+      hull: hullType,
+      frequency: freqParam,
+      estimate: String(Math.round(estimate.total)),
+      propellers: String(propellerCount),
+      paintAge,
+      lastCleaned,
+      anodes: String(anodeCount),
+    });
+    navigate(`/hull-cleaning/order?${params.toString()}`);
   };
 
   return (

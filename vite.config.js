@@ -2,9 +2,30 @@ import { defineConfig } from 'vite'
 import react from '@vitejs/plugin-react'
 import { resolve } from 'path'
 
+// Dev middleware to rewrite service routes to services.html (matches vercel.json rewrites)
+function serviceRouteRewrite() {
+  const serviceRoutes = [
+    '/marine', '/hull-cleaning', '/hull-cleaning/calculator', '/hull-cleaning/order',
+    '/boat-detailing', '/sailing-lessons', '/sailing-lessons/faq', '/deliveries',
+  ]
+  return {
+    name: 'service-route-rewrite',
+    configureServer(server) {
+      server.middlewares.use((req, res, next) => {
+        const url = req.url?.split('?')[0]
+        if (serviceRoutes.includes(url)) {
+          req.url = '/services.html' + (req.url.includes('?') ? '?' + req.url.split('?')[1] : '')
+        }
+        next()
+      })
+    },
+  }
+}
+
 export default defineConfig({
   root: '.',
   plugins: [
+    serviceRouteRewrite(),
     react({
       // Only apply React transform to files in src/services/
       include: ['src/services/**/*.jsx', 'src/services/**/*.js'],
@@ -24,8 +45,6 @@ export default defineConfig({
   server: {
     port: 3000,
     open: true,
-    // Rewrite service routes to services.html in dev mode (matches vercel.json)
-    middlewareMode: false,
   },
   appType: 'mpa',
 })
