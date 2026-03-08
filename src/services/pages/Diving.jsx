@@ -382,13 +382,27 @@ export default function Diving() {
                 Professional underwater hull cleaning on San Francisco Bay. Transparent pricing based on your boat's specs — get an instant estimate.
               </p>
             </div>
-            <div className="hidden md:flex justify-center">
-              <OptImage
-                src="/images/diving/underwater-propeller.jpg"
-                alt="Underwater view of a boat propeller — hull cleaning on San Francisco Bay"
-                className="rounded-2xl shadow-xl max-h-[360px] w-auto object-cover"
-                loading="eager"
-              />
+            <div className="hidden md:flex flex-col items-center gap-3">
+              <div className="flex gap-3">
+                <div className="flex flex-col items-center">
+                  <OptImage
+                    src="/images/diving/underwater-propeller.jpg"
+                    alt="Before hull cleaning — marine growth and barnacles on propeller and hull"
+                    className="rounded-xl shadow-lg w-[220px] h-[280px] object-cover"
+                    loading="eager"
+                  />
+                  <span className="mt-2 text-xs font-semibold uppercase tracking-wider text-gray-400">Before</span>
+                </div>
+                <div className="flex flex-col items-center">
+                  <OptImage
+                    src="/images/diving/underwater-propeller-clean.jpg"
+                    alt="After hull cleaning — clean propeller and smooth hull bottom"
+                    className="rounded-xl shadow-lg w-[220px] h-[280px] object-cover"
+                    loading="eager"
+                  />
+                  <span className="mt-2 text-xs font-semibold uppercase tracking-wider text-primary">After</span>
+                </div>
+              </div>
             </div>
           </div>
         </div>
