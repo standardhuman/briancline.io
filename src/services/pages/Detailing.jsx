@@ -605,8 +605,8 @@ export default function Detailing() {
         credentials="Serving Berkeley, Emeryville, Richmond, and Oakland marinas"
         cta="Get an Estimate"
         ctaHref="#estimator"
-        image="/images/detailing/boat-hero.jpg"
-        imageAlt="Sailboat gleaming after professional detailing"
+        image="/images/detailing/diving-hero.jpg"
+        imageAlt="Boat hull and waterline — professional detailing on San Francisco Bay"
       />
 
       <DetailingEstimator onStateChange={setCalculatorState} />

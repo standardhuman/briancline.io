@@ -384,8 +384,8 @@ export default function Diving() {
             </div>
             <div className="hidden md:flex justify-center">
               <OptImage
-                src="/images/diving/diving-hero.jpg"
-                alt="Underwater hull cleaning on San Francisco Bay"
+                src="/images/diving/underwater-propeller.jpg"
+                alt="Underwater view of a boat propeller — hull cleaning on San Francisco Bay"
                 className="rounded-2xl shadow-xl max-h-[360px] w-auto object-cover"
                 loading="eager"
               />
