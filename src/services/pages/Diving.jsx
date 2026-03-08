@@ -383,24 +383,24 @@ export default function Diving() {
               </p>
             </div>
             <div className="hidden md:flex flex-col items-center gap-3">
-              <div className="flex gap-3">
+              <div className="flex gap-4">
                 <div className="flex flex-col items-center">
                   <OptImage
                     src="/images/diving/underwater-propeller.jpg"
                     alt="Before hull cleaning — marine growth and barnacles on propeller and hull"
-                    className="rounded-xl shadow-lg w-[220px] h-[280px] object-cover"
+                    className="rounded-xl shadow-lg w-[260px] h-[340px] object-cover"
                     loading="eager"
                   />
-                  <span className="mt-2 text-xs font-semibold uppercase tracking-wider text-gray-400">Before</span>
+                  <span className="mt-2 text-sm font-semibold uppercase tracking-wider text-gray-400">Before</span>
                 </div>
                 <div className="flex flex-col items-center">
                   <OptImage
-                    src="/images/diving/underwater-propeller-clean.jpg"
+                    src="/images/diving/underwater-propeller-clean-v2.jpg"
                     alt="After hull cleaning — clean propeller and smooth hull bottom"
-                    className="rounded-xl shadow-lg w-[220px] h-[280px] object-cover"
+                    className="rounded-xl shadow-lg w-[260px] h-[340px] object-cover"
                     loading="eager"
                   />
-                  <span className="mt-2 text-xs font-semibold uppercase tracking-wider text-primary">After</span>
+                  <span className="mt-2 text-sm font-semibold uppercase tracking-wider text-primary">After</span>
                 </div>
               </div>
             </div>
