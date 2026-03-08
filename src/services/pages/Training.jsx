@@ -10,6 +10,7 @@ import {
 } from "lucide-react";
 import PageMeta from "../components/PageMeta";
 import JsonLd from "../components/JsonLd";
+import OptImage from "../components/OptImage";
 
 const skills = [
   { icon: Anchor, label: "Line Handling & Docking" },
@@ -64,6 +65,8 @@ export default function Training() {
         credentials="USCG Licensed Master · US Sailing Cruising Instructor"
         cta="Book a Free Consultation"
         ctaHref="https://schedule.briancline.co/sailing"
+        image="/images/brian-sailing.png"
+        imageAlt="Brian Cline at the helm on San Francisco Bay"
       />
 
       {/* The Approach */}
@@ -85,7 +88,7 @@ export default function Training() {
               </div>
             </div>
             <div className="flex justify-center">
-              <img
+              <OptImage
                 src="/images/training/brian-sailing.jpg"
                 alt="Brian teaching on San Francisco Bay"
                 className="rounded-2xl shadow-lg max-h-96 object-cover"
@@ -120,7 +123,7 @@ export default function Training() {
                 <Quote className="w-6 h-6 text-primary/30 mb-3" />
                 <p className="text-gray-600 text-sm leading-relaxed mb-5">"{t.quote}"</p>
                 <div className="flex items-center gap-3 border-t border-gray-100 pt-4">
-                  <img src={t.image} alt={t.name} className="w-10 h-10 rounded-full object-cover" />
+                  <OptImage src={t.image} alt={t.name} className="w-10 h-10 rounded-full object-cover" />
                   <div>
                     <div className="font-semibold text-foreground text-sm">{t.name}</div>
                     <div className="text-xs text-gray-500">{t.title}</div>
@@ -158,7 +161,7 @@ export default function Training() {
         <div className="max-w-6xl mx-auto px-6">
           <div className="grid md:grid-cols-2 gap-12 items-center">
             <div className="flex justify-center">
-              <img
+              <OptImage
                 src="/images/training/brian-headshot.png"
                 alt="Brian Cline, USCG Licensed Master"
                 className="rounded-2xl shadow-lg max-h-96 object-cover"

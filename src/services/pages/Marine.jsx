@@ -3,6 +3,7 @@ import { Link } from "react-router-dom";
 import { Anchor, Sparkles, GraduationCap, Ship, ArrowRight } from "lucide-react";
 import PageMeta from "../components/PageMeta";
 import JsonLd from "../components/JsonLd";
+import OptImage from "../components/OptImage";
 
 const mainServices = [
   {
@@ -156,16 +157,26 @@ export default function Marine() {
           <div className="absolute bottom-10 left-10 w-48 h-48 bg-[#90caf9] rounded-full blur-3xl" />
         </div>
         <div className="relative max-w-6xl mx-auto px-6 py-20 md:py-28">
-          <div className="max-w-3xl">
-            <h1 className="text-4xl md:text-5xl font-bold text-foreground mb-4 leading-tight">
-              Marine Services on San Francisco Bay
-            </h1>
-            <p className="text-lg md:text-xl text-gray-600 mb-4 max-w-2xl">
-              Professional hull cleaning, boat detailing, private sailing instruction, and vessel deliveries. Serving marinas across the Bay Area.
-            </p>
-            <p className="text-sm text-gray-500">
-              USCG Licensed Master · US Sailing Cruising Instructor · Nearly 20 years on San Francisco Bay
-            </p>
+          <div className="grid md:grid-cols-2 gap-10 items-center">
+            <div>
+              <h1 className="text-4xl md:text-5xl font-bold text-foreground mb-4 leading-tight">
+                Marine Services on San Francisco Bay
+              </h1>
+              <p className="text-lg md:text-xl text-gray-600 mb-4 max-w-2xl">
+                Professional hull cleaning, boat detailing, private sailing instruction, and vessel deliveries. Serving marinas across the Bay Area.
+              </p>
+              <p className="text-sm text-gray-500">
+                USCG Licensed Master · US Sailing Cruising Instructor · Nearly 20 years on San Francisco Bay
+              </p>
+            </div>
+            <div className="hidden md:flex justify-center">
+              <OptImage
+                src="/images/sailorskills-action.png"
+                alt="Brian Cline at the helm in Berkeley Marina"
+                className="rounded-2xl shadow-xl max-h-[400px] w-auto object-cover"
+                loading="eager"
+              />
+            </div>
           </div>
         </div>
       </section>

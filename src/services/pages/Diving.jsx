@@ -8,6 +8,7 @@ import { cn, formatCurrency } from "../lib/utils";
 import { calculateEstimate, RATES, SERVICES, SERVICE_VISIBILITY } from "../lib/diving-calculator";
 import PageMeta from "../components/PageMeta";
 import JsonLd from "../components/JsonLd";
+import OptImage from "../components/OptImage";
 import {
   Ruler, Ship, Sailboat, CalendarDays, Paintbrush, Clock, Wrench,
   Calculator, ListChecks, CheckCircle2, HelpCircle, ArrowRight, Info, Anchor,
@@ -368,16 +369,28 @@ export default function Diving() {
           <div className="absolute top-10 right-10 w-64 h-64 bg-primary-200 rounded-full blur-3xl" />
           <div className="absolute bottom-10 left-10 w-48 h-48 bg-sky-200 rounded-full blur-3xl" />
         </div>
-        <div className="relative max-w-4xl mx-auto text-center">
-          <div className="inline-flex items-center justify-center w-16 h-16 rounded-2xl bg-gradient-to-br from-primary-500 to-sky-600 mb-4">
-            <Calculator className="w-8 h-8 text-white" />
+        <div className="relative max-w-5xl mx-auto">
+          <div className="grid md:grid-cols-2 gap-10 items-center">
+            <div className="text-center md:text-left">
+              <div className="inline-flex items-center justify-center w-16 h-16 rounded-2xl bg-gradient-to-br from-primary-500 to-sky-600 mb-4">
+                <Calculator className="w-8 h-8 text-white" />
+              </div>
+              <h1 className="text-4xl md:text-5xl font-bold text-gray-900 mb-4">
+                Hull Cleaning & Dive Services
+              </h1>
+              <p className="text-lg text-gray-600 max-w-2xl">
+                Professional underwater hull cleaning on San Francisco Bay. Transparent pricing based on your boat's specs — get an instant estimate.
+              </p>
+            </div>
+            <div className="hidden md:flex justify-center">
+              <OptImage
+                src="/images/diving/diving-hero.jpg"
+                alt="Underwater hull cleaning on San Francisco Bay"
+                className="rounded-2xl shadow-xl max-h-[360px] w-auto object-cover"
+                loading="eager"
+              />
+            </div>
           </div>
-          <h1 className="text-4xl md:text-5xl font-bold text-gray-900 mb-4">
-            Diving Services Estimator
-          </h1>
-          <p className="text-lg text-gray-600 max-w-2xl mx-auto">
-            Get an instant quote for professional diving services. Our pricing is transparent and based on your boat's specifications.
-          </p>
         </div>
       </div>
 

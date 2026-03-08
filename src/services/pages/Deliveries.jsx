@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import PageHero from "../components/PageHero";
 import PageCTA from "../components/PageCTA";
+import OptImage from "../components/OptImage";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "../components/ui/card";
 import { Accordion, AccordionItem, AccordionTrigger, AccordionContent } from "../components/ui/accordion";
 import { Button } from "../components/ui/button";
@@ -186,6 +187,8 @@ export default function Deliveries() {
         credentials="USCG Licensed Master · Experienced offshore and coastal passages"
         cta="Plan Your Delivery"
         ctaHref="#inquiry"
+        image="/images/deliveries/boat.jpg"
+        imageAlt="View from the cockpit of a sailboat underway"
       />
 
       {/* Process */}
