@@ -333,7 +333,7 @@ export default function Diving() {
   const vis = SERVICE_VISIBILITY[serviceKey] || {};
 
   const estimate = useMemo(
-    () => calculateEstimate({ serviceKey, boatLength: parseInt(boatLength, 10) || 15, boatType, hullType, frequency, propellerCount, paintAge, lastCleaned, anodeCount }),
+    () => calculateEstimate({ serviceKey, boatLength: parseInt(boatLength, 10) || 1, boatType, hullType, frequency, propellerCount, paintAge, lastCleaned, anodeCount }),
     [serviceKey, boatLength, boatType, hullType, frequency, propellerCount, paintAge, lastCleaned, anodeCount]
   );
 
@@ -465,15 +465,15 @@ export default function Diving() {
                   }}
                   onBlur={() => {
                     const num = parseInt(boatLength, 10);
-                    if (!num || num < 15) setBoatLength(15);
+                    if (!num || num < 1) setBoatLength(1);
                     else if (num > 150) setBoatLength(150);
                   }}
                   className="w-24 h-12 text-xl font-semibold text-center"
                 />
                 <span className="text-gray-500">feet</span>
                 <input
-                  type="range" min={15} max={100}
-                  value={Math.min(boatLength || 15, 100)}
+                  type="range" min={1} max={100}
+                  value={Math.min(boatLength || 1, 100)}
                   onChange={(e) => setBoatLength(parseInt(e.target.value))}
                   className="flex-1 h-2 bg-gray-200 rounded-lg appearance-none cursor-pointer accent-primary-600"
                 />
@@ -558,7 +558,7 @@ export default function Diving() {
             </InputCard>
 
             {/* 7. Anodes */}
-            <InputCard icon={Zap} title="Anode Service" description={serviceKey === "anodes_only" ? "$149 minimum + $15 per anode installation" : "$15 per anode installation (labor only — anode parts additional)"} visible={vis.anodes}>
+            <InputCard icon={Zap} title="Anode Service" description={serviceKey === "anodes_only" ? "$99 minimum + $15 per anode installation" : "$15 per anode installation (labor only — anode parts additional)"} visible={vis.anodes}>
               <div className="flex items-center gap-4">
                 <button
                   onClick={() => setAnodeCount(Math.max(0, anodeCount - 1))}

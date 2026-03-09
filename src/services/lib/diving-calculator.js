@@ -44,8 +44,8 @@ const RATES = {
   inspection: 3.99,
   itemRecovery: 149,
   propellerService: 349,
-  anodesOnlyMin: 149,
-  minimum: 149.00,
+  anodesOnlyMin: 99,
+  minimum: 99.00,
   anode: 15.00,
 };
 
@@ -150,14 +150,14 @@ export function calculateEstimate({
   if (serviceKey === "anodes_only") {
     const count = Math.max(0, anodeCount);
     const anodeCost = count * 15;
-    const total = Math.max(149, anodeCost);
+    const total = Math.max(RATES.minimum, anodeCost);
     const items = [];
     if (count > 0) {
       items.push({ label: "Anode installation", detail: `${count} × $15`, amount: anodeCost });
     }
-    const minimumApplied = anodeCost < 149;
+    const minimumApplied = anodeCost < RATES.minimum;
     if (minimumApplied) {
-      items.push({ label: "Minimum service charge", detail: "", amount: 149 });
+      items.push({ label: "Minimum service charge", detail: "", amount: RATES.minimum });
     }
     return {
       items,
