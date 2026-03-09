@@ -333,7 +333,7 @@ export default function Diving() {
   const vis = SERVICE_VISIBILITY[serviceKey] || {};
 
   const estimate = useMemo(
-    () => calculateEstimate({ serviceKey, boatLength, boatType, hullType, frequency, propellerCount, paintAge, lastCleaned, anodeCount }),
+    () => calculateEstimate({ serviceKey, boatLength: parseInt(boatLength, 10) || 15, boatType, hullType, frequency, propellerCount, paintAge, lastCleaned, anodeCount }),
     [serviceKey, boatLength, boatType, hullType, frequency, propellerCount, paintAge, lastCleaned, anodeCount]
   );
 
@@ -455,15 +455,25 @@ export default function Diving() {
             <InputCard icon={Ruler} title="Boat Length" description="Use the length from your boat's model name (e.g. Dana 24 = 24, Islander 36 = 36)" visible={vis.boatLength}>
               <div className="flex items-center gap-4">
                 <Input
-                  type="number" min={15} max={150}
+                  type="text" inputMode="numeric" pattern="[0-9]*"
                   value={boatLength}
-                  onChange={(e) => setBoatLength(Math.max(15, Math.min(150, parseInt(e.target.value) || 15)))}
+                  onChange={(e) => {
+                    const raw = e.target.value.replace(/[^0-9]/g, "");
+                    if (raw === "") { setBoatLength(""); return; }
+                    const num = parseInt(raw, 10);
+                    if (num <= 150) setBoatLength(num);
+                  }}
+                  onBlur={() => {
+                    const num = parseInt(boatLength, 10);
+                    if (!num || num < 15) setBoatLength(15);
+                    else if (num > 150) setBoatLength(150);
+                  }}
                   className="w-24 h-12 text-xl font-semibold text-center"
                 />
                 <span className="text-gray-500">feet</span>
                 <input
                   type="range" min={15} max={100}
-                  value={Math.min(boatLength, 100)}
+                  value={Math.min(boatLength || 15, 100)}
                   onChange={(e) => setBoatLength(parseInt(e.target.value))}
                   className="flex-1 h-2 bg-gray-200 rounded-lg appearance-none cursor-pointer accent-primary-600"
                 />
