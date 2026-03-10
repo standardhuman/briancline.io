@@ -130,51 +130,55 @@ const SERVICE_LIST = [
 const FAQS = [
   {
     q: "How do you rate levels of marine growth?",
-    a: "We use a 5-level scale: None (clean hull, no visible growth), Minimal (light slime or algae film), Moderate (visible soft growth, some barnacle starts), Heavy (dense barnacles, mussels, or hard growth), Severe (thick multi-layer growth requiring extensive effort).",
+    a: "We use a 5-level scale: None (clean hull, no visible growth), Minimal (light slime or algae film), Moderate (visible soft growth, some barnacle starts), Heavy (dense barnacles, mussels, or hard growth), Severe (thick multi-layer growth requiring extensive effort). When two terms are used (e.g., Good/Fair), it indicates a spectrum. The waterline degrades fastest due to warmer temperatures and sunlight. Other high-wear areas include keel edges, rudder, and prop aperture surfaces.",
   },
   {
     q: "How do you rate paint condition?",
-    a: "Also a 5-level scale: Excellent (fresh, smooth, fully intact), Good (minor wear, still effective), Fair (noticeable wear, reduced antifouling), Poor (significant erosion, bare spots), Missing (no antifouling paint present).",
+    a: "Also a 5-level scale: Excellent (optimal coverage, highly effective antifouling, no flaking or peeling), Good (adequate coverage with minor wear or slight thinning), Fair (significant wear with larger areas of thinning, peeling, or fouling — repainting recommended soon), Poor (minimal protection with large exposed areas and significant fouling — prioritize repainting), Missing (paint absent in areas, exposing barrier coat, gel coat, or fiberglass — rapid hard growth expected).",
   },
   {
     q: "How does billing work?",
-    a: "We bill within a week after service is completed. Any anode replacements or variable charges are included on the same invoice.",
+    a: "I aim to bill within a week after service. I coordinate service timing based on weather, inventory, and other factors. Any anode or variable charges are included when I bill.",
   },
   {
     q: "Are anodes extra?",
-    a: "Yes, anodes are an additional charge. You can provide your own or we'll supply them at roughly chandlery prices plus tax. There's a $15 installation fee per anode.",
+    a: "Yes, anodes are an additional charge. You can provide your own or I'll supply them at roughly chandlery prices plus tax. There's a $15 installation fee per anode.",
   },
   {
     q: "Can you provide an estimate before beginning work?",
-    a: "Yes — we're happy to stop by your boat for a quick look before your first service so there are no surprises.",
-  },
-  {
-    q: "Do you offer a referral program?",
-    a: "Yes! Refer someone who signs up for recurring service and you get a free cleaning. Your friend gets 50% off their first cleaning. No limit on referrals.",
+    a: "If your boat is in my service area, I'm happy to stop by for a look and present you with options before your first service — so there are no surprises.",
   },
   {
     q: "What do you use to clean the bottom?",
-    a: "We match tools to the type and severity of growth, using the minimum effective abrasion. If the paint needs more help than cleaning can provide, we'll recommend a haul-out.",
+    a: "I use tools ranging from soft cloths to steel scrapers, matched to each growth type. I always use minimum effective abrasion to protect your paint. If I can't achieve a clean finish without removing paint, I'll let you know it's time to plan your next haul-out.",
   },
   {
-    q: "Will my paint look perfectly clean afterward?",
-    a: "It depends on the paint's biocidal properties. Some algae may remain in the paint texture — removing it would damage the paint itself. We clean as thoroughly as the paint allows.",
+    q: "Why doesn't my hull look perfectly clean after cleaning?",
+    a: "The final appearance depends on your paint's remaining biocidal properties. If those properties are diminished, some stubborn algae may remain embedded in the paint's microscopic texture. This algae is harmless, and removing it would require damaging the paint. Leaving it protects your hull, extends paint life, and minimizes environmental impact — while still restoring vessel performance.",
   },
   {
-    q: "How high up do you clean?",
-    a: "Up to the antifouling paint line only. We don't clean unpainted surfaces below the waterline.",
+    q: "Do you scrub the gel coat or unpainted surfaces?",
+    a: "No. I clean up to the antifouling paint line only. I avoid scraping or scrubbing gel coat and unpainted surfaces to protect them from damage. If your waterline is submerged, consider lightening the vessel or raising the paint line at your next haul-out. For above-waterline cleaning, see my detailing services.",
+  },
+  {
+    q: "How do you protect my paint and the environment?",
+    a: "My job is to remove growth while avoiding paint removal whenever possible. I use the least abrasive tool that gets the job done, which protects both your antifouling paint and minimizes particles released into the water. If the paint can't be cleaned without damage, I'll recommend a haul-out rather than force it.",
   },
   {
     q: "Do you offer one-time services?",
-    a: "Yes, especially useful for voyage prep or a one-off cleaning before the season.",
+    a: "Yes! While regular service offers the best performance and savings, I'm happy to provide one-time cleanings — especially for voyage preparation.",
   },
   {
     q: "I need a cleaning before a race. Can you help?",
-    a: "Absolutely. We'll schedule as close to race day as possible to give you a clean bottom when it matters most.",
+    a: "Yes! I'll do my best to align your cleaning as close to race day as possible. Just let me know your needs and I'll work with you on timing.",
   },
   {
     q: "I dropped something in the water. Can you retrieve it?",
-    a: "Yes — book as a one-time service. We'll do a 20-minute search plus a 20-minute bonus search. No guarantee of recovery, but we'll do our best. Please don't disturb the bottom before we arrive.",
+    a: "I'm happy to help! Off-schedule retrievals require booking as a one-time service. For regular clients, items retrieved during scheduled service incur no extra charge. Important: don't disturb the bottom before I arrive. I cannot guarantee successful or undamaged retrieval. If I can't find the item in 20 minutes, I'll search another 20 minutes at no additional charge.",
+  },
+  {
+    q: "Do you offer a referral program?",
+    a: "Yes! For each referral who signs up for ongoing service, you receive a free cleaning (anodes extra). Your friend gets 50% off their first cleaning. No limit — earn a year or more of free cleanings!",
   },
 ];
 
