@@ -2,6 +2,12 @@
   "cleanUrls": true,
   "redirects": [
     {
+      "source": "/:path*",
+      "has": [{ "type": "host", "value": "marine.briancline.co" }],
+      "destination": "https://briancline.co/marine",
+      "statusCode": 301
+    },
+    {
       "source": "/diving",
       "destination": "/hull-cleaning",
       "statusCode": 301

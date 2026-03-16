@@ -8,3 +8,4 @@ dist/
 
 # Temporary screenshot files
 projects-*.png
+.env*.local
