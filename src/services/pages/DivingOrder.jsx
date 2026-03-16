@@ -12,7 +12,7 @@ import { SERVICES } from "../lib/diving-calculator";
 import PageMeta from "../components/PageMeta";
 import {
   Ship, MapPin, User, Wrench, CreditCard, ArrowRight, Loader2,
-  CheckCircle2, AlertCircle
+  CheckCircle2, AlertCircle, Anchor, Calendar
 } from "lucide-react";
 
 // ── Config ──
@@ -86,6 +86,120 @@ function Field({ label, required, children, className }) {
       </Label>
       <div className="mt-1.5">{children}</div>
     </div>
+  );
+}
+
+// ── Floating Profile Card ──
+function ProfileCard({ form, service, estimateAmount, isItemRecovery, showFrequency }) {
+  const boatTypeInfo = BOAT_TYPES.find((t) => t.value === form.boatType);
+  const frequencyInfo = FREQUENCIES.find((f) => f.value === form.frequency);
+
+  const hasBoatName = form.boatName?.trim();
+  const hasLocation = form.marina?.trim();
+  const hasOwner = form.customerName?.trim();
+
+  return (
+    <Card className="bg-gradient-to-br from-[#1565c0] to-[#0097a7] text-white border-0 shadow-xl">
+      <CardHeader className="pb-2">
+        <div className="flex items-center gap-3">
+          <div className="w-10 h-10 rounded-xl bg-white/15 flex items-center justify-center flex-shrink-0">
+            <Ship className="w-5 h-5" />
+          </div>
+          <div className="min-w-0">
+            <CardTitle className="text-lg text-white truncate">
+              {hasBoatName || "Your Boat"}
+            </CardTitle>
+            <p className="text-white/60 text-sm truncate">
+              {boatTypeInfo?.label || "—"}
+              {form.boatLength && ` · ${form.boatLength}ft`}
+            </p>
+          </div>
+        </div>
+      </CardHeader>
+
+      <CardContent className="space-y-3 pt-2">
+        {/* Boat info */}
+        {!isItemRecovery && (form.boatMake || form.boatModel) && (
+          <div className="bg-white/10 rounded-lg px-3 py-2">
+            <p className="text-white/50 text-xs uppercase tracking-wider mb-0.5">Make / Model</p>
+            <p className="text-sm font-medium">
+              {[form.boatMake, form.boatModel].filter(Boolean).join(" ") || "—"}
+            </p>
+          </div>
+        )}
+
+        {/* Location */}
+        {!isItemRecovery && (
+          <div className="bg-white/10 rounded-lg px-3 py-2">
+            <div className="flex items-center gap-1.5 mb-0.5">
+              <MapPin className="w-3 h-3 text-white/50" />
+              <p className="text-white/50 text-xs uppercase tracking-wider">Location</p>
+            </div>
+            {hasLocation ? (
+              <p className="text-sm font-medium">
+                {form.marina}
+                {(form.dock || form.slip) && (
+                  <span className="text-white/70">
+                    {form.dock && ` · Dock ${form.dock}`}
+                    {form.slip && ` · Slip ${form.slip}`}
+                  </span>
+                )}
+              </p>
+            ) : (
+              <p className="text-sm text-white/40 italic">Not yet entered</p>
+            )}
+          </div>
+        )}
+
+        {/* Owner */}
+        <div className="bg-white/10 rounded-lg px-3 py-2">
+          <div className="flex items-center gap-1.5 mb-0.5">
+            <User className="w-3 h-3 text-white/50" />
+            <p className="text-white/50 text-xs uppercase tracking-wider">Owner</p>
+          </div>
+          {hasOwner ? (
+            <div>
+              <p className="text-sm font-medium">{form.customerName}</p>
+              {form.customerEmail && (
+                <p className="text-xs text-white/60">{form.customerEmail}</p>
+              )}
+            </div>
+          ) : (
+            <p className="text-sm text-white/40 italic">Not yet entered</p>
+          )}
+        </div>
+
+        {/* Service + Estimate */}
+        <div className="border-t border-white/20 pt-3">
+          <div className="flex items-center gap-1.5 mb-2">
+            <Wrench className="w-3 h-3 text-white/50" />
+            <p className="text-white/50 text-xs uppercase tracking-wider">Service</p>
+          </div>
+          <p className="text-sm font-medium">{service.name}</p>
+          {showFrequency && frequencyInfo && (
+            <p className="text-xs text-white/60 mt-0.5">
+              <Calendar className="w-3 h-3 inline mr-1" />
+              {frequencyInfo.label}
+            </p>
+          )}
+        </div>
+
+        {estimateAmount && (
+          <div className="bg-white/15 rounded-xl p-4 text-center">
+            <p className="text-white/60 text-xs uppercase tracking-wider mb-1">Estimated Cost</p>
+            <p className="text-3xl font-bold">{formatCurrency(estimateAmount)}</p>
+            <p className="text-white/50 text-xs mt-1">Charged after service completion</p>
+          </div>
+        )}
+
+        <p className="text-xs text-white/40 text-center pt-1">
+          Questions? Email{" "}
+          <a href="mailto:diving@briancline.co" className="underline hover:text-white/60">
+            diving@briancline.co
+          </a>
+        </p>
+      </CardContent>
+    </Card>
   );
 }
 
@@ -350,7 +464,21 @@ function OrderForm({ searchParams, navigate }) {
         </div>
       </div>
 
-      <form onSubmit={handleSubmit} className="max-w-3xl mx-auto px-6 pb-16 space-y-6">
+      <div className="max-w-6xl mx-auto px-6 pb-16">
+      {/* Mobile: Profile card at top */}
+      <div className="lg:hidden mb-6">
+        <ProfileCard
+          form={form}
+          service={service}
+          estimateAmount={estimateAmount}
+          isItemRecovery={isItemRecovery}
+          showFrequency={showFrequency}
+        />
+      </div>
+
+      <div className="grid grid-cols-1 lg:grid-cols-5 gap-8">
+      {/* Left: Form */}
+      <form onSubmit={handleSubmit} className="lg:col-span-3 space-y-6">
         {/* Boat Details (hidden for item recovery) */}
         {showBoatInfo && (
           <SectionCard icon={Ship} title="Boat Details" description="Tell us about your vessel">
@@ -650,6 +778,28 @@ function OrderForm({ searchParams, navigate }) {
           </Button>
         </div>
       </form>
+
+      {/* Right: Sticky profile card */}
+      <div className="lg:col-span-2 hidden lg:block">
+        <div
+          className="lg:sticky"
+          style={{
+            top: "calc(50vh - 240px)",
+            maxHeight: "calc(100vh - 120px)",
+            overflowY: "auto",
+          }}
+        >
+          <ProfileCard
+            form={form}
+            service={service}
+            estimateAmount={estimateAmount}
+            isItemRecovery={isItemRecovery}
+            showFrequency={showFrequency}
+          />
+        </div>
+      </div>
+      </div>
+      </div>
     </div>
   );
 }
