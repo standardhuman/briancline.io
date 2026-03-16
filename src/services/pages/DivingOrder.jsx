@@ -32,6 +32,7 @@ const FREQUENCIES = [
   { value: "monthly", label: "Monthly" },
   { value: "bimonthly", label: "Every 2 Months" },
   { value: "quarterly", label: "Every 3 Months" },
+  { value: "one_time", label: "One-Time" },
 ];
 
 // ── Stripe loader (singleton) ──
@@ -175,13 +176,11 @@ function ProfileCard({ form, service, estimateAmount, isItemRecovery, showFreque
             <Wrench className="w-3 h-3 text-white/50" />
             <p className="text-white/50 text-xs uppercase tracking-wider">Service</p>
           </div>
-          <p className="text-sm font-medium">{service.name}</p>
-          {showFrequency && frequencyInfo && (
-            <p className="text-xs text-white/60 mt-0.5">
-              <Calendar className="w-3 h-3 inline mr-1" />
-              {frequencyInfo.label}
-            </p>
-          )}
+          <p className="text-sm font-medium">
+            {showFrequency && frequencyInfo
+              ? `${frequencyInfo.label} ${service.name}`
+              : service.name}
+          </p>
         </div>
 
         {estimateAmount && (
@@ -230,9 +229,10 @@ function OrderForm({ searchParams, navigate }) {
   const isItemRecovery = serviceKey === "item_recovery";
   const isAnodesOnly = serviceKey === "anodes_only";
   const isPropellerService = serviceKey === "propeller_service";
-  const isRecurring = serviceKey === "recurring_cleaning";
+  // "cleaning" is the recurring-capable service; check frequency to know if they chose one-time
+  const isCleaningService = serviceKey === "cleaning" || serviceKey === "recurring_cleaning";
   const showBoatInfo = !isItemRecovery;
-  const showFrequency = isRecurring;
+  const showFrequency = isCleaningService;
 
   // Form state
   const [form, setForm] = useState({
@@ -251,7 +251,7 @@ function OrderForm({ searchParams, navigate }) {
     billingCity: "",
     billingState: "",
     billingZip: "",
-    frequency: isRecurring ? initialFrequency : "one_time",
+    frequency: isCleaningService ? initialFrequency : "one_time",
     notes: "",
     // Item recovery fields
     recoveryLocation: "",
@@ -324,7 +324,7 @@ function OrderForm({ searchParams, navigate }) {
         billingAddress: form.billingAddress,
         billingCity: form.billingCity,
         billingState: form.billingState,
-        serviceInterval: isRecurring ? form.frequency : "one-time",
+        serviceInterval: isCleaningService ? form.frequency : "one-time",
         customerNotes: form.notes,
         estimate: estimateAmount || 0,
         service: service.name,
@@ -333,7 +333,7 @@ function OrderForm({ searchParams, navigate }) {
           boatLength: form.boatLength || initialLength,
           boatType: boatPropulsion,
           hullType: hullType,
-          frequency: isRecurring ? form.frequency : "one-time",
+          frequency: isCleaningService ? form.frequency : "one-time",
           propellerCount: initialPropellers,
           paintAge: initialPaintAge,
           lastCleaned: initialLastCleaned,
@@ -615,25 +615,35 @@ function OrderForm({ searchParams, navigate }) {
 
         {/* Service Details */}
         <SectionCard icon={Wrench} title="Service Details">
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-            <Field label="Service">
-              <div className="h-10 rounded-md border border-gray-200 bg-gray-50 px-3 flex items-center text-sm text-gray-700">
-                {service.name}
+          {/* Service summary with frequency */}
+          <div className="rounded-lg border border-gray-200 bg-gray-50 p-4">
+            <div className="flex items-center justify-between">
+              <div>
+                <p className="text-sm text-gray-500">Service</p>
+                <p className="text-base font-semibold text-gray-900">
+                  {showFrequency
+                    ? `${FREQUENCIES.find((f) => f.value === form.frequency)?.label || ""} ${service.name}`
+                    : service.name}
+                </p>
               </div>
-            </Field>
-
-            {showFrequency && (
-              <Field label="Frequency">
-                <select
-                  className="w-full h-10 rounded-md border border-gray-200 bg-white px-3 text-sm"
-                  value={form.frequency}
-                  onChange={(e) => updateField("frequency", e.target.value)}
-                >
-                  {FREQUENCIES.map((f) => (
-                    <option key={f.value} value={f.value}>{f.label}</option>
-                  ))}
-                </select>
-              </Field>
+              {showFrequency && (
+                <div className="flex items-center gap-2">
+                  <select
+                    className="h-9 rounded-md border border-gray-200 bg-white px-3 text-sm cursor-pointer hover:border-[#0073a8] transition-colors"
+                    value={form.frequency}
+                    onChange={(e) => updateField("frequency", e.target.value)}
+                  >
+                    {FREQUENCIES.map((f) => (
+                      <option key={f.value} value={f.value}>{f.label}</option>
+                    ))}
+                  </select>
+                </div>
+              )}
+            </div>
+            {estimateAmount && (
+              <p className="text-sm text-gray-500 mt-1">
+                Estimated: {formatCurrency(estimateAmount)}{form.frequency !== "one_time" ? " per service" : ""}
+              </p>
             )}
           </div>
           <div className="mt-4">
