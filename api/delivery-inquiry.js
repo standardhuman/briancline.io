@@ -1,4 +1,5 @@
 import { Resend } from 'resend';
+import { emailLayout, detailRow, sectionHeading } from './_email-layout.js';
 
 const resend = new Resend(process.env.RESEND_API_KEY);
 
@@ -24,74 +25,79 @@ export default async function handler(req, res) {
     .filter(Boolean).join(' ') || 'Not specified';
 
   try {
+    const body = `
+      <div style="padding:16px;background:linear-gradient(135deg,#1565c0,#0097a7);border-radius:10px;margin-bottom:24px;">
+        <p style="margin:0 0 4px;font-size:12px;text-transform:uppercase;letter-spacing:1px;color:#b2ebf2;">Delivery Inquiry</p>
+        <p style="margin:0;font-size:20px;font-weight:700;color:#ffffff;">${name} — ${vesselDesc}</p>
+      </div>
+
+      ${sectionHeading('Contact')}
+      <table style="width:100%;border-collapse:collapse;">
+        ${detailRow('Name', name, true)}
+        ${detailRow('Email', `<a href="mailto:${email}" style="color:#1565c0;text-decoration:none;">${email}</a>`)}
+        ${phone ? detailRow('Phone', `<a href="tel:${phone}" style="color:#1565c0;text-decoration:none;">${phone}</a>`, true) : ''}
+      </table>
+
+      ${sectionHeading('Vessel')}
+      <table style="width:100%;border-collapse:collapse;">
+        ${vesselMake ? detailRow('Make', vesselMake, true) : ''}
+        ${vesselModel ? detailRow('Model', vesselModel) : ''}
+        ${vesselLength ? detailRow('Length', `${vesselLength} ft`, true) : ''}
+        ${vesselYear ? detailRow('Year', vesselYear) : ''}
+        ${vesselCondition ? detailRow('Condition', vesselCondition, true) : ''}
+      </table>
+
+      ${sectionHeading('Route')}
+      <table style="width:100%;border-collapse:collapse;">
+        ${detailRow('From', `${currentMarina || '—'}, ${currentCity || '—'}`, true)}
+        ${detailRow('To', `${destMarina || '—'}, ${destCity || '—'}`)}
+      </table>
+
+      ${sectionHeading('Schedule')}
+      <table style="width:100%;border-collapse:collapse;">
+        ${schedule ? detailRow('When', schedule, true) : ''}
+        ${deadline ? detailRow('Deadline', deadline) : ''}
+      </table>
+
+      ${notes ? `
+      ${sectionHeading('Notes')}
+      <div style="padding:14px 16px;background-color:#f8fafc;border-left:3px solid #0097a7;border-radius:4px;">
+        <p style="margin:0;font-size:14px;white-space:pre-wrap;color:#334155;">${notes.replace(/\n/g, '<br>')}</p>
+      </div>` : ''}
+    `;
+
+    const textContent = [
+      `Vessel Delivery Inquiry`,
+      ``,
+      `Contact:`,
+      `  Name: ${name}`,
+      `  Email: ${email}`,
+      phone ? `  Phone: ${phone}` : null,
+      ``,
+      `Vessel:`,
+      vesselMake ? `  Make: ${vesselMake}` : null,
+      vesselModel ? `  Model: ${vesselModel}` : null,
+      vesselLength ? `  Length: ${vesselLength} ft` : null,
+      vesselYear ? `  Year: ${vesselYear}` : null,
+      vesselCondition ? `  Condition: ${vesselCondition}` : null,
+      ``,
+      `Route:`,
+      `  From: ${currentMarina || '?'}, ${currentCity || '?'}`,
+      `  To: ${destMarina || '?'}, ${destCity || '?'}`,
+      ``,
+      `Schedule:`,
+      schedule ? `  When: ${schedule}` : null,
+      deadline ? `  Deadline: ${deadline}` : null,
+      notes ? `\nNotes:\n${notes}` : null,
+    ].filter(Boolean).join('\n');
+
     await resend.emails.send({
       from: 'Brian Cline <deliveries@briancline.co>',
       to: 'standardhuman@gmail.com',
       replyTo: email,
       subject: `Delivery Inquiry — ${name} — ${vesselDesc}`,
-      text: [
-        `Vessel Delivery Inquiry`,
-        ``,
-        `Contact:`,
-        `  Name: ${name}`,
-        `  Email: ${email}`,
-        phone ? `  Phone: ${phone}` : null,
-        ``,
-        `Vessel:`,
-        vesselMake ? `  Make: ${vesselMake}` : null,
-        vesselModel ? `  Model: ${vesselModel}` : null,
-        vesselLength ? `  Length: ${vesselLength} ft` : null,
-        vesselYear ? `  Year: ${vesselYear}` : null,
-        vesselCondition ? `  Condition: ${vesselCondition}` : null,
-        ``,
-        `Route:`,
-        `  From: ${currentMarina || '?'}, ${currentCity || '?'}`,
-        `  To: ${destMarina || '?'}, ${destCity || '?'}`,
-        ``,
-        `Schedule:`,
-        schedule ? `  When: ${schedule}` : null,
-        deadline ? `  Deadline: ${deadline}` : null,
-        notes ? `\nNotes:\n${notes}` : null,
-      ].filter(Boolean).join('\n'),
-      html: `
-        <h2>Vessel Delivery Inquiry</h2>
-
-        <h3 style="color:#345475; margin-top:20px;">Contact</h3>
-        <table style="border-collapse:collapse; font-family:sans-serif;">
-          <tr><td style="padding:4px 12px 4px 0; font-weight:bold;">Name</td><td>${name}</td></tr>
-          <tr><td style="padding:4px 12px 4px 0; font-weight:bold;">Email</td><td><a href="mailto:${email}">${email}</a></td></tr>
-          ${phone ? `<tr><td style="padding:4px 12px 4px 0; font-weight:bold;">Phone</td><td>${phone}</td></tr>` : ''}
-        </table>
-
-        <h3 style="color:#345475; margin-top:20px;">Vessel</h3>
-        <table style="border-collapse:collapse; font-family:sans-serif;">
-          ${vesselMake ? `<tr><td style="padding:4px 12px 4px 0; font-weight:bold;">Make</td><td>${vesselMake}</td></tr>` : ''}
-          ${vesselModel ? `<tr><td style="padding:4px 12px 4px 0; font-weight:bold;">Model</td><td>${vesselModel}</td></tr>` : ''}
-          ${vesselLength ? `<tr><td style="padding:4px 12px 4px 0; font-weight:bold;">Length</td><td>${vesselLength} ft</td></tr>` : ''}
-          ${vesselYear ? `<tr><td style="padding:4px 12px 4px 0; font-weight:bold;">Year</td><td>${vesselYear}</td></tr>` : ''}
-          ${vesselCondition ? `<tr><td style="padding:4px 12px 4px 0; font-weight:bold;">Condition</td><td>${vesselCondition}</td></tr>` : ''}
-        </table>
-
-        <h3 style="color:#345475; margin-top:20px;">Route</h3>
-        <table style="border-collapse:collapse; font-family:sans-serif;">
-          <tr><td style="padding:4px 12px 4px 0; font-weight:bold;">From</td><td>${currentMarina || '—'}, ${currentCity || '—'}</td></tr>
-          <tr><td style="padding:4px 12px 4px 0; font-weight:bold;">To</td><td>${destMarina || '—'}, ${destCity || '—'}</td></tr>
-        </table>
-
-        <h3 style="color:#345475; margin-top:20px;">Schedule</h3>
-        <table style="border-collapse:collapse; font-family:sans-serif;">
-          ${schedule ? `<tr><td style="padding:4px 12px 4px 0; font-weight:bold;">When</td><td>${schedule}</td></tr>` : ''}
-          ${deadline ? `<tr><td style="padding:4px 12px 4px 0; font-weight:bold;">Deadline</td><td>${deadline}</td></tr>` : ''}
-        </table>
-
-        ${notes ? `
-          <h3 style="color:#345475; margin-top:20px;">Notes</h3>
-          <p>${notes.replace(/\n/g, '<br>')}</p>
-        ` : ''}
-
-        <hr style="margin:16px 0;">
-        <p style="color:#888; font-size:12px;">Sent from briancline.co delivery inquiry form</p>
-      `,
+      text: textContent,
+      html: emailLayout('Vessel Delivery Inquiry', body),
     });
 
     return res.status(200).json({ success: true });
