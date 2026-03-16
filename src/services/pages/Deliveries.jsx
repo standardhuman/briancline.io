@@ -59,7 +59,7 @@ function DeliveryInquiryForm() {
       if (!res.ok) throw new Error("Failed to send");
       setSubmitted(true);
     } catch {
-      setError("Failed to send. Email brian@briancline.co directly.");
+      setError("Failed to send. Email deliveries@briancline.co directly.");
       setSubmitting(false);
     }
   }

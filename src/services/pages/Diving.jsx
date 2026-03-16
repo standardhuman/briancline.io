@@ -287,8 +287,8 @@ function EstimateCard({ estimate, boatLength, boatType, hullType, frequency, ser
 
           <p className="text-xs text-white/60 text-center">
             Questions? Email us at{" "}
-            <a href="mailto:brian@sailorskills.com" className="underline hover:text-white/80">
-              brian@sailorskills.com
+            <a href="mailto:diving@briancline.co" className="underline hover:text-white/80">
+              diving@briancline.co
             </a>
           </p>
         </CardContent>

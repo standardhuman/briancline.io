@@ -502,7 +502,7 @@ function EstimateForm({ calculatorState }) {
       if (!res.ok) throw new Error("Failed to send");
       setSubmitted(true);
     } catch {
-      setError("Failed to send. Email brian@briancline.co directly.");
+      setError("Failed to send. Email detailing@briancline.co directly.");
       setSubmitting(false);
     }
   }
