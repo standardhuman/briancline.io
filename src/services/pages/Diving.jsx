@@ -218,7 +218,7 @@ function InputCard({ icon: Icon, title, description, children, visible = true })
 }
 
 // ── Estimate Card ──
-function EstimateCard({ estimate, boatLength, boatType, hullType, frequency, serviceKey }) {
+function EstimateCard({ estimate, boatLength, boatType, hullType, frequency, serviceKey, propellerCount, paintAge, lastCleaned, anodeCount }) {
   const navigate = useNavigate();
   const service = SERVICES[serviceKey];
 
@@ -602,6 +602,10 @@ export default function Diving() {
                 hullType={hullType}
                 frequency={frequency}
                 serviceKey={serviceKey}
+                propellerCount={propellerCount}
+                paintAge={paintAge}
+                lastCleaned={lastCleaned}
+                anodeCount={anodeCount}
               />
             </div>
           </div>
