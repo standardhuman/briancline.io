@@ -70,7 +70,6 @@ const localBusinessSchema = {
     "postalCode": "94710",
     "addressCountry": "US"
   },
-  "telephone": "+1-510-277-4855",
   "priceRange": "$$",
   "hasOfferCatalog": {
     "@type": "OfferCatalog",

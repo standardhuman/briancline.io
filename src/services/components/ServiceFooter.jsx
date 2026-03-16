@@ -37,11 +37,7 @@ export default function ServiceFooter() {
                   brian@briancline.co
                 </a>
               </li>
-              <li>
-                <a href="tel:+15102774855" className="text-gray-300 hover:text-white text-sm transition-colors">
-                  (510) 277-4855
-                </a>
-              </li>
+
               <li>
                 <a href="/" className="text-gray-300 hover:text-white text-sm transition-colors">
                   briancline.co

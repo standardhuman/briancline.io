@@ -286,7 +286,10 @@ function EstimateCard({ estimate, boatLength, boatType, hullType, frequency, ser
           </Button>
 
           <p className="text-xs text-white/60 text-center">
-            Questions? Call us at (510) 277-4855
+            Questions? Email us at{" "}
+            <a href="mailto:brian@sailorskills.com" className="underline hover:text-white/80">
+              brian@sailorskills.com
+            </a>
           </p>
         </CardContent>
       </Card>
