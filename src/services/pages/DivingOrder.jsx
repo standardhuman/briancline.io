@@ -20,10 +20,12 @@ const SUPABASE_URL = import.meta.env.VITE_SUPABASE_URL;
 const SUPABASE_ANON_KEY = import.meta.env.VITE_SUPABASE_ANON_KEY;
 
 const BOAT_TYPES = [
-  { value: "sailboat", label: "Sailboat" },
-  { value: "powerboat", label: "Powerboat" },
-  { value: "catamaran", label: "Catamaran" },
-  { value: "trimaran", label: "Trimaran" },
+  { value: "monohull_sailboat", label: "Monohull Sailboat", hull: "monohull", type: "sailboat" },
+  { value: "monohull_powerboat", label: "Monohull Powerboat", hull: "monohull", type: "powerboat" },
+  { value: "catamaran_sailboat", label: "Catamaran Sailboat", hull: "catamaran", type: "sailboat" },
+  { value: "catamaran_powerboat", label: "Catamaran Powerboat", hull: "catamaran", type: "powerboat" },
+  { value: "trimaran_sailboat", label: "Trimaran Sailboat", hull: "trimaran", type: "sailboat" },
+  { value: "trimaran_powerboat", label: "Trimaran Powerboat", hull: "trimaran", type: "powerboat" },
 ];
 
 const FREQUENCIES = [
@@ -106,6 +108,11 @@ function OrderForm({ searchParams, navigate }) {
 
   const service = SERVICES[serviceKey] || SERVICES.recurring_cleaning;
 
+  // Combine hull + type into a single boat type value
+  const initialBoatType = `${initialHull}_${initialType}`;
+  // Validate it exists in our options, fall back to monohull_sailboat
+  const validBoatType = BOAT_TYPES.some((t) => t.value === initialBoatType) ? initialBoatType : "monohull_sailboat";
+
   const isItemRecovery = serviceKey === "item_recovery";
   const isAnodesOnly = serviceKey === "anodes_only";
   const isPropellerService = serviceKey === "propeller_service";
@@ -116,7 +123,7 @@ function OrderForm({ searchParams, navigate }) {
   // Form state
   const [form, setForm] = useState({
     boatName: "",
-    boatType: initialType,
+    boatType: validBoatType,
     boatMake: "",
     boatModel: "",
     boatLength: initialLength,
@@ -182,12 +189,18 @@ function OrderForm({ searchParams, navigate }) {
     try {
       const cardNumberElement = elements.getElement(CardNumberElement);
 
+      // Split combined boat type back into hull + type
+      const selectedBoatType = BOAT_TYPES.find((t) => t.value === form.boatType);
+      const hullType = selectedBoatType?.hull || initialHull;
+      const boatPropulsion = selectedBoatType?.type || initialType;
+
       const formData = {
         boatName: isItemRecovery ? "N/A - Item Recovery" : form.boatName,
         boatLength: isItemRecovery ? "0" : form.boatLength,
         boatMake: isItemRecovery ? "N/A" : form.boatMake,
         boatModel: isItemRecovery ? "N/A" : form.boatModel,
-        boatType: form.boatType,
+        boatType: boatPropulsion,
+        hullType: hullType,
         marinaName: isItemRecovery ? "See recovery location" : form.marina,
         dock: isItemRecovery ? "N/A" : form.dock,
         slipNumber: isItemRecovery ? "N/A" : form.slip,
@@ -204,8 +217,8 @@ function OrderForm({ searchParams, navigate }) {
         serviceDetails: {
           serviceName: service.name,
           boatLength: form.boatLength || initialLength,
-          boatType: form.boatType || initialType,
-          hullType: initialHull,
+          boatType: boatPropulsion,
+          hullType: hullType,
           frequency: isRecurring ? form.frequency : "one-time",
           propellerCount: initialPropellers,
           paintAge: initialPaintAge,
