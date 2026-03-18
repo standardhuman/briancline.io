@@ -163,16 +163,27 @@
   <section id="projects" class="py-24">
     <div class="max-w-5xl mx-auto px-6">
       <h2 class="text-3xl md:text-4xl font-bold text-gray-900 mb-4">Projects</h2>
-      <p class="text-lg text-gray-500 mb-12 max-w-2xl">
+      <p class="text-lg text-gray-500 mb-8 max-w-2xl">
         Tools for connection, trust, and craft. Plus the occasional experiment.
       </p>
 
-      <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
+      <!-- Category Tabs -->
+      <div class="flex flex-wrap gap-2 mb-8" id="project-tabs">
+        <button class="tab-btn px-4 py-2 rounded-full text-sm font-medium transition-colors bg-gray-900 text-white" data-filter="all">All</button>
+        <button class="tab-btn px-4 py-2 rounded-full text-sm font-medium transition-colors bg-gray-100 text-gray-600 hover:bg-gray-200" data-filter="connection">Connection & Craft</button>
+        <button class="tab-btn px-4 py-2 rounded-full text-sm font-medium transition-colors bg-gray-100 text-gray-600 hover:bg-gray-200" data-filter="community">Community</button>
+        <button class="tab-btn px-4 py-2 rounded-full text-sm font-medium transition-colors bg-gray-100 text-gray-600 hover:bg-gray-200" data-filter="marine">Marine</button>
+        <button class="tab-btn px-4 py-2 rounded-full text-sm font-medium transition-colors bg-gray-100 text-gray-600 hover:bg-gray-200" data-filter="client">Client Work</button>
+        <button class="tab-btn px-4 py-2 rounded-full text-sm font-medium transition-colors bg-gray-100 text-gray-600 hover:bg-gray-200" data-filter="opensource">Open Source</button>
+        <button class="tab-btn px-4 py-2 rounded-full text-sm font-medium transition-colors bg-gray-100 text-gray-600 hover:bg-gray-200" data-filter="fun">Fun</button>
+      </div>
+
+      <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-6" id="project-grid">
 
         <!-- ═══ CONNECTION & CRAFT ═══ -->
 
         <!-- CCT — Compassionate Communication Tool -->
-        <a href="https://cct.briancline.co" target="_blank" rel="noopener" class="project-card rounded-2xl border border-gray-200 hover:border-gray-300 overflow-hidden block">
+        <a href="https://cct.briancline.co" target="_blank" rel="noopener" data-category="connection" class="project-card rounded-2xl border border-gray-200 hover:border-gray-300 overflow-hidden block">
           <img src="/images/projects/cct.png" alt="Compassionate Communication Tool" class="w-full h-40 object-cover object-top">
           <div class="p-6">
             <h3 class="text-lg font-semibold text-gray-900 mb-2">Compassionate Communication Tool</h3>
@@ -184,7 +195,7 @@
         </a>
 
         <!-- The Road -->
-        <a href="https://theroad.briancline.co" target="_blank" rel="noopener" class="project-card rounded-2xl border border-gray-200 hover:border-gray-300 overflow-hidden block">
+        <a href="https://theroad.briancline.co" target="_blank" rel="noopener" data-category="connection" class="project-card rounded-2xl border border-gray-200 hover:border-gray-300 overflow-hidden block">
           <img src="/images/projects/the-road.jpg" alt="The Road" class="w-full h-40 object-cover">
           <div class="p-6">
             <h3 class="text-lg font-semibold text-gray-900 mb-2">The Road</h3>
@@ -196,7 +207,7 @@
         </a>
 
         <!-- Completing Relationships -->
-        <a href="https://completing.sailorskills.com" target="_blank" rel="noopener" class="project-card rounded-2xl border border-gray-200 hover:border-gray-300 overflow-hidden block">
+        <a href="https://completing.sailorskills.com" target="_blank" rel="noopener" data-category="connection" class="project-card rounded-2xl border border-gray-200 hover:border-gray-300 overflow-hidden block">
           <img src="/images/projects/completing-relationships.png" alt="Completing Relationships" class="w-full h-40 object-cover">
           <div class="p-6">
             <h3 class="text-lg font-semibold text-gray-900 mb-2">Completing Relationships</h3>
@@ -208,7 +219,7 @@
         </a>
 
         <!-- Appreciating Serenity -->
-        <a href="https://appreciatingserenity.com" target="_blank" rel="noopener" class="project-card rounded-2xl border border-gray-200 hover:border-gray-300 overflow-hidden block">
+        <a href="https://appreciatingserenity.com" target="_blank" rel="noopener" data-category="connection" class="project-card rounded-2xl border border-gray-200 hover:border-gray-300 overflow-hidden block">
           <img src="/images/projects/serenity-thumb.png" alt="Appreciating Serenity" class="w-full h-40 object-cover">
           <div class="p-6">
             <h3 class="text-lg font-semibold text-gray-900 mb-2">Appreciating Serenity</h3>
@@ -220,7 +231,7 @@
         </a>
 
         <!-- Needs Are Normal -->
-        <a href="https://needsarenormal.com" target="_blank" rel="noopener" class="project-card rounded-2xl border border-gray-200 hover:border-gray-300 overflow-hidden block">
+        <a href="https://needsarenormal.com" target="_blank" rel="noopener" data-category="connection" class="project-card rounded-2xl border border-gray-200 hover:border-gray-300 overflow-hidden block">
           <img src="/images/projects/needs-are-normal.png" alt="Needs Are Normal" class="w-full h-40 object-cover">
           <div class="p-6">
             <h3 class="text-lg font-semibold text-gray-900 mb-2">Needs Are Normal</h3>
@@ -232,7 +243,7 @@
         </a>
 
         <!-- LifeSkills -->
-        <a href="https://lifeskills.sailorskills.com" target="_blank" rel="noopener" class="project-card rounded-2xl border border-gray-200 hover:border-gray-300 overflow-hidden block">
+        <a href="https://lifeskills.sailorskills.com" target="_blank" rel="noopener" data-category="connection" class="project-card rounded-2xl border border-gray-200 hover:border-gray-300 overflow-hidden block">
           <img src="/images/projects/lifeskills.png" alt="LifeSkills" class="w-full h-40 object-cover">
           <div class="p-6">
             <h3 class="text-lg font-semibold text-gray-900 mb-2">LifeSkills</h3>
@@ -246,7 +257,7 @@
         <!-- ═══ COMMUNITY ═══ -->
 
         <!-- The Men's Circle Modern -->
-        <a href="https://tmc-site-modern.sailorskills.com" target="_blank" rel="noopener" class="project-card rounded-2xl border border-gray-200 hover:border-gray-300 overflow-hidden block">
+        <a href="https://tmc-site-modern.sailorskills.com" target="_blank" rel="noopener" data-category="community" class="project-card rounded-2xl border border-gray-200 hover:border-gray-300 overflow-hidden block">
           <img src="/images/projects/tmc-modern.png" alt="The Men's Circle" class="w-full h-40 object-cover">
           <div class="p-6">
             <h3 class="text-lg font-semibold text-gray-900 mb-2">The Men's Circle</h3>
@@ -258,7 +269,7 @@
         </a>
 
         <!-- Roots & Rise -->
-        <a href="https://twc-resources.vercel.app" target="_blank" rel="noopener" class="project-card rounded-2xl border border-gray-200 hover:border-gray-300 overflow-hidden block">
+        <a href="https://twc-resources.vercel.app" target="_blank" rel="noopener" data-category="community" class="project-card rounded-2xl border border-gray-200 hover:border-gray-300 overflow-hidden block">
           <img src="/images/projects/roots-and-rise.png" alt="Roots & Rise" class="w-full h-40 object-cover">
           <div class="p-6">
             <h3 class="text-lg font-semibold text-gray-900 mb-2">Roots & Rise</h3>
@@ -272,7 +283,7 @@
         <!-- ═══ MARINE ═══ -->
 
         <!-- SailorSkills -->
-        <a href="https://marketplace.sailorskills.com" target="_blank" rel="noopener" class="project-card rounded-2xl border border-gray-200 hover:border-gray-300 overflow-hidden block">
+        <a href="https://marketplace.sailorskills.com" target="_blank" rel="noopener" data-category="marine" class="project-card rounded-2xl border border-gray-200 hover:border-gray-300 overflow-hidden block">
           <img src="/images/projects/sailorskills-marketplace.png" alt="SailorSkills" class="w-full h-40 object-cover object-top">
           <div class="p-6">
             <h3 class="text-lg font-semibold text-gray-900 mb-2">SailorSkills</h3>
@@ -284,7 +295,7 @@
         </a>
 
         <!-- Sailor Skills Pro -->
-        <a href="https://platform.sailorskills.com" target="_blank" rel="noopener" class="project-card rounded-2xl border border-gray-200 hover:border-gray-300 overflow-hidden block">
+        <a href="https://platform.sailorskills.com" target="_blank" rel="noopener" data-category="marine" class="project-card rounded-2xl border border-gray-200 hover:border-gray-300 overflow-hidden block">
           <img src="/images/projects/sailorskills-platform.png" alt="SailorSkills Pro" class="w-full h-40 object-cover">
           <div class="p-6">
             <h3 class="text-lg font-semibold text-gray-900 mb-2">SailorSkills Pro</h3>
@@ -296,7 +307,7 @@
         </a>
 
         <!-- Sailor Skills Services -->
-        <a href="https://sailorskills.com" target="_blank" rel="noopener" class="project-card rounded-2xl border border-gray-200 hover:border-gray-300 overflow-hidden block">
+        <a href="https://sailorskills.com" target="_blank" rel="noopener" data-category="marine" class="project-card rounded-2xl border border-gray-200 hover:border-gray-300 overflow-hidden block">
           <img src="/images/projects/sailorskills-services.png" alt="Sailor Skills Services" class="w-full h-40 object-cover object-top">
           <div class="p-6">
             <h3 class="text-lg font-semibold text-gray-900 mb-2">Sailor Skills Services</h3>
@@ -310,7 +321,7 @@
         <!-- ═══ CLIENT WORK ═══ -->
 
         <!-- Emily Richards -->
-        <a href="https://emilyrichards-media.briancline.co" target="_blank" rel="noopener" class="project-card rounded-2xl border border-gray-200 hover:border-gray-300 overflow-hidden block">
+        <a href="https://emilyrichards-media.briancline.co" target="_blank" rel="noopener" data-category="client" class="project-card rounded-2xl border border-gray-200 hover:border-gray-300 overflow-hidden block">
           <img src="/images/projects/emily-richards.png" alt="Emily Richards Portfolio" class="w-full h-40 object-cover">
           <div class="p-6">
             <h3 class="text-lg font-semibold text-gray-900 mb-2">Emily Richards</h3>
@@ -322,7 +333,7 @@
         </a>
 
         <!-- AMP Manufacturing -->
-        <a href="https://amp.briancline.co" target="_blank" rel="noopener" class="project-card rounded-2xl border border-gray-200 hover:border-gray-300 overflow-hidden block">
+        <a href="https://amp.briancline.co" target="_blank" rel="noopener" data-category="client" class="project-card rounded-2xl border border-gray-200 hover:border-gray-300 overflow-hidden block">
           <img src="/images/projects/ant-manufacturing.png" alt="AMP Manufacturing" class="w-full h-40 object-cover">
           <div class="p-6">
             <h3 class="text-lg font-semibold text-gray-900 mb-2">AMP Manufacturing</h3>
@@ -334,7 +345,7 @@
         </a>
 
         <!-- Blisscapes -->
-        <a href="https://blisscapesgardens.com" target="_blank" rel="noopener" class="project-card rounded-2xl border border-gray-200 hover:border-gray-300 overflow-hidden block">
+        <a href="https://blisscapesgardens.com" target="_blank" rel="noopener" data-category="client" class="project-card rounded-2xl border border-gray-200 hover:border-gray-300 overflow-hidden block">
           <div class="w-full h-40 bg-white flex items-center justify-center p-6">
             <img src="/images/projects/blisscapes.png" alt="Blisscapes Gardens" class="max-h-full max-w-full object-contain">
           </div>
@@ -350,7 +361,7 @@
         <!-- ═══ OPEN SOURCE & TOOLS ═══ -->
 
         <!-- MCP Tools -->
-        <a href="https://github.com/standardhuman/mcp-tools" target="_blank" rel="noopener" class="project-card rounded-2xl border border-gray-200 hover:border-gray-300 overflow-hidden block">
+        <a href="https://github.com/standardhuman/mcp-tools" target="_blank" rel="noopener" data-category="opensource" class="project-card rounded-2xl border border-gray-200 hover:border-gray-300 overflow-hidden block">
           <img src="/images/projects/mcp-tools.png" alt="MCP Tools" class="w-full h-40 object-cover">
           <div class="p-6">
             <h3 class="text-lg font-semibold text-gray-900 mb-2">MCP Tools</h3>
@@ -362,7 +373,7 @@
         </a>
 
         <!-- Podcast Renamer -->
-        <a href="/projects/podcast-renamer" class="project-card rounded-2xl border border-gray-200 hover:border-gray-300 overflow-hidden block">
+        <a href="/projects/podcast-renamer" data-category="opensource" class="project-card rounded-2xl border border-gray-200 hover:border-gray-300 overflow-hidden block">
           <img src="/images/projects/podcast-renamer.png" alt="Podcast Renamer" class="w-full h-40 object-cover">
           <div class="p-6">
             <h3 class="text-lg font-semibold text-gray-900 mb-2">Podcast Renamer</h3>
@@ -374,7 +385,7 @@
         </a>
 
         <!-- FireShift -->
-        <a href="/projects/fireshift" class="project-card rounded-2xl border border-gray-200 hover:border-gray-300 overflow-hidden block">
+        <a href="/projects/fireshift" data-category="opensource" class="project-card rounded-2xl border border-gray-200 hover:border-gray-300 overflow-hidden block">
           <img src="/images/projects/fireshift.png" alt="FireShift" class="w-full h-40 object-cover">
           <div class="p-6">
             <h3 class="text-lg font-semibold text-gray-900 mb-2">FireShift</h3>
@@ -388,7 +399,7 @@
         <!-- ═══ FUN ═══ -->
 
         <!-- AI Defeater -->
-        <a href="https://defeatai.vercel.app" target="_blank" rel="noopener" class="project-card rounded-2xl border border-gray-200 hover:border-gray-300 overflow-hidden block">
+        <a href="https://defeatai.vercel.app" target="_blank" rel="noopener" data-category="fun" class="project-card rounded-2xl border border-gray-200 hover:border-gray-300 overflow-hidden block">
           <img src="/images/projects/defeat-ai.png" alt="AI Defeater" class="w-full h-40 object-cover">
           <div class="p-6">
             <h3 class="text-lg font-semibold text-gray-900 mb-2">AI Defeater</h3>
@@ -400,7 +411,7 @@
         </a>
 
         <!-- Art or Trash -->
-        <a href="https://art-or-trash.vercel.app" target="_blank" rel="noopener" class="project-card rounded-2xl border border-gray-200 hover:border-gray-300 overflow-hidden block">
+        <a href="https://art-or-trash.vercel.app" target="_blank" rel="noopener" data-category="fun" class="project-card rounded-2xl border border-gray-200 hover:border-gray-300 overflow-hidden block">
           <img src="/images/projects/art-or-trash.png" alt="Art or Trash" class="w-full h-40 object-cover">
           <div class="p-6">
             <h3 class="text-lg font-semibold text-gray-900 mb-2">Art or Trash</h3>
@@ -556,5 +567,39 @@
   </footer>
 
   <script type="module" src="/src/main.js"></script>
+
+  <!-- Project filter tabs -->
+  <script>
+    (function() {
+      var tabs = document.getElementById('project-tabs');
+      var grid = document.getElementById('project-grid');
+      if (!tabs || !grid) return;
+
+      var cards = grid.querySelectorAll('[data-category]');
+      var buttons = tabs.querySelectorAll('.tab-btn');
+
+      tabs.addEventListener('click', function(e) {
+        var btn = e.target.closest('.tab-btn');
+        if (!btn) return;
+
+        var filter = btn.getAttribute('data-filter');
+
+        // Update button styles
+        buttons.forEach(function(b) {
+          b.className = 'tab-btn px-4 py-2 rounded-full text-sm font-medium transition-colors bg-gray-100 text-gray-600 hover:bg-gray-200';
+        });
+        btn.className = 'tab-btn px-4 py-2 rounded-full text-sm font-medium transition-colors bg-gray-900 text-white';
+
+        // Filter cards
+        cards.forEach(function(card) {
+          if (filter === 'all' || card.getAttribute('data-category') === filter) {
+            card.style.display = '';
+          } else {
+            card.style.display = 'none';
+          }
+        });
+      });
+    })();
+  </script>
 </body>
 </html>
