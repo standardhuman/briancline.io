@@ -400,7 +400,9 @@ function DetailingEstimator({ onStateChange }) {
                         className="mt-4 inline-flex items-center justify-center gap-2 w-full px-6 py-3 rounded-lg bg-primary hover:bg-primary/90 text-white font-medium transition-colors"
                       >
                         <Send className="w-4 h-4" />
-                        Request This Estimate
+                        {services.springWash && !services.washDry && !services.polishWax && !services.metal && !services.teak
+                          ? "Request This Service"
+                          : "Request This Estimate"}
                       </a>
                     </div>
                   )}
@@ -429,6 +431,14 @@ function EstimateForm({ calculatorState }) {
     lineItems: calcLineItems,
     total: calcTotal,
   } = calculatorState || {};
+
+  const springWashOnly = !!(
+    calcServices?.springWash &&
+    !calcServices?.washDry &&
+    !calcServices?.polishWax &&
+    !calcServices?.metal &&
+    !calcServices?.teak
+  );
 
   // Pre-populate from calculator selections
   const preSelectedServices = [];
@@ -520,8 +530,8 @@ function EstimateForm({ calculatorState }) {
   return (
     <Card>
       <CardHeader>
-        <CardTitle className="text-xl">Request an Estimate</CardTitle>
-        <CardDescription>Tell me about your boat. I'll get back to you within 24 hours to schedule a walkthrough.</CardDescription>
+        <CardTitle className="text-xl">{springWashOnly ? "Request This Service" : "Request an Estimate"}</CardTitle>
+        <CardDescription>Tell me about your boat. I'll get back to you within 24 hours{springWashOnly ? " to schedule your spring pressure wash." : " to schedule a walkthrough."}</CardDescription>
       </CardHeader>
       <CardContent>
         <form onSubmit={handleSubmit} className="space-y-6">
@@ -566,7 +576,7 @@ function EstimateForm({ calculatorState }) {
 
           <Button type="submit" disabled={submitting} className="w-full gap-2">
             <Send className="w-4 h-4" />
-            {submitting ? "Sending..." : "Request Estimate"}
+            {submitting ? "Sending..." : springWashOnly ? "Request This Service" : "Request Estimate"}
           </Button>
         </form>
       </CardContent>
