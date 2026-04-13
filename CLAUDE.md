@@ -55,3 +55,7 @@ npm run preview  # Preview production build
 3. Update Calendly link
 4. Add actual LinkedIn, GitHub, Strava URLs
 5. Configure custom domain in Vercel
+
+## Session start
+
+If HANDOFF.md exists in this directory, read it first for context from the previous session.

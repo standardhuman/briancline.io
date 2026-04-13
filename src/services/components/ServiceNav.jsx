@@ -21,7 +21,7 @@ export default function ServiceNav() {
         <Link to="/marine" className="flex items-baseline gap-1.5 text-lg font-bold text-gray-900" style={{ letterSpacing: "-0.02em" }}>
           <span className="md:hidden">bc<span style={{ color: "#0073a8", fontSize: "1.4em", lineHeight: 0, position: "relative", top: "0.05em" }}>.</span></span>
           <span className="hidden md:inline">briancline<span style={{ color: "#0073a8" }}>.</span>co</span>
-          <span className="text-xs font-semibold tracking-wide uppercase" style={{ color: "#0097a7" }}>marine</span>
+          <span className="text-xs font-semibold tracking-wide uppercase" style={{ color: "#0097a7" }}>vessel management</span>
         </Link>
 
         {/* Desktop Nav */}
@@ -50,7 +50,7 @@ export default function ServiceNav() {
         {/* CTA + Mobile toggle */}
         <div className="flex items-center gap-3">
           <a
-            href="mailto:brian@briancline.co?subject=Marine%20Services%20Inquiry"
+            href="mailto:brian@briancline.co?subject=Vessel%20Management%20Inquiry"
             className="hidden sm:inline-flex px-4 py-2 bg-primary text-white rounded-lg text-sm font-medium hover:bg-primary/90 transition-colors"
           >
             Contact
@@ -95,7 +95,7 @@ export default function ServiceNav() {
             );
           })}
           <a
-            href="mailto:brian@briancline.co?subject=Marine%20Services%20Inquiry"
+            href="mailto:brian@briancline.co?subject=Vessel%20Management%20Inquiry"
             className="block px-3 py-2.5 text-sm font-medium text-primary"
           >
             Contact Brian

@@ -54,7 +54,7 @@ export default function Training() {
         "@type": "Service",
         "name": "Sailing Lessons - San Francisco Bay",
         "description": "Private and small-group sailing instruction on San Francisco Bay. US Sailing certified instructor with nearly 20 years of experience. Beginner through advanced offshore passage making.",
-        "provider": { "@id": "https://briancline.co/#marine-services" },
+        "provider": { "@id": "https://briancline.co/#vessel-management" },
         "areaServed": { "@type": "Place", "name": "San Francisco Bay Area" },
         "serviceType": "Sailing Instruction",
         "url": "https://briancline.co/sailing-lessons"

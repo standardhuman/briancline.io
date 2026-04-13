@@ -355,7 +355,7 @@ export default function Diving() {
         "@type": "Service",
         "name": "Hull Cleaning - San Francisco Bay",
         "description": "Professional underwater hull cleaning for sailboats and powerboats at Berkeley Marina, Oakland, Alameda, and throughout San Francisco Bay. Includes marine growth removal, zinc anode inspection, and propeller cleaning.",
-        "provider": { "@id": "https://briancline.co/#marine-services" },
+        "provider": { "@id": "https://briancline.co/#vessel-management" },
         "areaServed": { "@type": "Place", "name": "San Francisco Bay Area" },
         "serviceType": "Hull Cleaning",
         "url": "https://briancline.co/hull-cleaning"

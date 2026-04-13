@@ -603,7 +603,7 @@ export default function Detailing() {
         "@type": "Service",
         "name": "Boat Detailing - San Francisco Bay",
         "description": "Complete above-waterline boat detailing services including wash, wax, polish, metal polishing, teak care, and gelcoat restoration throughout San Francisco Bay marinas.",
-        "provider": { "@id": "https://briancline.co/#marine-services" },
+        "provider": { "@id": "https://briancline.co/#vessel-management" },
         "areaServed": { "@type": "Place", "name": "San Francisco Bay Area" },
         "serviceType": "Boat Detailing",
         "url": "https://briancline.co/boat-detailing"

@@ -166,7 +166,7 @@ export default function Deliveries() {
         "@type": "Service",
         "name": "Vessel Deliveries - West Coast",
         "description": "Professional vessel delivery along the US West Coast and beyond. USCG Licensed Master with extensive coastal and offshore passage experience.",
-        "provider": { "@id": "https://briancline.co/#marine-services" },
+        "provider": { "@id": "https://briancline.co/#vessel-management" },
         "areaServed": { "@type": "Place", "name": "US West Coast" },
         "serviceType": "Vessel Delivery",
         "url": "https://briancline.co/deliveries"

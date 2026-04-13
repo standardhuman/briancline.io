@@ -40,10 +40,10 @@ const secondaryService = {
 const localBusinessSchema = {
   "@context": "https://schema.org",
   "@type": "ProfessionalService",
-  "@id": "https://briancline.co/#marine-services",
-  "name": "Brian Cline Marine Services",
+  "@id": "https://briancline.co/#vessel-management",
+  "name": "Brian Cline Vessel Management",
   "url": "https://briancline.co/marine",
-  "description": "Professional hull cleaning, boat detailing, sailing lessons, and vessel delivery services on San Francisco Bay. Serving Berkeley Marina, Oakland, Alameda, Emeryville, Richmond, Sausalito, and San Francisco marinas.",
+  "description": "Vessel management on San Francisco Bay — hull cleaning, boat detailing, sailing lessons, and vessel deliveries. Serving Berkeley Marina, Oakland, Alameda, Emeryville, Richmond, Sausalito, and San Francisco marinas.",
   "founder": {
     "@type": "Person",
     "@id": "https://briancline.co/#brian-cline",
@@ -73,7 +73,7 @@ const localBusinessSchema = {
   "priceRange": "$$",
   "hasOfferCatalog": {
     "@type": "OfferCatalog",
-    "name": "Marine Services",
+    "name": "Vessel Management Services",
     "itemListElement": [
       {
         "@type": "Offer",
@@ -144,8 +144,8 @@ export default function Marine() {
   return (
     <div>
       <PageMeta
-        title="Marine Services on San Francisco Bay | Brian Cline"
-        description="Hull cleaning, boat detailing, sailing lessons, and vessel deliveries on San Francisco Bay. USCG Licensed Master and US Sailing Cruising Instructor with nearly 20 years on the water."
+        title="Vessel Management on San Francisco Bay | Brian Cline"
+        description="Hull cleaning, boat detailing, sailing lessons, and vessel deliveries on San Francisco Bay. Managed by Brian Cline — USCG Licensed Master, US Sailing Cruising Instructor, nearly 20 years on the water."
       />
       <JsonLd data={localBusinessSchema} />
 
@@ -159,10 +159,10 @@ export default function Marine() {
           <div className="grid md:grid-cols-2 gap-10 items-center">
             <div>
               <h1 className="text-4xl md:text-5xl font-bold text-foreground mb-4 leading-tight">
-                Marine Services on San Francisco Bay
+                Vessel Management on San Francisco Bay
               </h1>
               <p className="text-lg md:text-xl text-gray-600 mb-4 max-w-2xl">
-                Professional hull cleaning, boat detailing, private sailing instruction, and vessel deliveries. Serving marinas across the Bay Area.
+                Hull cleaning, detailing, sailing instruction, and vessel deliveries — managed by one person you trust. Serving marinas across the Bay Area.
               </p>
               <p className="text-sm text-gray-500">
                 USCG Licensed Master · US Sailing Cruising Instructor · Nearly 20 years on San Francisco Bay
