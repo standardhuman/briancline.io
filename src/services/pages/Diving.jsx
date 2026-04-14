@@ -348,7 +348,7 @@ export default function Diving() {
     <div>
       <PageMeta
         title="Hull Cleaning & Dive Services – San Francisco Bay | Brian Cline"
-        description="Professional underwater hull cleaning at Berkeley Marina, Oakland, Alameda, and SF Bay marinas. Subscription plans from $4.49/ft. Instant estimates, before/after video, and transparent pricing."
+        description="Professional underwater hull cleaning at Berkeley Marina, Oakland, Alameda, and SF Bay marinas. Subscription plans from $4.50/ft. Instant estimates, before/after video, and transparent pricing."
       />
       <JsonLd data={{
         "@context": "https://schema.org",

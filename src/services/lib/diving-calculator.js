@@ -39,8 +39,8 @@ export const SERVICES = {
 
 // ── Rates (legacy export) ──
 const RATES = {
-  recurring: 4.49,
-  onetime: 5.99,
+  recurring: 4.50,
+  onetime: 6.00,
   inspection: 3.99,
   itemRecovery: 149,
   propellerService: 349,
