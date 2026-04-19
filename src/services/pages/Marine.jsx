@@ -11,6 +11,7 @@ const mainServices = [
     icon: Anchor,
     title: "Hull Cleaning",
     tagline: "Subscription hull cleaning, inspections, propeller service, and item recovery.",
+    note: "Currently serving Berkeley Marina only — referrals available for other Bay Area marinas.",
     cta: "Get an instant estimate",
   },
   {
@@ -111,7 +112,7 @@ const localBusinessSchema = {
   }
 };
 
-function ServiceCard({ to, icon: Icon, title, tagline, cta, secondary = false }) {
+function ServiceCard({ to, icon: Icon, title, tagline, note, cta, secondary = false }) {
   return (
     <Link
       to={to}
@@ -127,9 +128,14 @@ function ServiceCard({ to, icon: Icon, title, tagline, cta, secondary = false })
           <h2 className={`font-bold text-foreground mb-2 ${secondary ? "text-lg" : "text-xl md:text-2xl"}`}>
             {title}
           </h2>
-          <p className="text-gray-600 text-sm md:text-base leading-relaxed mb-4">
+          <p className="text-gray-600 text-sm md:text-base leading-relaxed mb-3">
             {tagline}
           </p>
+          {note && (
+            <p className="text-xs text-gray-500 italic mb-4">
+              {note}
+            </p>
+          )}
           <span className="inline-flex items-center gap-1.5 text-primary font-medium text-sm group-hover:gap-2.5 transition-all">
             {cta}
             <ArrowRight className="w-4 h-4" />

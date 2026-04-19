@@ -129,6 +129,10 @@ const SERVICE_LIST = [
 
 const FAQS = [
   {
+    q: "Which marinas do you service?",
+    a: "I'm currently serving Berkeley Marina exclusively. If your boat is kept at another Bay Area marina, email me at diving@briancline.co with your marina and boat details — I'll connect you with a trusted dive professional from my network.",
+  },
+  {
     q: "How do you rate levels of marine growth?",
     a: "We use a 5-level scale: None (clean hull, no visible growth), Minimal (light slime or algae film), Moderate (visible soft growth, some barnacle starts), Heavy (dense barnacles, mussels, or hard growth), Severe (thick multi-layer growth requiring extensive effort). When two terms are used (e.g., Good/Fair), it indicates a spectrum. The waterline degrades fastest due to warmer temperatures and sunlight. Other high-wear areas include keel edges, rudder, and prop aperture surfaces.",
   },
@@ -347,16 +351,16 @@ export default function Diving() {
   return (
     <div>
       <PageMeta
-        title="Hull Cleaning & Dive Services – San Francisco Bay | Brian Cline"
-        description="Professional underwater hull cleaning at Berkeley Marina, Oakland, Alameda, and SF Bay marinas. Subscription plans from $4.50/ft. Instant estimates, before/after video, and transparent pricing."
+        title="Hull Cleaning & Dive Services – Berkeley Marina | Brian Cline"
+        description="Professional underwater hull cleaning at Berkeley Marina, California. Currently serving Berkeley Marina exclusively; referrals available for boats at other Bay Area marinas. Subscription plans from $4.50/ft with instant estimates, before/after video, and transparent pricing."
       />
       <JsonLd data={{
         "@context": "https://schema.org",
         "@type": "Service",
-        "name": "Hull Cleaning - San Francisco Bay",
-        "description": "Professional underwater hull cleaning for sailboats and powerboats at Berkeley Marina, Oakland, Alameda, and throughout San Francisco Bay. Includes marine growth removal, zinc anode inspection, and propeller cleaning.",
+        "name": "Hull Cleaning - Berkeley Marina",
+        "description": "Professional underwater hull cleaning for sailboats and powerboats at Berkeley Marina, California. Currently serving Berkeley Marina exclusively; referrals offered for boats kept at other Bay Area marinas. Includes marine growth removal, zinc anode inspection, and propeller cleaning.",
         "provider": { "@id": "https://briancline.co/#vessel-management" },
-        "areaServed": { "@type": "Place", "name": "San Francisco Bay Area" },
+        "areaServed": { "@type": "Place", "name": "Berkeley Marina, Berkeley, California" },
         "serviceType": "Hull Cleaning",
         "url": "https://briancline.co/hull-cleaning"
       }} />
@@ -388,6 +392,17 @@ export default function Diving() {
               <p className="text-lg text-gray-600 max-w-2xl">
                 Professional underwater hull cleaning on San Francisco Bay. Transparent pricing based on your boat's specs — get an instant estimate.
               </p>
+              <div className="mt-5 max-w-2xl inline-flex items-start gap-2 rounded-xl border-2 border-primary-200 bg-primary-50/70 px-4 py-3 text-sm text-left text-gray-800">
+                <Info className="w-5 h-5 flex-shrink-0 text-[#0073a8] mt-0.5" />
+                <div>
+                  <strong className="font-semibold">Currently serving Berkeley Marina exclusively.</strong>{" "}
+                  Boat kept at another Bay Area marina? I'm happy to refer you to a trusted dive professional from my network — just{" "}
+                  <a href="mailto:diving@briancline.co" className="underline text-[#0073a8] font-medium hover:text-[#005f8a]">
+                    email me
+                  </a>
+                  {" "}with your marina and boat details.
+                </div>
+              </div>
             </div>
             <div className="hidden md:flex flex-col items-center gap-3">
               <div className="flex gap-4">
