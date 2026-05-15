@@ -18,6 +18,57 @@ import {
 // ── Config ──
 const SUPABASE_URL = import.meta.env.VITE_SUPABASE_URL;
 const SUPABASE_ANON_KEY = import.meta.env.VITE_SUPABASE_ANON_KEY;
+const TURNSTILE_SITE_KEY = import.meta.env.VITE_TURNSTILE_SITE_KEY;
+
+// Active terms version. Bump when terms_documents gets a new effective row.
+// Server validates this matches an existing version before persisting consent.
+const TERMS_VERSION = "2026-05-01";
+
+// SF Bay Area ZIP3 prefixes — kept in sync with the server-side
+// allowlist in supabase/functions/_shared/lead-validation.ts.
+const BAY_AREA_ZIP3 = new Set([
+  "940","941","943","944","945","946","947","948","949","950","951","954",
+]);
+
+// Common Bay Area marinas — surfaced via <datalist> to nudge customers
+// toward a recognized name. Free-typing is allowed; off-list marinas
+// are accepted with a manual-review flag on the server.
+const BAY_AREA_MARINAS = [
+  "Berkeley Marina",
+  "Emery Cove Yacht Harbor",
+  "Emeryville Marina",
+  "Marina Bay Yacht Harbor",
+  "Brickyard Cove Marina",
+  "Richmond Yacht Club",
+  "Grand Marina",
+  "Marina Village",
+  "Ballena Bay",
+  "Ballena Isle Marina",
+  "Alameda Marina",
+  "Pacific Marina",
+  "Oakland Yacht Club",
+  "Encinal Yacht Club",
+  "Jack London Square Marina",
+  "Embarcadero Cove",
+  "Pier 39 Marina",
+  "South Beach Harbor",
+  "San Francisco Marina",
+  "Gashouse Cove",
+  "Travis Marina",
+  "Sausalito Yacht Harbor",
+  "Schoonmaker Point Marina",
+  "Clipper Yacht Harbor",
+  "Kappas Marina",
+  "Loch Lomond Marina",
+  "Paradise Cay Yacht Harbor",
+  "Corinthian Yacht Club",
+  "Vallejo Yacht Club",
+  "Glen Cove Marina",
+  "Benicia Marina",
+  "Martinez Marina",
+  "Pittsburg Marina",
+  "Antioch Marina",
+];
 
 const BOAT_TYPES = [
   { value: "monohull_sailboat", label: "Monohull Sailboat", hull: "monohull", type: "sailboat" },
@@ -261,9 +312,13 @@ function OrderForm({ searchParams, navigate }) {
     anodeInfo: "",
     // Propeller service
     propellerCount: searchParams.get("propellers") || "1",
+    // Honeypot — must remain empty. Bots that auto-fill every field will trip this.
+    websiteUrl: "",
   });
 
-  const [agreed, setAgreed] = useState(false);
+  const [agreedToTerms, setAgreedToTerms] = useState(false);
+  const [agreedToCharge, setAgreedToCharge] = useState(false);
+  const [typedName, setTypedName] = useState("");
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [error, setError] = useState(null);
   const [success, setSuccess] = useState(null);
@@ -273,14 +328,32 @@ function OrderForm({ searchParams, navigate }) {
     cvcComplete: false,
   });
   const [cardError, setCardError] = useState(null);
+  const [turnstileToken, setTurnstileToken] = useState("");
+  const [zipError, setZipError] = useState(null);
 
   const updateField = useCallback((field, value) => {
     setForm((prev) => ({ ...prev, [field]: value }));
+    if (field === "billingZip") setZipError(null);
   }, []);
 
   const estimateAmount = initialEstimate ? parseInt(initialEstimate) : null;
 
   const allCardComplete = cardState.numberComplete && cardState.expiryComplete && cardState.cvcComplete;
+
+  const zipDigits = (form.billingZip || "").replace(/\D/g, "");
+  const zipInBayArea = zipDigits.length >= 3 && BAY_AREA_ZIP3.has(zipDigits.slice(0, 3));
+  const turnstileOk = !TURNSTILE_SITE_KEY || !!turnstileToken;
+
+  // Recurring iff cleaning + non-one-time frequency. Drives the wording of the
+  // charge-authorization checkbox and whether we capture a recurring terms version.
+  const isRecurring = isCleaningService && form.frequency !== "one_time";
+
+  // Typed-name match is intentionally case- and whitespace-insensitive — chargeback
+  // defense doesn't need exact casing, just evidence the customer actively typed
+  // their own name. Empty typedName fails because customerName is required.
+  const normalizedTyped = typedName.trim().toLowerCase().replace(/\s+/g, " ");
+  const normalizedCustomer = (form.customerName || "").trim().toLowerCase().replace(/\s+/g, " ");
+  const typedNameMatches = normalizedTyped.length > 0 && normalizedTyped === normalizedCustomer;
 
   const canSubmit =
     form.customerName &&
@@ -289,13 +362,50 @@ function OrderForm({ searchParams, navigate }) {
     form.billingCity &&
     form.billingState &&
     form.billingZip &&
-    agreed &&
+    zipInBayArea &&
+    agreedToTerms &&
+    agreedToCharge &&
+    typedNameMatches &&
     allCardComplete &&
+    turnstileOk &&
     !isSubmitting;
+
+  // Cloudflare Turnstile — load the script and render the widget when configured.
+  useEffect(() => {
+    if (!TURNSTILE_SITE_KEY) return;
+    const scriptId = "cf-turnstile-script";
+    if (!document.getElementById(scriptId)) {
+      const s = document.createElement("script");
+      s.id = scriptId;
+      s.src = "https://challenges.cloudflare.com/turnstile/v0/api.js?render=explicit";
+      s.async = true;
+      s.defer = true;
+      document.head.appendChild(s);
+    }
+    const interval = setInterval(() => {
+      const target = document.getElementById("cf-turnstile-widget");
+      if (window.turnstile && target && !target.dataset.rendered) {
+        window.turnstile.render("#cf-turnstile-widget", {
+          sitekey: TURNSTILE_SITE_KEY,
+          callback: (token) => setTurnstileToken(token),
+          "expired-callback": () => setTurnstileToken(""),
+          "error-callback": () => setTurnstileToken(""),
+        });
+        target.dataset.rendered = "1";
+        clearInterval(interval);
+      }
+    }, 200);
+    return () => clearInterval(interval);
+  }, []);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
     if (!canSubmit || !stripe || !elements) return;
+
+    if (!zipInBayArea) {
+      setZipError("We currently only serve the San Francisco Bay Area. Please double-check your billing ZIP.");
+      return;
+    }
 
     setIsSubmitting(true);
     setError(null);
@@ -328,6 +438,9 @@ function OrderForm({ searchParams, navigate }) {
         customerNotes: form.notes,
         estimate: estimateAmount || 0,
         service: service.name,
+        billingZip: form.billingZip,
+        websiteUrl: form.websiteUrl, // honeypot
+        turnstileToken,
         serviceDetails: {
           serviceName: service.name,
           boatLength: form.boatLength || initialLength,
@@ -339,6 +452,19 @@ function OrderForm({ searchParams, navigate }) {
           lastCleaned: initialLastCleaned,
           anodeCount: initialAnodes,
           includesAnodes: parseInt(initialAnodes) > 0,
+        },
+        // Consent / authorization audit fields — persisted by the edge function
+        // into order_authorizations so we can defend chargebacks.
+        authorization: {
+          typedName: typedName.trim(),
+          agreedToTerms,
+          agreedToCharge,
+          termsVersion: TERMS_VERSION,
+          recurringTermsVersion: isRecurring ? TERMS_VERSION : null,
+          isRecurring,
+          authorizedAt: new Date().toISOString(),
+          userAgent: navigator.userAgent,
+          referer: document.referrer || null,
         },
       };
 
@@ -567,9 +693,19 @@ function OrderForm({ searchParams, navigate }) {
 
         {/* Boat Location (not for item recovery) */}
         {showBoatInfo && (
-          <SectionCard icon={MapPin} title="Boat Location" description="Where is your boat kept?">
+          <SectionCard icon={MapPin} title="Boat Location" description="Where is your boat kept? (SF Bay Area only)">
             <Field label="Marina">
-              <Input placeholder="Harbor Island West Marina" value={form.marina} onChange={(e) => updateField("marina", e.target.value)} />
+              <Input
+                list="bay-area-marinas"
+                placeholder="Berkeley Marina"
+                value={form.marina}
+                onChange={(e) => updateField("marina", e.target.value)}
+              />
+              <datalist id="bay-area-marinas">
+                {BAY_AREA_MARINAS.map((m) => (
+                  <option key={m} value={m} />
+                ))}
+              </datalist>
             </Field>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mt-4">
               <Field label="Dock">
@@ -610,6 +746,28 @@ function OrderForm({ searchParams, navigate }) {
             <Field label="ZIP" required>
               <Input placeholder="94107" value={form.billingZip} onChange={(e) => updateField("billingZip", e.target.value)} />
             </Field>
+          </div>
+          {form.billingZip && !zipInBayArea && (
+            <p className="text-sm text-amber-700 mt-2">
+              Heads up: this ZIP isn't in our SF Bay Area service area. If your boat is berthed locally, double-check the ZIP — otherwise we can't take this order.
+            </p>
+          )}
+          {zipError && (
+            <p className="text-sm text-red-600 mt-2">{zipError}</p>
+          )}
+
+          {/* Honeypot — keep this field empty. Bots that auto-fill every input will fail server validation. */}
+          <div aria-hidden="true" style={{ position: "absolute", left: "-10000px", top: "auto", width: "1px", height: "1px", overflow: "hidden" }}>
+            <label htmlFor="website_url">Website (leave blank)</label>
+            <input
+              type="text"
+              id="website_url"
+              name="website_url"
+              tabIndex={-1}
+              autoComplete="off"
+              value={form.websiteUrl}
+              onChange={(e) => updateField("websiteUrl", e.target.value)}
+            />
           </div>
         </SectionCard>
 
@@ -717,42 +875,96 @@ function OrderForm({ searchParams, navigate }) {
             <p className="text-red-500 text-sm mt-2">{cardError}</p>
           )}
 
-          {/* Full Service Agreement */}
+          {/* Cloudflare Turnstile (renders only when VITE_TURNSTILE_SITE_KEY is configured). */}
+          {TURNSTILE_SITE_KEY && (
+            <div className="mt-4">
+              <div id="cf-turnstile-widget" />
+            </div>
+          )}
+
+          {/* Authorization & Service Agreement */}
           <div className="mt-6 border rounded-lg p-4 bg-gray-50 space-y-3">
-            <h4 className="font-semibold text-gray-900">Important Service Agreement</h4>
+            <h4 className="font-semibold text-gray-900">Authorization & Service Agreement</h4>
 
             <p className="text-sm text-gray-700">
               <strong>Billing:</strong> Your card will be charged only after service completion.
+              {estimateAmount && (
+                <> Today's estimate: <span className="font-medium">{formatCurrency(estimateAmount)}</span>.</>
+              )}
             </p>
 
             <p className="text-sm text-gray-700">
-              <strong>Estimate Notice:</strong> The final amount may vary from the provided estimate based on actual conditions found during service. Common variations include:
+              <strong>Estimate Notice:</strong> The final amount may vary from the estimate based on actual conditions found during service. Common variations include:
             </p>
 
             <ul className="text-sm text-gray-700 list-disc ml-5 space-y-1">
-              <li>Unexpected marine growth levels</li>
-              <li>Additional anode replacements needed</li>
+              <li>Heavier marine growth than expected (+50% to +100%)</li>
+              <li>Additional anode replacements needed (per-anode pricing)</li>
             </ul>
 
             <p className="text-sm text-gray-700">
-              Any variations and their reasons will be documented in your service logs and underwater video.
+              All variations are documented in your service log and underwater video.
             </p>
 
             <div className="flex items-start gap-3 pt-2">
               <input
                 type="checkbox"
-                id="service-agreement"
-                checked={agreed}
-                onChange={(e) => setAgreed(e.target.checked)}
+                id="agree-terms"
+                checked={agreedToTerms}
+                onChange={(e) => setAgreedToTerms(e.target.checked)}
                 className="mt-1 h-4 w-4 rounded border-gray-300 text-primary-600 focus:ring-primary-500"
               />
-              <label htmlFor="service-agreement" className="text-sm text-gray-700 cursor-pointer leading-snug">
-                I understand and agree to be billed for the service at time of completion, and that the final amount may vary from the estimate provided.
-                {estimateAmount && (
-                  <span className="font-medium"> Estimated amount: {formatCurrency(estimateAmount)}.</span>
+              <label htmlFor="agree-terms" className="text-sm text-gray-700 cursor-pointer leading-snug">
+                I have read and agree to the{" "}
+                <a href="/terms" target="_blank" rel="noopener noreferrer" className="text-[#0073a8] underline">Terms of Service</a>
+                {isRecurring && (
+                  <>
+                    {" "}and{" "}
+                    <a href="/recurring-authorization" target="_blank" rel="noopener noreferrer" className="text-[#0073a8] underline">Recurring Authorization Agreement</a>
+                  </>
+                )}.
+              </label>
+            </div>
+
+            <div className="flex items-start gap-3">
+              <input
+                type="checkbox"
+                id="agree-charge"
+                checked={agreedToCharge}
+                onChange={(e) => setAgreedToCharge(e.target.checked)}
+                className="mt-1 h-4 w-4 rounded border-gray-300 text-primary-600 focus:ring-primary-500"
+              />
+              <label htmlFor="agree-charge" className="text-sm text-gray-700 cursor-pointer leading-snug">
+                {isRecurring ? (
+                  <>
+                    I authorize SailorSkills to charge my saved card for <strong>each scheduled service</strong> at the price documented in that service's report. I understand each charge may include surcharges for heavy growth or extra anodes, documented with photos. I can cancel any time before the next service by emailing diving@briancline.co.
+                  </>
+                ) : (
+                  <>
+                    I authorize SailorSkills to save my card and charge it for this service at the price documented in the service report (which may exceed the estimate based on conditions found).
+                  </>
                 )}
               </label>
             </div>
+
+            <Field label="Type your full legal name to authorize" required>
+              <Input
+                id="typed-name"
+                type="text"
+                value={typedName}
+                onChange={(e) => setTypedName(e.target.value)}
+                placeholder="Must match the name above"
+                aria-describedby="typed-name-help"
+              />
+              <p id="typed-name-help" className="mt-1 text-xs text-gray-500">
+                Your typed name + click is treated as your electronic signature under federal E-SIGN and California UETA.
+                {form.customerName && !typedNameMatches && typedName.length > 0 && (
+                  <span className="block text-amber-700 mt-0.5">
+                    Doesn't match "{form.customerName}" yet.
+                  </span>
+                )}
+              </p>
+            </Field>
           </div>
         </SectionCard>
 
@@ -766,6 +978,46 @@ function OrderForm({ searchParams, navigate }) {
             </div>
           </div>
         )}
+
+        {/*
+         * Missing-fields callout — shown whenever the submit button is disabled.
+         * Without this, users with incomplete forms see only a greyed-out button
+         * and no explanation of what's still needed (the bug Craig Maurer hit
+         * on 2026-04-08, where he replied "I was unable to submit info on the form").
+         */}
+        {!canSubmit && !isSubmitting && (() => {
+          const missing = [];
+          if (!form.customerName) missing.push("Full Name");
+          if (!form.customerEmail) missing.push("Email");
+          if (!form.billingAddress) missing.push("Billing Address");
+          if (!form.billingCity) missing.push("City");
+          if (!form.billingState) missing.push("State");
+          if (!form.billingZip) missing.push("ZIP");
+          else if (!zipInBayArea) missing.push("ZIP in our service area (SF Bay)");
+          if (!cardState.numberComplete) missing.push("Card number");
+          if (!cardState.expiryComplete) missing.push("Card expiration");
+          if (!cardState.cvcComplete) missing.push("Card CVC");
+          if (!agreedToTerms) missing.push("Terms of Service checkbox");
+          if (!agreedToCharge) missing.push("Charge authorization checkbox");
+          if (form.customerName && !typedNameMatches) missing.push("Typed name matching the name above");
+          if (TURNSTILE_SITE_KEY && !turnstileToken) missing.push("Verification");
+          if (missing.length === 0) return null;
+          return (
+            <div className="bg-amber-50 border border-amber-200 rounded-xl p-4 flex items-start gap-3">
+              <AlertCircle className="w-5 h-5 text-amber-600 mt-0.5 flex-shrink-0" />
+              <div>
+                <p className="font-medium text-amber-900">
+                  Before you can submit, please complete:
+                </p>
+                <ul className="text-sm text-amber-800 list-disc ml-5 mt-1 space-y-0.5">
+                  {missing.map((f) => (
+                    <li key={f}>{f}</li>
+                  ))}
+                </ul>
+              </div>
+            </div>
+          );
+        })()}
 
         {/* Submit */}
         <div className="flex justify-end">
@@ -781,7 +1033,7 @@ function OrderForm({ searchParams, navigate }) {
               </>
             ) : (
               <>
-                Complete Order
+                Authorize & Save Card
                 <ArrowRight className="w-5 h-5 ml-2" />
               </>
             )}

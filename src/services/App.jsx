@@ -9,6 +9,8 @@ import Training from "./pages/Training";
 import TrainingFAQ from "./pages/TrainingFAQ";
 import Deliveries from "./pages/Deliveries";
 import Detailing from "./pages/Detailing";
+import Terms from "./pages/Terms";
+import RecurringAuthorization from "./pages/RecurringAuthorization";
 
 export default function App() {
   return (
@@ -45,6 +47,10 @@ export default function App() {
 
           {/* Deliveries (unchanged) */}
           <Route path="/deliveries" element={<Deliveries />} />
+
+          {/* Legal — required for chargeback hardening; linked from order form + footer */}
+          <Route path="/terms" element={<Terms />} />
+          <Route path="/recurring-authorization" element={<RecurringAuthorization />} />
 
           {/* Catch-all → marine landing */}
           <Route path="*" element={<Navigate to="/marine" replace />} />

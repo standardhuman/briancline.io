@@ -45,7 +45,7 @@ const RATES = {
   itemRecovery: 149,
   propellerService: 349,
   anodesOnlyMin: 99,
-  minimum: 99.00,
+  minimum: 150.00,
   anode: 15.00,
 };
 

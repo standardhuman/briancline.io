@@ -51,6 +51,18 @@ export default function ServiceFooter() {
           <p className="text-gray-500 text-xs">
             © {new Date().getFullYear()} Brian Cline. All rights reserved.
           </p>
+          <ul className="flex flex-wrap gap-x-4 gap-y-1 text-xs">
+            <li>
+              <Link to="/terms" className="text-gray-500 hover:text-gray-300 transition-colors">
+                Terms of Service
+              </Link>
+            </li>
+            <li>
+              <Link to="/recurring-authorization" className="text-gray-500 hover:text-gray-300 transition-colors">
+                Recurring Authorization
+              </Link>
+            </li>
+          </ul>
           <p className="text-gray-500 text-xs">
             USCG Licensed Master · US Sailing Cruising Instructor
           </p>
